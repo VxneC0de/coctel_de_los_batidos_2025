@@ -62,9 +62,20 @@ switch($hidden){
 
     session_unset();
     session_destroy();
-    header("location:userRegister.php");
+    header("location:../visual/index.php");
 
-  break; 
+  break;
+  case 4:
+    //INSERT
+    $sql = "insert into products values('', '$name', '$description', '$price', '$amount', '$img', '$date', '$status')";
+
+    if(mysqli_query($connection, $sql)){
+      header("location:../visual/insert.php?answer=1");
+    }else{
+      header("location:../visual/insert.php?answer=2");
+    }
+
+  break;
 
 };
 
