@@ -136,14 +136,14 @@
         </form>
 
         <?php
-          if(@$_GET['answer']==1){ ?>
-          <h2>Your registration was successful</h2>
-        <?php } ?>
-
-        <?php
-          if(@$_GET['answer']==2){ ?>
-          <h2>Error registering</h2>
-        <?php } ?>
+            if(@$_GET['answer']==1){ ?>
+            <h2>Your registration was successful</h2>
+            <?php } ?>
+            
+            <?php
+            if(@$_GET['answer']==2){ ?>
+            <h2>Error registering</h2>
+            <?php } ?>
 
         <div>
             <p>

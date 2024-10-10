@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./login.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
@@ -57,7 +57,7 @@
                     
                 </div>
                 
-                <!--
+                
                 
                 <div class="cart_sidebar">
                   
@@ -109,7 +109,7 @@
                   
                   </div>
                 
-                -->
+                
                 
                 <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
             
@@ -121,7 +121,7 @@
 
             <div class="form-box">
             
-                <form method="post" action="../../controller/actions_2.php" class="login-container" id="login">
+                <form method="post" action="../../controller/actions_3.php" class="login-container" id="login">
                     
                     <div class="top">
                         <span>¿No tienes una cuenta? <a href="#" onclick="register()">Inscribirse</a></span>
@@ -161,7 +161,7 @@
                 </form>
         
         
-                <form method="post" action="../../controller/actions_2.php" class="register-container" id="register">
+                <form method="post" action="../../controller/actions_3.php" class="register-container" id="register">
         
                     <div class="top">
                         <span>¿Tienes una cuenta? <a href="#" onclick="login()">Accede</a></span>
@@ -171,35 +171,21 @@
                     <div class="input-box">
                         <input type="text" class="input-field" placeholder="Nombre de Usuario" id="nickRegister" name="nickRegister" required>
                         <i class="bx bx-user"></i>
-                        <div class="error">
-                            <?php
-                            if(@$_GET['answer']==3){ ?>
-                            <h2>The nickname is already registered. Try again</h2>
-                            <?php } ?>
-                        </div>
                     </div>
         
                     <div class="input-box">
                         <input type="text" class="input-field" placeholder="Correo Electrónico" id="emailRegister" name="emailRegister" placeholder="admin@admin.com" required>
                         <i class="bx bx-envelope"></i>
-                        <div class="error">
-                            <?php
-                            if(@$_GET['answer']==4){ ?>
-                            <h2>The email is already registered. Try again</h2>
-                            <?php } ?>
-                        </div>
                     </div>
                     
                     <div class="input-box">
                         <input type="password" class="input-field" placeholder="Contraseña" id="passwordRegister" name="passwordRegister" maxlength="250" required>
                         <i class="bx bx-lock-alt"></i>
-                        <div class="error"></div>
                     </div>
         
                     <div class="input-box">
                         <input type="password" class="input-field" placeholder="Confirmar  Contraseña" id="confirmRegister" name="confirmRegister" maxlength="250" required>
                         <i class="bx bx-lock-alt"></i>
-                        <div class="error"></div>
                     </div>
 
                     <input type="hidden" name="hidden" value="1">
@@ -221,16 +207,6 @@
                 </form>
 
             </div>
-
-            <?php
-            if(@$_GET['answer']==1){ ?>
-            <h2>Your registration was successful</h2>
-            <?php } ?>
-            
-            <?php
-            if(@$_GET['answer']==2){ ?>
-            <h2>Error registering</h2>
-            <?php } ?>
 
         </section>
 
@@ -334,16 +310,6 @@
           cartSidebar.style.right = '-100%';
         });
         
-        // Función para agregar un producto a la lista
-        /*function addToCart(itemName) {
-          const cartItems = document.querySelector('.cart-items');
-          const newItem = document.createElement('li');
-          newItem.textContent = itemName;
-          cartItems.appendChild(newItem);
-        }
-        
-        // Ejemplo de agregar un producto
-        addToCart('Empanada de Carne');*/
       });
     </script>
 
