@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+  session_start();
+  if(isset ($_SESSION['who'])) { ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -58,7 +61,7 @@
 
         <section class="content">
 
-            <form action="#" class="form-box">
+            <form action="../../controller/actions.php" method="post" class="form-box">
     
                 <div class="register-container" id="register">
         
@@ -69,7 +72,7 @@
                     <div class="two-forms">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Nombre del Producto">
+                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="name-products">
                             <i class='bx bxs-food-menu iconoOne'></i>
                         </div>
                         
@@ -88,28 +91,28 @@
                     </div>
         
                     <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Precio">
+                        <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products">
                         <i class='bx bxs-dollar-circle'></i>
                     </div>
                     
                     <div class="input-box">
-                        <input type="date" class="input-field" placeholder="Fecha">
+                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="date-products">
                         <i class='bx bxs-calendar'></i>
                     </div>
         
                     <div class="input-box">
-                        <input type="time" class="input-field" placeholder="Hora">
+                        <input type="time" class="input-field" placeholder="Hora" name="hour" id="hour-products">
                         <i class='bx bxs-time'></i>
                     </div>
     
                     <div class="input-box img_box">
-                        <input type="file" class="input-field">
+                        <input type="file" class="input-field" name="img" id="img-products">
                         <label for="file-upload"></label>
                         <i class='bx bxs-image-alt'></i>
                     </div>
     
                     <div class="input-box">
-                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150"></textarea>
+                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="description-products"></textarea>
                         <i class='bx bxs-comment-detail textarea-icon'></i>
                     </div>                
         
@@ -121,6 +124,15 @@
             </form>
 
         </section>
+
+        <?php 
+            if(@$_GET['answer']==1){ ?>
+                <h2 class="h2_1">Your registration was successful</h2>
+            <?php }
+            if(@$_GET['answer']==2){ ?>
+                <h2 class="h2_2">There were problems registering, please try again later</h2>
+            <?php }
+        ?>
 
         <footer class="footer">
         
@@ -146,3 +158,6 @@
     
 </body>
 </html>
+<?php }else{
+  header("location:../login/login.php?answer=6");
+} ?>

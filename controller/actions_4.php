@@ -21,17 +21,17 @@ switch($hidden){
     $union_2=mysqli_fetch_array($conne_2);
 
     if($union_1[0]>0){
-      header("location:../visual/login/login.php?answer=3");
+      header("location:../visual/index.php?answer=3");
     }else if($union_2[0]>0){
-      header("location:../visual/login/login.php?answer=4");
+      header("location:../visual/index.php?answer=4");
     }else{
 
       $sql = "insert into user values('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), '$countryCode', '$phoneNumber', 0, 0)";
 
       if(mysqli_query($connection, $sql)){
-        header("location:../visual/login/login.php?answer=1");
+        header("location:../visual/index.php?answer=1");
       }else{
-        header("location:../visual/login/login.php?answer=2");
+        header("location:../visual/index.php?answer=2");
       }
 
     }
@@ -52,7 +52,7 @@ switch($hidden){
       header("location:../visual/menu.php");
 
     }else{
-      header("location:../visual/login/login.php?answer=5");
+      header("location:../visual/index.php?answer=5");
     }
 
   break;
@@ -62,7 +62,7 @@ switch($hidden){
 
     session_unset();
     session_destroy();
-    header("location:../visual/login/login.php");
+    header("location:../visual/index.php");
 
   break;
   case 4:

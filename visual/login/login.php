@@ -35,8 +35,7 @@
                             <li><a href="#">Pastelitos</a></li>
                             <li><a href="#">Especiales</a></li>
                             <li><a href="#">Bebidas Frías</a></li>
-                            <li><a href="#">Bollitos</a></li>
-                            <li><a href="#">Hallacas</a></li>
+                            <li><a href="#">Otros</a></li>
                         </ul>
                     </li>
                     
@@ -121,7 +120,7 @@
 
             <div class="form-box">
             
-                <form method="post" action="../../controller/actions_3.php" class="login-container" id="login">
+                <form method="post" action="../../controller/actions.php" class="login-container" id="login">
                     
                     <div class="top">
                         <span>¿No tienes una cuenta? <a href="#" onclick="register()">Inscribirse</a></span>
@@ -161,7 +160,7 @@
                 </form>
         
         
-                <form method="post" action="../../controller/actions_3.php" class="register-container" id="register">
+                <form method="post" action="../../controller/actions.php" class="register-container" id="register">
         
                     <div class="top">
                         <span>¿Tienes una cuenta? <a href="#" onclick="login()">Accede</a></span>

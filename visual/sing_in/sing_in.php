@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+  session_start();
+  if(isset ($_SESSION['who'])) { ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -121,7 +124,7 @@
 
             <div class="form-box">
             
-                <form method="post" action="../../controller/actions_2.php" class="login-container" id="login">
+                <form method="post" action="../../controller/actions_4.php" class="login-container" id="login">
                     
                     <div class="top">
                         <span>¿No tienes una cuenta? <a href="#" onclick="register()">Inscribirse</a></span>
@@ -161,7 +164,7 @@
                 </form>
         
         
-                <form method="post" action="../../controller/actions_2.php" class="register-container" id="register">
+                <form method="post" action="../../controller/actions_4.php" class="register-container" id="register">
         
                     <div class="top">
                         <span>¿Tienes una cuenta? <a href="#" onclick="login()">Accede</a></span>
@@ -352,3 +355,6 @@
     
 </body>
 </html>
+<?php }else{
+  header("location:../login/login.php?answer=6");
+} ?>
