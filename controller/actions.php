@@ -67,7 +67,7 @@ switch($hidden){
   break;
   case 4:
     //INSERT
-    $sql = "insert into products values('', '$name', '$description', '$price', '$amount', '$img', '$date', '$status')";
+    $sql = "INSERT INTO product values('', '$id_category', '$name', '$description', '$img', '$price', '', '$status')";
 
     if(mysqli_query($connection, $sql)){
       header("location:../visual/upload/upload.php?answer=1");
@@ -76,6 +76,7 @@ switch($hidden){
     }
 
   break;
+
 
 };
 

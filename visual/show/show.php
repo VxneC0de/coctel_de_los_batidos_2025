@@ -150,7 +150,7 @@
             <div class="footer-box">
                 
                 <div class="footer-text">
-                    <p>&copy; 2024 El Cóctel de los Batidos 2025</p>
+                    <p>&copy; El Cóctel de los Batidos 2025</p>
                 </div>
                 
                 <div class="footer-creater">

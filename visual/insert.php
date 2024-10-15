@@ -66,6 +66,20 @@
         <option value="1">Not current</option>
       </select>
 
+      <select class="input-field select-custom" name="id_category">
+        <option value="" disabled selected>Elegir una Categoría</option>
+        <?php
+        // Asumiendo que tienes la conexión a la base de datos en $connection
+        
+          $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
+        
+          while ($row = mysqli_fetch_assoc($result)) {
+        echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
+          }
+        ?>
+</select>
+
+
       <br>
 
       <input type="hidden" name="hidden" value="1">

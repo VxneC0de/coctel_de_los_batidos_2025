@@ -13,20 +13,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
 <body>
+    
+    <?php
+        include "../../controller/connection.php";
+    ?>
+
 
     <div class="container">
 
         <nav>
             <div class="wrapper_nav">
                 
-                <div class="logo"><a href="#">LOGO.</a></div>
+                <div class="logo"><a href="../menu/menu.php">LOGO.</a></div>
                 <input type="radio" name="slider" id="menu-btn">
                 <input type="radio" name="slider" id="close-btn">
                 
                 <ul class="nav-links">
                     
                     <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="#">Ordenes</a></li>
+                    <li><a href="../order/order.php">Ordenes</a></li>
 
                     <li>
                         
@@ -35,20 +40,20 @@
                         <label for="showDrop" class="mobile-item">Productos ▾</label>
                         
                         <ul class="drop-menu">
-                            <li><a href="#">Subir Producto</a></li>
-                            <li><a href="#">Catálogo</a></li>
+                            <li><a href="./upload.php">Subir Producto</a></li>
+                            <li><a href="../show/show.php">Catálogo</a></li>
                         </ul>
                     
                     </li>
                     
-                    <li><a href="#">Tienda</a></li>
+                    <li><a href="../menu_admin/menu_admin.php">Tienda</a></li>
                 
                 </ul>
                 
                 <div class="header-right">
                     
                     <div class="user_icon">
-                        <a href="#"><ion-icon name="person"></ion-icon></a>
+                        <a href="../user_admin/user_admin.php"><ion-icon name="person"></ion-icon></a>
                     </div>
                     
                 </div>          
@@ -77,22 +82,39 @@
                         </div>
                         
                         <div class="input-box select">
-                            <select class="input-field select-custom">
+                            <select class="input-field select-custom" name="id_category">
                                 <option value="" disabled selected>Elegir una Categoría</option>
-                                <option value="categoria1">Empanadas</option>
-                                <option value="categoria2">Pastelitos</option>
-                                <option value="categoria3">Especiales</option>
-                                <option value="categoria4">Bebidas Frías</option>
-                                <option value="categoria5">Otros</option>
+                            <?php
+
+                                $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
+        
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
+                                }
+
+                            ?>
                             </select>
                             <i class='bx bxs-category' ></i>
                         </div>
                         
                     </div>
-        
-                    <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products">
-                        <i class='bx bxs-dollar-circle'></i>
+
+                    <div class="two-forms">
+                        
+                        <div class="input-box">
+                            <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products">
+                            <i class='bx bxs-dollar-circle'></i>
+                        </div>
+                        
+                        <div class="input-box select">
+                            <select class="input-field select-custom" name="status" id="status-products">
+                                <option value="" disabled selected>Elegir Disponibilidad</option>
+                                <option value="1">Disponible</option>
+                                <option value="2">No Disponible</option>
+                            </select>
+                            <i class='bx bx-low-vision'></i>
+                        </div>
+                        
                     </div>
                     
                     <div class="input-box">
@@ -114,7 +136,9 @@
                     <div class="input-box">
                         <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="description-products"></textarea>
                         <i class='bx bxs-comment-detail textarea-icon'></i>
-                    </div>                
+                    </div>    
+                    
+                    <input type="hidden" name="hidden" value="4">
         
                     <div class="input-box">
                         <input type="submit" class="submit" value="Subir">
@@ -139,7 +163,7 @@
             <div class="footer-box">
                 
                 <div class="footer-text">
-                    <p>&copy; 2024 El Cóctel de los Batidos 2025</p>
+                    <p>&copy; El Cóctel de los Batidos 2025</p>
                 </div>
                 
                 <div class="footer-creater">
