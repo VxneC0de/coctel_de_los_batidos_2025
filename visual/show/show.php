@@ -14,6 +14,10 @@
 </head>
 <body>
 
+    <?php 
+        include "../../controller/details.php";
+    ?>
+
     <div class="container">
 
         <nav>
@@ -62,32 +66,41 @@
         <section class="content">
 
             <div class="table">
-
+                
                 <div class="table_header">
+                
+                    <div class="table_name">
+                        <p>Detalles del Producto</p>
+                    </div>
 
-                    <p>Detalles del Producto</p>
+                    <div class="table_form">
 
-                    <form method="post" action="#" class="search_container">
+                        <form method="post" action="#" class="search_container">
 
-                        <select class="search_input select-custom">
-                            <option value="" disabled selected>Categoría</option>
-                            <option value="categoria1">Empanadas</option>
-                            <option value="categoria2">Pastelitos</option>
-                            <option value="categoria3">Especiales</option>
-                            <option value="categoria4">Bebidas Frías</option>
-                            <option value="categoria5">Otros</option>
-                        </select>
+                            <select class="search_input select-custom">
+                                <option value="" disabled selected>Categoría</option>
+                                <option value="categoria1">Empanadas</option>
+                                <option value="categoria2">Pastelitos</option>
+                                <option value="categoria3">Especiales</option>
+                                <option value="categoria4">Bebidas Frías</option>
+                                <option value="categoria5">Otros</option>
+                            </select>
 
-                        <input class="search_input" list="products" type="text" name="search" placeholder="Nombre del Producto">
+                            <input class="search_input" list="products" type="text" name="search" placeholder="Nombre del Producto">
 
-                        <!--
-                        </datalist>
-                        -->
+                            <!--
+                                <datalist id="products">
+           
+                                </datalist>
+                            -->
 
-                        <button type="submit" class="search_button">
-                            <i class='bx bx-search'></i>
-                        </button>
-                    </form>
+                            <button type="submit" class="search_button">
+                                <i class='bx bx-search'></i>
+                            </button>
+                            
+                        </form>
+
+                    </div>
 
                 </div>
 
@@ -96,6 +109,7 @@
                     <table>
 
                         <thead>
+                            <th>N°</th>
                             <th>Imagen</th>
                             <th>Nombre</th>
                             <th>Categoría</th>
@@ -105,12 +119,25 @@
                             <th>Acciones</th>
                         </thead>
 
+                        <?php
+
+                            include "../../controller/connection.php";
+
+                            $sql = "SELECT * from product";
+                            $consult = mysqli_query($connection,$sql);
+
+                            while($ver=mysqli_fetch_array($consult)){
+                        ?>
+
+
                         <tbody>
-                            <td><img src="./pastelito.jpg" alt="pastelito"></td>
-                            <td>Pastelito de Papa con Queso</td>
-                            <td>Pastelito</td>
-                            <td>Bs. 40</td>
-                            <td>Relleno de Papa con Queso</td>
+
+                            <td><?php echo $ver[0]; ?></td>
+                            <td><img src="<?php echo $ver[4]; ?>" alt="img"></td>
+                            <td><?php echo $ver[2]; ?></td>
+                            <td><?php echo $ver[1]; ?></td>
+                            <td><?php echo number_format($ver[5], 2, ",", ".")." Bs"; ?></td>
+                            <td><?php echo $ver[3]; ?></td>
                             <td>
                                 <button class="button_status_1">
                                     <i class='bx bx-check-circle'></i>
@@ -123,7 +150,10 @@
                                 <button class="button_action_1"><i class='bx bx-edit-alt'></i></button>
                                 <button class="button_action_2"><i class='bx bx-trash'></i></button>
                             </td>
+        
                         </tbody>
+
+                        <?php } ?>
 
                     </table>
 
