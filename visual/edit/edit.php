@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="./upload.css">
+    <link rel="stylesheet" href="./edit.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
@@ -66,6 +66,20 @@
 
         <section class="content">
 
+        <?php 
+            if(@$_GET['answer']==1){ ?>
+                <h2 class="h2_1">Its edition was successful</h2>
+                <meta http-equiv = "refresh" content = "2; url = ../show/show.php"/>
+        <?php }
+            if(@$_GET['answer']==2){ ?>
+                <h2 class="h2_2">There were problems registering, please try again later</h2>
+            <meta http-equiv = "refresh" content = "3; url = ../show/show.php"/>
+        <?php 
+            }
+
+            if(isset($_GET['answer'])){}else{
+        ?>
+
             <form action="../../controller/actions.php" method="post" class="form-box">
     
                 <div class="register-container" id="register">
@@ -75,9 +89,31 @@
                     </div>
                     
                     <div class="two-forms">
+
+                    <?php
+                        include "../../controller/connection.php";
+
+                        // Obtener el ID del producto a editar
+                        $product_id = $_GET['e'];
+
+                        // Consulta para obtener los detalles del producto y la categoría
+                        $sql = "SELECT p.*, c.name_category 
+                                FROM product p 
+                                JOIN category c ON p.id_category = c.id 
+                                WHERE p.id_product = '$product_id'";
+
+                                $consult = mysqli_query($connection, $sql);
+                                $ver = mysqli_fetch_array($consult);
+
+                                // Consulta para obtener todas las categorías
+                                $sql_categories = "SELECT id, name_category FROM category WHERE status = 1";
+                                $result = mysqli_query($connection, $sql_categories);
+                    ?>
+
+                    <input type="hidden" name="numberId" value="<?php echo $ver[0]; ?>">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="name-products">
+                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="name-products" value="<?php echo $ver[2]; ?>" required>
                             <i class='bx bxs-food-menu iconoOne'></i>
                         </div>
                         
@@ -85,13 +121,10 @@
                             <select class="input-field select-custom" name="id_category">
                                 <option value="" disabled selected>Elegir una Categoría</option>
                             <?php
-
-                                $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
-        
                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
+                                    $selected = $row['id'] == $ver['id_category'] ? 'selected' : '';
+                                    echo "<option value='{$row['id']}' $selected>{$row['name_category']}</option>";
                                 }
-
                             ?>
                             </select>
                             <i class='bx bxs-category' ></i>
@@ -102,15 +135,15 @@
                     <div class="two-forms">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products">
+                            <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products" value="<?php echo $ver[5]; ?>"  required>
                             <i class='bx bxs-dollar-circle'></i>
                         </div>
-                        
+
                         <div class="input-box select">
                             <select class="input-field select-custom" name="status" id="status-products">
-                                <option value="" disabled selected>Elegir Disponibilidad</option>
-                                <option value="1">Disponible</option>
-                                <option value="2">No Disponible</option>
+                                <option value="" disabled>Elegir Disponibilidad</option>
+                                <option value="1" <?php if($ver['status'] == 1) echo 'selected'; ?>>Disponible</option>
+                                <option value="2" <?php if($ver['status'] == 2) echo 'selected'; ?>>No Disponible</option>
                             </select>
                             <i class='bx bx-low-vision'></i>
                         </div>
@@ -118,22 +151,22 @@
                     </div>
                     
                     <div class="input-box">
-                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="date-products">
+                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="date-products" value="<?php echo $ver[6]; ?>" required>
                         <i class='bx bxs-calendar'></i>
                     </div>
     
                     <div class="input-box img_box">
-                        <input type="file" class="input-field" name="img" id="img-products">
+                        <input type="file" class="input-field" name="img" id="img-products" value="<?php echo $ver[4]; ?>" required>
                         <label for="file-upload"></label>
                         <i class='bx bxs-image-alt'></i>
                     </div>
     
                     <div class="input-box">
-                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="description-products"></textarea>
+                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="description-products"><?php echo $ver[3]; ?></textarea>
                         <i class='bx bxs-comment-detail textarea-icon'></i>
                     </div>    
                     
-                    <input type="hidden" name="hidden" value="4">
+                    <input type="hidden" name="hidden" value="5">
         
                     <div class="input-box">
                         <input type="submit" class="submit" value="Subir">
@@ -141,17 +174,10 @@
         
                 </div>
             </form>
+            
+            <?php } ?>
 
         </section>
-
-        <?php 
-            if(@$_GET['answer']==1){ ?>
-                <h2 class="h2_1">Your registration was successful</h2>
-            <?php }
-            if(@$_GET['answer']==2){ ?>
-                <h2 class="h2_2">There were problems registering, please try again later</h2>
-            <?php }
-        ?>
 
         <footer class="footer">
         

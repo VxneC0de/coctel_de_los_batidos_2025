@@ -67,7 +67,7 @@ switch($hidden){
   break;
   case 4:
     //INSERT
-    $sql = "INSERT INTO product values('', '$id_category', '$name', '$description', '$img', '$price', '', '$status')";
+    $sql = "INSERT INTO product values('', '$id_category', '$name', '$description', '$img', '$price', '$date', '', '$status')";
 
     if(mysqli_query($connection, $sql)){
       header("location:../visual/upload/upload.php?answer=1");
@@ -76,14 +76,19 @@ switch($hidden){
     }
 
   break;
+  case 5:
+    //EDIT
+    $sql = "UPDATE product set id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' where id_product='$numberId'";
 
+    if(mysqli_query($connection, $sql)){
+      header("location:../visual/edit/edit.php?answer=1");
+    }else{
+      header("location:../visual/edit/edit.php?answer=2");
+    }
+
+  break;
 
 };
 
 
-//if($name !== "" && $description !== "" && $price !== "" && $amount !== "" && $img !== "" && $date !== "" && $status !== ""){
-
-
-
-
-?>
+?>;

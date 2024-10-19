@@ -11,6 +11,26 @@
     <link rel="stylesheet" href="./show.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+    <style>
+        td {
+            padding: 10px;
+        }
+        td button {
+            padding: 5px;
+        }
+        td a{
+            outline: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 5px;
+            color: #ffffff;
+        }
+        td a i{
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -123,8 +143,11 @@
 
                             include "../../controller/connection.php";
 
-                            $sql = "SELECT * from product";
-                            $consult = mysqli_query($connection,$sql);
+                            $sql = "SELECT p.*, c.name_category 
+                                    FROM product p 
+                                    JOIN category c ON p.id_category = c.id";
+                            $consult = mysqli_query($connection, $sql);
+
 
                             while($ver=mysqli_fetch_array($consult)){
                         ?>
@@ -135,7 +158,7 @@
                             <td><?php echo $ver[0]; ?></td>
                             <td><img src="<?php echo $ver[4]; ?>" alt="img"></td>
                             <td><?php echo $ver[2]; ?></td>
-                            <td><?php echo $ver[1]; ?></td>
+                            <td><?php echo $ver['name_category']; ?></td>
                             <td><?php echo number_format($ver[5], 2, ",", ".")." Bs"; ?></td>
                             <td><?php echo $ver[3]; ?></td>
                             <td>
@@ -147,8 +170,8 @@
                                 </button>
                             </td>
                             <td>
-                                <button class="button_action_1"><i class='bx bx-edit-alt'></i></button>
-                                <button class="button_action_2"><i class='bx bx-trash'></i></button>
+                                <a class="button_action_1" href="../edit/edit.php?e=<?php echo $ver[0]; ?>"><i class='bx bx-edit-alt'></i></a>
+                                <a class="button_action_2"><i class='bx bx-trash'></i></a>
                             </td>
         
                         </tbody>
