@@ -38,7 +38,7 @@ switch($hidden){
 
   break;
   case 2:
-
+    //data User
     $sql = "select id, nick, email from user where (nick = '$loginData' or email = '$loginData') and password = MD5('$passwordLogin')";
 
     $conne=mysqli_query($connection, $sql);
@@ -70,7 +70,7 @@ switch($hidden){
     $sql = "INSERT INTO product values('', '$id_category', '$name', '$description', '$img', '$price', '$date', '', '$status')";
 
     if(mysqli_query($connection, $sql)){
-      header("location:../visual/upload/upload.php?answer=1");
+      header("location:../visual/show/show.php");
     }else{
       header("location:../visual/upload/upload.php?answer=2");
     }
@@ -87,6 +87,26 @@ switch($hidden){
     }
 
   break;
+  case 6:
+    // DELETE
+    $sql = "UPDATE product SET status=3 WHERE id_product=?";
+    if ($statement = mysqli_prepare($connection, $sql)) {
+        mysqli_stmt_bind_param($statement, "i", $e);
+        
+        if (mysqli_stmt_execute($statement)) {
+            header("location:../visual/show/show.php");
+        } else {
+            echo "<script>alert('Could not delete');</script>";
+            header("location:../visual/show/show.php");
+        }
+        
+        mysqli_stmt_close($statement);
+    } else {
+        echo "<script>alert('Query preparation failed');</script>";
+        header("location:../visual/show/show.php");
+    }
+    break;
+
 
 };
 

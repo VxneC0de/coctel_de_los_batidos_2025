@@ -41,7 +41,7 @@
                         
                         <ul class="drop-menu">
                             <li><a href="./upload.php">Subir Producto</a></li>
-                            <li><a href="../show/show.php">Catálogo</a></li>
+                            <li><a href="../show/show.php">Ver Productos</a></li>
                         </ul>
                     
                     </li>
@@ -145,9 +145,6 @@
         </section>
 
         <?php 
-            if(@$_GET['answer']==1){ ?>
-                <h2 class="h2_1">Your registration was successful</h2>
-            <?php }
             if(@$_GET['answer']==2){ ?>
                 <h2 class="h2_2">There were problems registering, please try again later</h2>
             <?php }

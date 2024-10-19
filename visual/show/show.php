@@ -34,9 +34,11 @@
 </head>
 <body>
 
-    <?php 
-        include "../../controller/details.php";
-    ?>
+<?php 
+    include "../../controller/connection.php";
+    include "../../controller/details.php";    
+?>
+
 
     <div class="container">
 
@@ -50,7 +52,7 @@
                 <ul class="nav-links">
                     
                     <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="#">Ordenes</a></li>
+                    <li><a href="../order/order.php">Ordenes</a></li>
 
                     <li>
                         
@@ -59,13 +61,13 @@
                         <label for="showDrop" class="mobile-item">Productos ▾</label>
                         
                         <ul class="drop-menu">
-                            <li><a href="#">Subir Producto</a></li>
-                            <li><a href="#">Ver Productos</a></li>
+                        <li><a href="../upload/upload.php">Subir Producto</a></li>
+                        <li><a href="./show.php">Ver Productos</a></li>
                         </ul>
                     
                     </li>
                     
-                    <li><a href="#">Tienda</a></li>
+                    <li><a href="../menu_admin/menu_admin.php">Tienda</a></li>
                 
                 </ul>
                 
@@ -97,22 +99,21 @@
 
                         <form method="post" action="#" class="search_container">
 
-                            <select class="search_input select-custom">
-                                <option value="" disabled selected>Categoría</option>
-                                <option value="categoria1">Empanadas</option>
-                                <option value="categoria2">Pastelitos</option>
-                                <option value="categoria3">Especiales</option>
-                                <option value="categoria4">Bebidas Frías</option>
-                                <option value="categoria5">Otros</option>
+                        <select class="search_input select-custom" name="id_category">
+                                <option value="" disabled selected>Elegir una Categoría</option>
+                            <?php
+
+                                $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
+        
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
+                                }
+
+                            ?>
                             </select>
 
                             <input class="search_input" list="products" type="text" name="search" placeholder="Nombre del Producto">
 
-                            <!--
-                                <datalist id="products">
-           
-                                </datalist>
-                            -->
 
                             <button type="submit" class="search_button">
                                 <i class='bx bx-search'></i>
@@ -145,11 +146,13 @@
 
                             $sql = "SELECT p.*, c.name_category 
                                     FROM product p 
-                                    JOIN category c ON p.id_category = c.id";
+                                    JOIN category c ON p.id_category = c.id
+                                    WHERE p.status != 3";
+
                             $consult = mysqli_query($connection, $sql);
 
+                            while ($ver = mysqli_fetch_array($consult)) {
 
-                            while($ver=mysqli_fetch_array($consult)){
                         ?>
 
 
@@ -171,7 +174,7 @@
                             </td>
                             <td>
                                 <a class="button_action_1" href="../edit/edit.php?e=<?php echo $ver[0]; ?>"><i class='bx bx-edit-alt'></i></a>
-                                <a class="button_action_2"><i class='bx bx-trash'></i></a>
+                                <a class="button_action_2" href="#" onclick="confirmation(<?php echo $ver[0]; ?>)"><i class='bx bx-trash'></i></a>
                             </td>
         
                         </tbody>
@@ -215,6 +218,16 @@
         </footer>
 
     </div>
+
+    <script>
+        function confirmation(cod) {
+            let answer = confirm("Are you sure to remove this product?");
+            if (answer) {
+            window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=6";
+            }
+        }
+    </script>
+
     
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
