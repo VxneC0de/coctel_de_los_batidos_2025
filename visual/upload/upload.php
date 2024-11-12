@@ -11,58 +11,113 @@
     <link rel="stylesheet" href="./upload.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+    <style>
+        .user_header{
+            margin-top: 200px;
+        }
+    </style>
 </head>
 <body>
     
     <?php
         include "../../controller/connection.php";
+        include "../../controller/details.php";
     ?>
 
 
     <div class="container">
 
         <nav>
+            
             <div class="wrapper_nav">
                 
-                <div class="logo"><a href="../menu/menu.php">LOGO.</a></div>
+                <div class="logo"><a href="#">LOGO.</a></div>
                 <input type="radio" name="slider" id="menu-btn">
                 <input type="radio" name="slider" id="close-btn">
                 
                 <ul class="nav-links">
-                    
+              
                     <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="../order/order.php">Ordenes</a></li>
+                    <li><a href="#">Tienda</a></li>
 
                     <li>
-                        
+                  
                         <a href="#" class="desktop-item">Productos ▾</a>
                         <input type="checkbox" id="showDrop">
                         <label for="showDrop" class="mobile-item">Productos ▾</label>
-                        
+                
                         <ul class="drop-menu">
-                            <li><a href="./upload.php">Subir Producto</a></li>
-                            <li><a href="../show/show.php">Ver Productos</a></li>
+                            <li><a href="#">Subir Producto</a></li>
+                            <li><a href="#">Ver Productos</a></li>
                         </ul>
-                    
+              
                     </li>
-                    
-                    <li><a href="../menu_admin/menu_admin.php">Tienda</a></li>
-                
-                </ul>
-                
-                <div class="header-right">
-                    
-                    <div class="user_icon">
-                        <a href="../user_admin/user_admin.php"><ion-icon name="person"></ion-icon></a>
-                    </div>
-                    
-                </div>          
-                
-                <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
+              
+                    <li><a href="#">Órdenes</a></li>
+          
+                </ul> 
             
-            </div>
+                <div class="header-right">
+                
+                    <div class="user_icon">
+                        <a href="#"><ion-icon name="person"></ion-icon></a>
+                    </div>
+                
+                </div>
+
+                <div class="user_sidebar">
+              
+                    <button class="close_user"><i class="fas fa-times"></i></button>
+              
+                    <div class="user_header">
+                        
+                        <div class="name_user">
+                            <h2><?php echo $_SESSION['nick']; ?></h2>
+                        </div>
+
+                        <div class="email_user">
+                            <h4><?php echo $_SESSION['email']; ?></h4>
+                        </div>
+
+                    </div>
+
+                    <div class="user_items">
+                        
+                        <div class="user_item">
+                            
+                            <div class="item_details">
+
+                                <div class="item_details_title_user">
+                                    <i class='bx bx-cog'></i>
+                                    <a href="#">Editar Perfil</a>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="user_item">
+
+                            <div class="item_details">
+                                <div class="item_details_title_user">
+                                    <i class='bx bx-log-out-circle'></i>
+                                    <a href="../../controller/actions.php?hidden=3">Cerrar Sesión</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+              
+                </div>
+            
+                <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
         
+            </div>
+
         </nav>
+        
 
         <section class="content">
 
@@ -168,6 +223,23 @@
 
     </div>
     
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const userIcon = document.querySelector('.user_icon a');
+        const userSidebar = document.querySelector('.user_sidebar');
+        const closeuser = document.querySelector('.close_user');
+    
+        userIcon.addEventListener('click', function(event) {
+          event.preventDefault();
+          userSidebar.style.right = '0';
+        });
+    
+        closeuser.addEventListener('click', function() {
+          userSidebar.style.right = '-100%';
+        });
+        
+      });
+    </script>  
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
