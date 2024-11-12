@@ -26,7 +26,7 @@ switch($hidden){
       header("location:../visual/login/login.php?answer=4");
     }else{
 
-      $sql = "insert into user values('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), '$countryCode', '$phoneNumber', 0, 0)";
+      $sql = "insert into user values('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
 
       if(mysqli_query($connection, $sql)){
         header("location:../visual/login/login.php?answer=1");
@@ -39,11 +39,13 @@ switch($hidden){
   break;
   case 2:
     //data User
-    $sql = "select id, nick, email from user where (nick = '$loginData' or email = '$loginData') and password = MD5('$passwordLogin')";
+    //$sql = "select id, nick, email from user where (nick = '$loginData' or email = '$loginData') and password = MD5('$passwordLogin')";
+    
+    $sql = "SELECT id, nick, email, status FROM user WHERE (nick = '$loginData' OR email = '$loginData') AND password = MD5('$passwordLogin')";
 
     $conne=mysqli_query($connection, $sql);
 
-    if($v = mysqli_fetch_array($conne)){
+    /*if($v = mysqli_fetch_array($conne)){
       session_start();
       $_SESSION['who'] = $v[0];
       $_SESSION['nick'] = $v[2];
@@ -53,6 +55,22 @@ switch($hidden){
 
     }else{
       header("location:../visual/login/login.php?answer=5");
+    }*/
+
+    if ($v = mysqli_fetch_array($conne)) { 
+      session_start(); 
+      $_SESSION['who'] = $v['id']; 
+      $_SESSION['nick'] = $v['nick']; 
+      $_SESSION['email'] = $v['email']; 
+      
+      if ($v['status'] == 1) { 
+        header("Location: ../visual/upload/upload.php"); 
+      } else { 
+        header("Location: ../visual/menu_client/menu_client.php"); 
+      } 
+      
+    } else { 
+      header("Location: ../visual/login/login.php?answer=5"); 
     }
 
   break;
