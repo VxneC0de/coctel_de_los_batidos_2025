@@ -132,6 +132,7 @@
 
                     </div>
 
+
                 </div>
 
                 <div class="table_section">
@@ -152,10 +153,23 @@
 
                             include "../../controller/connection.php";
 
+                            // Variables para filtrar
+                            $search = isset($_POST['search']) ? $_POST['search'] : '';
+                            $id_category = isset($_POST['id_category']) ? $_POST['id_category'] : '';
+
+                            // Construir la consulta SQL con los filtros aplicados
                             $sql = "SELECT p.*, c.name_category 
                                     FROM product p 
                                     JOIN category c ON p.id_category = c.id
                                     WHERE p.status != 3";
+
+                            if ($search != '') { 
+                                $sql .= " AND p.name_product LIKE '%$search%'"; 
+                            }
+
+                            if ($id_category != '') { 
+                                $sql .= " AND p.id_category = '$id_category'"; 
+                            }
 
                             $consult = mysqli_query($connection, $sql);
 
