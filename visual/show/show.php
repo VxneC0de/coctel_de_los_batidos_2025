@@ -161,6 +161,7 @@
 
                             while ($ver = mysqli_fetch_array($consult)) {
                                 $imgPath = "../../img/" . basename($ver['img_product']);
+                                $statusText = ($ver['status'] == 1) ? "Disponible" : "No Disponible"
 
                         ?>
 
@@ -172,10 +173,7 @@
                             <td><?php echo $ver['name_category']; ?></td>
                             <td><?php echo number_format($ver[5], 2, ",", ".")." Bs"; ?></td>
                             <td><?php echo $ver[3]; ?></td>
-                            <td>
-                                <a class="button_action_1" href="#"><i class='bx bx-check-circle'></i></a>
-                                <a class="button_action_2" href="#"><i class='bx bx-x-circle'></i></a>
-                            </td>
+                            <td><?php echo $statusText; ?>
                             <td>
                                 <a class="button_action_1" href="../edit/edit.php?e=<?php echo $ver[0]; ?>"><i class='bx bx-edit-alt'></i></a>
                                 <a class="button_action_2" href="#" onclick="confirmation(<?php echo $ver[0]; ?>)"><i class='bx bx-trash'></i></a>
