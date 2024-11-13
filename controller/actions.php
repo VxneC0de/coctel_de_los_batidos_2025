@@ -39,23 +39,10 @@ switch($hidden){
   break;
   case 2:
     //data User
-    //$sql = "select id, nick, email from user where (nick = '$loginData' or email = '$loginData') and password = MD5('$passwordLogin')";
     
     $sql = "SELECT id, nick, email, status FROM user WHERE (nick = '$loginData' OR email = '$loginData') AND password = MD5('$passwordLogin')";
 
     $conne=mysqli_query($connection, $sql);
-
-    /*if($v = mysqli_fetch_array($conne)){
-      session_start();
-      $_SESSION['who'] = $v[0];
-      $_SESSION['nick'] = $v[2];
-      $_SESSION['email'] = $v[3];
-
-      header("location:../visual/upload/upload.php");
-
-    }else{
-      header("location:../visual/login/login.php?answer=5");
-    }*/
 
     if ($v = mysqli_fetch_array($conne)) { 
       session_start(); 
@@ -84,27 +71,112 @@ switch($hidden){
 
   break;
   case 4:
-    //INSERT
-    $sql = "INSERT INTO product values('', '$id_category', '$name', '$description', '$img', '$price', '$date', '', '$status')";
+    // INSERT
 
-    if(mysqli_query($connection, $sql)){
-      header("location:../visual/show/show.php");
-    }else{
-      header("location:../visual/upload/upload.php?answer=2");
+    // IMG
+    
+    $file = $_FILES['img']['tmp_name'];
+    $type = $_FILES['img']['type'];
+
+    if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
+        $sql = "SELECT MAX(id_product) FROM product";
+        $result = mysqli_query($connection, $sql);
+        $row = mysqli_fetch_array($result);
+
+        if (isset($row[0])) {
+            $max = $row[0] + 1;
+        } else {
+            $max = 1;
+        }
+
+        $ext = getimagesize($file);
+
+        if ($ext[2] == IMAGETYPE_GIF) {
+            $max = $max . ".gif";
+        } elseif ($ext[2] == IMAGETYPE_JPEG) {
+            $max = $max . ".jpg";
+        } elseif ($ext[2] == IMAGETYPE_PNG) {
+            $max = $max . ".png";
+        }
+
+        if (is_uploaded_file($file)) {
+            move_uploaded_file($file, '../img/' . $max);
+            $img = '../img/' . $max;
+        } else {
+            echo "Error al subir el archivo.";
+        }
     }
 
-  break;
-  case 5:
-    //EDIT
-    $sql = "UPDATE product set id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' where id_product='$numberId'";
+    $sql = "INSERT INTO product (id_category, name_product, description_product, img_product, price_product, date_product, quantity_product, status) VALUES ('$id_category', '$name', '$description', '$img', '$price', '$date', '$quantity', '$status')";
 
     if(mysqli_query($connection, $sql)){
-      header("location:../visual/edit/edit.php?answer=1");
-    }else{
-      header("location:../visual/edit/edit.php?answer=2");
+        header("location:../visual/show/show.php");
+    } else {
+        header("location:../visual/upload/upload.php?answer=2");
     }
 
-  break;
+    break;
+
+    case 5:
+      // EDIT
+  
+      $img = ""; // Inicializamos la variable $img
+  
+      // Comprobar si se ha subido una nueva imagen
+      if (!empty($_FILES['img']['tmp_name'])) {
+          $file = $_FILES['img']['tmp_name'];
+          $type = $_FILES['img']['type'];
+  
+          if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
+              $sql = "SELECT MAX(id_product) FROM product";
+              $result = mysqli_query($connection, $sql);
+              $row = mysqli_fetch_array($result);
+  
+              if (isset($row[0])) {
+                  $max = $row[0] + 1;
+              } else {
+                  $max = 1;
+              }
+  
+              $ext = getimagesize($file);
+  
+              if ($ext[2] == IMAGETYPE_GIF) {
+                  $max = $max . ".gif";
+              } elseif ($ext[2] == IMAGETYPE_JPEG) {
+                  $max = $max . ".jpg";
+              } elseif ($ext[2] == IMAGETYPE_PNG) {
+                  $max = $max . ".png";
+              }
+  
+              if (is_uploaded_file($file)) {
+                  move_uploaded_file($file, '../img/' . $max);
+                  $img = '../img/' . $max;
+              } else {
+                  echo "Error al subir el archivo.";
+                  exit;
+              }
+          }
+      }
+  
+      // Si no se ha subido una nueva imagen, recuperar la imagen existente
+      if (empty($img)) {
+          $sql = "SELECT img_product FROM product WHERE id_product = '$numberId'";
+          $result = mysqli_query($connection, $sql);
+          $row = mysqli_fetch_array($result);
+          $img = $row['img_product'];
+      }
+  
+      $sql = "UPDATE product SET id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' WHERE id_product='$numberId'";
+  
+      if (mysqli_query($connection, $sql)) {
+          header("location:../visual/edit/edit.php?answer=1");
+      } else {
+          header("location:../visual/edit/edit.php?answer=2");
+      }
+  
+      break;
+  
+  
   case 6:
     // DELETE
     $sql = "UPDATE product SET status=3 WHERE id_product=?";
@@ -123,9 +195,11 @@ switch($hidden){
         echo "<script>alert('Query preparation failed');</script>";
         header("location:../visual/show/show.php");
     }
-    break;
+  break;
+  
 
 };
+
 
 
 ?>;

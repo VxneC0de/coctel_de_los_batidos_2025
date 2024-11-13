@@ -80,7 +80,7 @@
             if(isset($_GET['answer'])){}else{
         ?>
 
-            <form action="../../controller/actions.php" method="post" class="form-box">
+            <form action="../../controller/actions.php" method="post" class="form-box" enctype="multipart/form-data">
     
                 <div class="register-container" id="register">
         
@@ -155,10 +155,12 @@
                         <i class='bx bxs-calendar'></i>
                     </div>
     
-                    <div class="input-box img_box">
-                        <input type="file" class="input-field" name="img" id="img-products" value="<?php echo $ver[4]; ?>" required>
-                        <label for="file-upload"></label>
-                        <i class='bx bxs-image-alt'></i>
+                    <div class="input-box img_box"> 
+                        <label for="img-products">Imagen Actual:</label> 
+                        <img src="../../img/<?php echo basename($ver['img_product']); ?>" alt="Imagen Actual" width="100"> 
+                        <input type="file" class="input-field" name="img" id="img-products">
+                        <label for="img-products"></label> 
+                        <i class='bx bxs-image-alt'></i> 
                     </div>
     
                     <div class="input-box">

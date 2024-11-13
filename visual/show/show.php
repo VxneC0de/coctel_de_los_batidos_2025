@@ -160,13 +160,14 @@
                             $consult = mysqli_query($connection, $sql);
 
                             while ($ver = mysqli_fetch_array($consult)) {
+                                $imgPath = "../../img/" . basename($ver['img_product']);
 
                         ?>
 
 
                         <tbody>
 
-                            <td><img src="<?php echo $ver[4]; ?>" alt="img"></td>
+                            <td><img src="<?php echo $imgPath; ?>" alt="img"></td>
                             <td><?php echo $ver[2]; ?></td>
                             <td><?php echo $ver['name_category']; ?></td>
                             <td><?php echo number_format($ver[5], 2, ",", ".")." Bs"; ?></td>

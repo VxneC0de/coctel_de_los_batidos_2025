@@ -121,7 +121,7 @@
 
         <section class="content">
 
-            <form action="../../controller/actions.php" method="post" class="form-box">
+            <form action="../../controller/actions.php" method="post" class="form-box" enctype="multipart/form-data">
     
                 <div class="register-container" id="register">
         
