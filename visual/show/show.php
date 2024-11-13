@@ -24,13 +24,22 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            padding: 5px;
+            padding: 6px;
+            padding-top: 10px;
             color: #ffffff;
         }
+
         td a i{
             font-size: 20px;
         }
+        thead{
+            background-color: #C0EBA6;
+        }
+        th, td{
+            border-bottom: 1px solid #347928;
+        }
     </style>
+
 </head>
 <body>
 
@@ -130,7 +139,6 @@
                     <table>
 
                         <thead>
-                            <th>N°</th>
                             <th>Imagen</th>
                             <th>Nombre</th>
                             <th>Categoría</th>
@@ -158,19 +166,14 @@
 
                         <tbody>
 
-                            <td><?php echo $ver[0]; ?></td>
                             <td><img src="<?php echo $ver[4]; ?>" alt="img"></td>
                             <td><?php echo $ver[2]; ?></td>
                             <td><?php echo $ver['name_category']; ?></td>
                             <td><?php echo number_format($ver[5], 2, ",", ".")." Bs"; ?></td>
                             <td><?php echo $ver[3]; ?></td>
                             <td>
-                                <button class="button_status_1">
-                                    <i class='bx bx-check-circle'></i>
-                                </button>
-                                <button class="button_status_2">
-                                    <i class='bx bx-x-circle'></i>
-                                </button>
+                                <a class="button_action_1" href="#"><i class='bx bx-check-circle'></i></a>
+                                <a class="button_action_2" href="#"><i class='bx bx-x-circle'></i></a>
                             </td>
                             <td>
                                 <a class="button_action_1" href="../edit/edit.php?e=<?php echo $ver[0]; ?>"><i class='bx bx-edit-alt'></i></a>

@@ -300,13 +300,17 @@ table{
 thead th{
     position: sticky;
     top: 0;
-    background-color: var(--claro);
-    color: var(--grey_2);
+    background-color: #C0EBA6;
+    color: #242526;
     font-size: 14px;
 }
 
+thead{
+    background-color: #C0EBA6;
+}
+
 th, td{
-    border-bottom: 1px solid var(--medio);
+    border-bottom: 1px solid #347928;
     padding: 10px;
     word-break: break-all;
     text-align: center;
@@ -346,6 +350,7 @@ td a{
     border-radius: 6px;
     cursor: pointer;
     padding: 5px;
+    padding-top: 10px;
     color: #ffffff;
 }
 
