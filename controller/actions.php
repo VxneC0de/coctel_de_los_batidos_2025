@@ -7,34 +7,37 @@ switch($hidden){
   case 1:
     //REGISTER
 
-    // para revisar si el nick o correo esta repetido
-    $sqlNick = "select count(id) from user where nick='$nickRegister'";
-    // para revisar si el email o correo esta repetido
-    $sqlEmail = "select count(id) from user where email='$emailRegister'";
+$errors = array();
 
-    // consulta que va a la base de datos
-    $conne_1=mysqli_query($connection, $sqlNick);
-    $conne_2=mysqli_query($connection, $sqlEmail);
+$sqlNick = "SELECT COUNT(id) FROM user WHERE nick='$nickRegister'";
+$sqlEmail = "SELECT COUNT(id) FROM user WHERE email='$emailRegister'";
 
-    // vector que trae la consulta
-    $union_1=mysqli_fetch_array($conne_1);
-    $union_2=mysqli_fetch_array($conne_2);
+$conne_1 = mysqli_query($connection, $sqlNick);
+$conne_2 = mysqli_query($connection, $sqlEmail);
 
-    if($union_1[0]>0){
-      header("location:../visual/login/login.php?answer=3");
-    }else if($union_2[0]>0){
-      header("location:../visual/login/login.php?answer=4");
-    }else{
+$union_1 = mysqli_fetch_array($conne_1);
+$union_2 = mysqli_fetch_array($conne_2);
 
-      $sql = "insert into user values('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
+if ($union_1[0] > 0) {
+    $errors[] = "nickRegister";
+}
 
-      if(mysqli_query($connection, $sql)){
-        header("location:../visual/login/login.php?answer=1");
-      }else{
-        header("location:../visual/login/login.php?answer=2");
-      }
+if ($union_2[0] > 0) {
+    $errors[] = "emailRegister";
+}
 
+if (!empty($errors)) {
+    $errorFields = implode(',', $errors);
+    header("location:../visual/login_oficial/login.php?answer=4&fields=$errorFields&nickRegister=$nickRegister&emailRegister=$emailRegister");
+} else {
+    $sql = "INSERT INTO user VALUES('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
+    if (mysqli_query($connection, $sql)) {
+        header("location:../visual/login_oficial/login.php?answer=1");
+    } else {
+        header("location:../visual/login_oficial/login.php?answer=2&nickRegister=$nickRegister&emailRegister=$emailRegister");
     }
+}
+
 
   break;
   case 2:
