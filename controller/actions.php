@@ -28,7 +28,7 @@ if ($union_2[0] > 0) {
 
 if (!empty($errors)) {
     $errorFields = implode(',', $errors);
-    header("location:../visual/login_oficial/login.php?answer=4&fields=$errorFields&nickRegister=$nickRegister&emailRegister=$emailRegister");
+    header("location:../visual/login_oficial/login.php?answer=4&fields=$errorFields&nickRegister=$nickRegister&emailRegister=$emailRegister&errorLogin=1");
 } else {
     $sql = "INSERT INTO user VALUES('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
     if (mysqli_query($connection, $sql)) {
@@ -60,7 +60,7 @@ if (!empty($errors)) {
       } 
       
     } else { 
-      header("Location: ../visual/login/login.php?answer=5"); 
+      header("Location: ../visual/login_oficial/login.php?answer=5"); 
     }
 
   break;
@@ -70,7 +70,7 @@ if (!empty($errors)) {
 
     session_unset();
     session_destroy();
-    header("location:../visual/login/login.php");
+    header("location:../visual/login_oficial/login.php");
 
   break;
   case 4:
