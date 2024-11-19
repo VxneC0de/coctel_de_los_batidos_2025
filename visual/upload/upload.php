@@ -39,7 +39,7 @@
                 <ul class="nav-links">
               
                     <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="#">Tienda</a></li>
+                    <li><a href="../menu_client/menu_client.php">Tienda</a></li>
 
                     <li>
                   

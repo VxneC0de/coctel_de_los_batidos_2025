@@ -233,51 +233,54 @@
         </section>
 
         <?php
-        include "../../controller/connection.php";
+include "../../controller/connection.php";
 
-        // Variables para filtrar
-        $search = isset($_POST['search']) ? $_POST['search'] : '';
-        
-        // Construir la consulta SQL con los filtros aplicados
-        $sql = "SELECT p.*, c.name_category 
-                FROM product p 
-                JOIN category c ON p.id_category = c.id
-                WHERE p.status != 3";
-        
-        if ($search != '') { 
-            $sql .= " AND p.name_product LIKE '%$search%'"; 
-        }
-        
-        $consult = mysqli_query($connection, $sql);
-        
-        // Array para almacenar los productos por categoría
-        $productsByCategory = [];
-        
-        while ($ver = mysqli_fetch_array($consult)) {
-            $productsByCategory[$ver['id_category']][] = $ver;
-        }
-        ?>        
+// Variables para filtrar
+$search = isset($_POST['search']) ? $_POST['search'] : '';
 
-        <?php foreach ($productsByCategory as $categoryId => $products): ?>
-          <section class="section_container order_container" id="<?php echo strtolower($products[0]['name_category']); ?>">
+// Construir la consulta SQL con los filtros aplicados y ordenar por id_category
+$sql = "SELECT p.*, c.name_category 
+        FROM product p 
+        JOIN category c ON p.id_category = c.id
+        WHERE p.status = 1
+        ORDER BY p.id_category ASC";  // Ordenar por id_category
 
-          <p class="section_description">
-            <?php echo strtoupper($products[0]['name_category']); ?>
-          </p>
+if ($search != '') { 
+    $sql .= " AND p.name_product LIKE '%$search%'"; 
+}
 
-            <div class="order_grid">
-              <?php foreach ($products as $product): ?>
-                  <div class="order_card">
-                      <img src="<?php echo "../../img/" . basename($product['img_product']); ?>" alt="order">
-                      <h4><?php echo $product['name_product']; ?></h4>
-                      <h2><?php echo number_format($product['price_product'], 2, ",", ".") . " Bs"; ?></h2>
+$consult = mysqli_query($connection, $sql);
 
-                      <button class="btn_hero_2">Agregar al carrito</button>
-                  </div>
-              <?php endforeach; ?>
-            </div>
-          </section>
-        <?php endforeach; ?>
+// Array para almacenar los productos por categoría
+$productsByCategory = [];
+
+while ($ver = mysqli_fetch_array($consult)) {
+    $productsByCategory[$ver['id_category']][] = $ver;
+}
+?>        
+
+<?php foreach ($productsByCategory as $categoryId => $products): ?>
+  <section class="section_container order_container" id="<?php echo strtolower($products[0]['name_category']); ?>">
+
+  <p class="section_description">
+    <?php echo strtoupper($products[0]['name_category']); ?>
+  </p>
+
+    <div class="order_grid">
+      <?php foreach ($products as $product): ?>
+          <div class="order_card">
+              <img src="<?php echo "../../img/" . basename($product['img_product']); ?>" alt="order">
+              <h4><?php echo $product['name_product']; ?></h4>
+              <h2><?php echo number_format($product['price_product'], 2, ",", ".") . " Bs"; ?></h2>
+
+              <button class="btn_hero_2">Agregar al carrito</button>
+          </div>
+      <?php endforeach; ?>
+    </div>
+  </section>
+<?php endforeach; ?>
+
+
 
         <footer class="footer">
         

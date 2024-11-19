@@ -76,7 +76,7 @@
                     
                     </li>
                     
-                    <li><a href="../menu_admin/menu_admin.php">Tienda</a></li>
+                    <li><a href="../menu_client/menu_client.php">Tienda</a></li>
                 
                 </ul>
                 
