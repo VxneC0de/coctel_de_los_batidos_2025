@@ -232,145 +232,52 @@
 
         </section>
 
-        <section class="section_container order_container" id="empanadas">
+        <?php
+        include "../../controller/connection.php";
+
+        // Variables para filtrar
+        $search = isset($_POST['search']) ? $_POST['search'] : '';
+        
+        // Construir la consulta SQL con los filtros aplicados
+        $sql = "SELECT p.*, c.name_category 
+                FROM product p 
+                JOIN category c ON p.id_category = c.id
+                WHERE p.status != 3";
+        
+        if ($search != '') { 
+            $sql .= " AND p.name_product LIKE '%$search%'"; 
+        }
+        
+        $consult = mysqli_query($connection, $sql);
+        
+        // Array para almacenar los productos por categoría
+        $productsByCategory = [];
+        
+        while ($ver = mysqli_fetch_array($consult)) {
+            $productsByCategory[$ver['id_category']][] = $ver;
+        }
+        ?>        
+
+        <?php foreach ($productsByCategory as $categoryId => $products): ?>
+          <section class="section_container order_container" id="<?php echo strtolower($products[0]['name_category']); ?>">
 
           <p class="section_description">
-            EMPANADAS
+            <?php echo strtoupper($products[0]['name_category']); ?>
           </p>
 
-          <div class="order_grid">
+            <div class="order_grid">
+              <?php foreach ($products as $product): ?>
+                  <div class="order_card">
+                      <img src="<?php echo "../../img/" . basename($product['img_product']); ?>" alt="order">
+                      <h4><?php echo $product['name_product']; ?></h4>
+                      <h2><?php echo number_format($product['price_product'], 2, ",", ".") . " Bs"; ?></h2>
 
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
+                      <button class="btn_hero_2">Agregar al carrito</button>
+                  </div>
+              <?php endforeach; ?>
             </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="section_container order_container" id="pastelitos">
-
-          <p class="section_description">
-            PASTELITOS
-          </p>
-
-          <div class="order_grid">
-
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="section_container order_container" id="especiales">
-
-          <p class="section_description">
-            ESPECIALES
-          </p>
-
-          <div class="order_grid">
-
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="section_container order_container" id="bebidas">
-
-          <p class="section_description">
-            BEBIDAS FRÍAS
-          </p>
-
-          <div class="order_grid">
-
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="section_container order_container" id="otros">
-
-          <p class="section_description">
-            OTROS
-          </p>
-
-          <div class="order_grid">
-
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
-
-        </section>
+          </section>
+        <?php endforeach; ?>
 
         <footer class="footer">
         
@@ -468,6 +375,18 @@
           });
 
         </script>
+
+<script>
+    function openModal(productId) {
+        document.getElementById('productIdInput').value = productId;
+        document.getElementById('addToCartModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('addToCartModal').style.display = 'none';
+    }
+</script>
+
 
         <script src="https://unpkg.com/scrollreveal"></script>
 

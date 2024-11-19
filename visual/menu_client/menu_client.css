@@ -588,6 +588,10 @@ nav input{
     margin-inline: auto;
 }
 
+.header_content{
+    margin-top: 5rem; //REVISAR EN OTRAS VISTAS
+}
+
 .header_content h2{
     max-width: 400px;
     margin-inline: auto;

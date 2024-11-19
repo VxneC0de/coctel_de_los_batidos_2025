@@ -60,7 +60,7 @@ if (!empty($errors)) {
       } 
       
     } else { 
-      header("Location: ../visual/login_oficial/login.php?answer=5"); 
+      header("Location: ../visual/login/login.php?answer=5"); 
     }
 
   break;
