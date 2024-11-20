@@ -1,6 +1,6 @@
 /*
 HACER
-ERRORES EN LOGIN:
+ERRORES EN LOGIN: LISTOOOOOOOOO!!!!!!!
 Si la clave es incorrecta o el usuario es incorrecto.
 
 ACOMODAR VISTA DE MENU EN HEADER_CONTENT MARGIN-TOP

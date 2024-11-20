@@ -41,28 +41,41 @@ if (!empty($errors)) {
 
   break;
   case 2:
-    //data User
+            $loginData = $_POST['loginData'];
+            $passwordLogin = $_POST['passwordLogin'];
     
-    $sql = "SELECT id, nick, email, status FROM user WHERE (nick = '$loginData' OR email = '$loginData') AND password = MD5('$passwordLogin')";
-
-    $conne=mysqli_query($connection, $sql);
-
-    if ($v = mysqli_fetch_array($conne)) { 
-      session_start(); 
-      $_SESSION['who'] = $v['id']; 
-      $_SESSION['nick'] = $v['nick']; 
-      $_SESSION['email'] = $v['email']; 
-      
-      if ($v['status'] == 1) { 
-        header("Location: ../visual/upload/upload.php"); 
-      } else { 
-        header("Location: ../visual/menu_client/menu_client.php"); 
-      } 
-      
-    } else { 
-      header("Location: ../visual/login/login.php?answer=5"); 
-    }
-
+            $sql = "SELECT id, nick, email, status FROM user WHERE (nick = '$loginData' OR email = '$loginData') AND password = MD5('$passwordLogin')";
+            $conne = mysqli_query($connection, $sql);
+    
+            if ($v = mysqli_fetch_array($conne)) {
+                session_start();
+                $_SESSION['who'] = $v['id'];
+                $_SESSION['nick'] = $v['nick'];
+                $_SESSION['email'] = $v['email'];
+                
+                if ($v['status'] == 1) {
+                    header("Location: ../visual/upload/upload.php");
+                } else {
+                    header("Location: ../visual/menu_client/menu_client.php");
+                }
+                exit();
+            } else {
+                $sqlNick = "SELECT COUNT(id) FROM user WHERE nick='$loginData'";
+                $sqlEmail = "SELECT COUNT(id) FROM user WHERE email='$loginData'";
+                
+                $conneNick = mysqli_query($connection, $sqlNick);
+                $conneEmail = mysqli_query($connection, $sqlEmail);
+                
+                $countNick = mysqli_fetch_array($conneNick)[0];
+                $countEmail = mysqli_fetch_array($conneEmail)[0];
+                
+                if ($countNick == 0 && $countEmail == 0) {
+                    header("Location: ../visual/login_oficial/login.php?error=user");
+                } else {
+                    header("Location: ../visual/login_oficial/login.php?error=password");
+                }
+                exit();
+            }
   break;
   case 3:
 

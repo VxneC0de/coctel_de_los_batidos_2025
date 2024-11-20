@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+  session_start();
+  if(isset ($_SESSION['who'])) { ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -425,3 +428,6 @@ while ($ver = mysqli_fetch_array($consult)) {
     
 </body>
 </html>
+<?php }else{
+  header("location:../login/login.php?answer=6");
+} ?>

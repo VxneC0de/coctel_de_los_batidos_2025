@@ -50,14 +50,16 @@
                 <div class="input-box">
                     <input type="text" class="input-field" placeholder="Usuario o Correo" id="usernameLogin" name="loginData">
                     <i class="bx bx-user"></i>
-                    <div class="error"></div>
+                    <div class="error" id="errorUserLogin"> <?php if (isset($_GET['error']) && $_GET['error'] == 'user') { ?> Usuario o correo electrónico no encontrado. <?php } ?> </div>
                 </div>
     
                 <div class="input-box">
                     <input type="password" class="input-field" placeholder="Contraseña" id="passwordLogin" name="passwordLogin">
                     <i class="bx bx-lock-alt"></i>
-                    <div class="error"></div>
+                    <div class="error" id="errorPasswordLogin"> <?php if (isset($_GET['error']) && $_GET['error'] == 'password') { ?> Contraseña incorrecta. <?php } ?> </div>
                 </div>
+
+                
     
                 <input type="hidden" name="hidden" value="2">
 
@@ -277,22 +279,6 @@
         }
     });
 
-    // Mostrar mensajes de error desde PHP 
-    
-    /*const urlParams = new URLSearchParams(window.location.search); 
-    const answer = urlParams.get('answer'); 
-    const field = urlParams.get('field'); 
-    if (answer && field) { 
-      let message; if (answer == 3) { 
-        message = "El nombre de usuario ya está registrado."; 
-      } else if (answer == 4) { 
-        message = "El correo electrónico ya está registrado."; 
-      } if (field == "nickRegister") { 
-        setError(document.getElementById('usernameRegister'), message); 
-      } else if (field == "emailRegister") { 
-        setError(document.getElementById('emailRegister'), message); 
-      } 
-    }*/
     
     </script>
     
