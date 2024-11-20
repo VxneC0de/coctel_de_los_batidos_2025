@@ -3,6 +3,9 @@ HACER
 ERRORES EN LOGIN: LISTOOOOOOOOO!!!!!!!
 Si la clave es incorrecta o el usuario es incorrecto.
 
+ACOMODAR EL UPLOAD CUANDO SE LE DA AL BOTON REGISTRAR Y ESTAN VACIOS LOS INPUTS
+(Sube el producto cuando TODOS los campos estan lleno pero no cuando hay uno vacio)
+
 ACOMODAR VISTA DE MENU EN HEADER_CONTENT MARGIN-TOP
 @media screen and (max-width: 570px) {
     .hero {

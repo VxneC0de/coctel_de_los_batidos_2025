@@ -11,25 +11,17 @@
     <link rel="stylesheet" href="./upload.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-
-    <style>
-        .user_header{
-            margin-top: 200px;
-        }
-    </style>
 </head>
 <body>
-    
+
     <?php
         include "../../controller/connection.php";
         include "../../controller/details.php";
     ?>
 
-
     <div class="container">
 
         <nav>
-            
             <div class="wrapper_nav">
                 
                 <div class="logo"><a href="#">LOGO.</a></div>
@@ -37,87 +29,80 @@
                 <input type="radio" name="slider" id="close-btn">
                 
                 <ul class="nav-links">
-              
-                    <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="../menu_client/menu_client.php">Tienda</a></li>
-
-                    <li>
                   
-                        <a href="#" class="desktop-item">Productos ▾</a>
-                        <input type="checkbox" id="showDrop">
-                        <label for="showDrop" class="mobile-item">Productos ▾</label>
-                
-                        <ul class="drop-menu">
-                            <li><a href="#">Subir Producto</a></li>
-                            <li><a href="#">Ver Productos</a></li>
-                        </ul>
+                  <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
+                  <li><a href="../menu_client/menu_client.php">Tienda</a></li>
+    
+                  <li>
+                      
+                    <a href="#" class="desktop-item">Productos ▾</a>
+                    <input type="checkbox" id="showDrop">
+                    <label for="showDrop" class="mobile-item">Productos ▾</label>
+                    
+                    <ul class="drop-menu">
+                        <li><a href="./upload.php">Subir Producto</a></li>
+                        <li><a href="../show/show.php">Ver Productos</a></li>
+                    </ul>
+                  
+                  </li>
+                  
+                  <li><a href="../order/order.php">Órdenes</a></li>
               
-                    </li>
-              
-                    <li><a href="#">Órdenes</a></li>
-          
                 </ul> 
-            
-                <div class="header-right">
                 
+                <div class="header-right">
+                    
                     <div class="user_icon">
                         <a href="#"><ion-icon name="person"></ion-icon></a>
                     </div>
-                
+                    
                 </div>
-
+    
                 <div class="user_sidebar">
-              
-                    <button class="close_user"><i class="fas fa-times"></i></button>
-              
-                    <div class="user_header">
-                        
-                        <div class="name_user">
-                            <h2><?php echo $_SESSION['nick']; ?></h2>
-                        </div>
-
-                        <div class="email_user">
-                            <h4><?php echo $_SESSION['email']; ?></h4>
-                        </div>
-
+                  
+                  <button class="close_user"><i class="fas fa-times"></i></button>
+                  
+                  <div class="user_header">
+                    <div class="name_user">
+                    <h2><?php echo $_SESSION['nick']; ?></h2>
                     </div>
-
-                    <div class="user_items">
-                        
-                        <div class="user_item">
-                            
-                            <div class="item_details">
-
-                                <div class="item_details_title_user">
-                                    <i class='bx bx-cog'></i>
-                                    <a href="#">Editar Perfil</a>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="user_item">
-
-                            <div class="item_details">
-                                <div class="item_details_title_user">
-                                    <i class='bx bx-log-out-circle'></i>
-                                    <a href="../../controller/actions.php?hidden=3">Cerrar Sesión</a>
-                                </div>
-                            </div>
-
-                        </div>
-
+                    <div class="email_user">
+                    <h4><?php echo $_SESSION['email']; ?></h4>
                     </div>
-              
+                  </div>
+    
+                  <div class="user_items">
+    
+                    <div class="user_item">
+    
+                      <div class="item_details">
+                        <div class="item_details_title_user">
+                          <i class='bx bx-cog'></i>
+                          <a href="#">Editar Perfil</a>
+                        </div>
+                      </div>
+    
+                    </div>
+    
+                    <div class="user_item">
+    
+                      <div class="item_details">
+                        <div class="item_details_title_user">
+                          <i class='bx bx-log-out-circle'></i>
+                          <a href="../../controller/actions.php?hidden=3">Cerrar Sesión</a>
+                        </div>
+                      </div>
+    
+                    </div>
+    
+                  </div>
+                  
                 </div>
-            
+                
                 <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
-        
+            
             </div>
-
         </nav>
-        
 
         <section class="content">
 
@@ -132,10 +117,11 @@
                     <div class="two-forms">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="name-products">
+                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="productName">
                             <i class='bx bxs-food-menu iconoOne'></i>
+                            <div class="error_two"></div>
                         </div>
-                        
+
                         <div class="input-box select">
                             <select class="input-field select-custom" name="id_category">
                                 <option value="" disabled selected>Elegir una Categoría</option>
@@ -150,6 +136,7 @@
                             ?>
                             </select>
                             <i class='bx bxs-category' ></i>
+                            <div class="error_two"></div>
                         </div>
                         
                     </div>
@@ -157,37 +144,42 @@
                     <div class="two-forms">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Precio" name="price" id="price-products">
+                            <input type="text" class="input-field" placeholder="Precio" name="price" id="productPrice">
                             <i class='bx bxs-dollar-circle'></i>
+                            <div class="error_two"></div>
                         </div>
-                        
+
                         <div class="input-box select">
-                            <select class="input-field select-custom" name="status" id="status-products">
+                            <select class="input-field select-custom" name="status" id="productAvailability">
                                 <option value="" disabled selected>Elegir Disponibilidad</option>
                                 <option value="1">Disponible</option>
                                 <option value="2">No Disponible</option>
                             </select>
                             <i class='bx bx-low-vision'></i>
+                            <div class="error_two"></div>
                         </div>
                         
                     </div>
                     
                     <div class="input-box">
-                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="date-products">
+                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="productDate">
                         <i class='bx bxs-calendar'></i>
+                        <div class="error"></div>
                     </div>
     
                     <div class="input-box img_box">
-                        <input type="file" class="input-field" name="img" id="img-products">
+                        <input type="file" class="input-field" name="img" id="productImage">
                         <label for="file-upload"></label>
                         <i class='bx bxs-image-alt'></i>
+                        <div class="error"></div>
                     </div>
     
                     <div class="input-box">
-                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="description-products"></textarea>
+                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="productDescription"></textarea>
                         <i class='bx bxs-comment-detail textarea-icon'></i>
-                    </div>    
-                    
+                        <div class="error"></div>
+                    </div>                
+
                     <input type="hidden" name="hidden" value="4">
         
                     <div class="input-box">
@@ -222,20 +214,6 @@
         </footer>
 
     </div>
-
-    <script src="https://unpkg.com/scrollreveal"></script>
-    
-    <script>
-        ScrollReveal({ 
-        // reset: true,
-        distance: "80px",
-        duration: 2000,
-        delay: 200
-        });
-    
-        ScrollReveal().reveal('nav', { origin: 'top' });
-        ScrollReveal().reveal('.footer', { origin: 'bottom' });
-    </script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -257,20 +235,20 @@
 
     <script>
     
-    const setError = (element, message) => {
+        const setError = (element, message) => {
         const errorDisplay = element.parentElement.querySelector(".error, .error_two");
         errorDisplay.innerText = message;
         errorDisplay.style.display = 'block';
-    }
+        }
   
-    const setSuccess = element => {
+        const setSuccess = element => {
         const inputBox = element.parentElement;
         const errorDisplay = inputBox.querySelector(".error, .error_two");
         errorDisplay.innerText = '';
         errorDisplay.style.display = 'none';
-    }
+        }
   
-    document.getElementById('productForm').addEventListener('submit', function(event) {
+        document.getElementById('productForm').addEventListener('submit', function(event) {
         const productName = document.getElementById('productName');
         const productCategory = document.getElementById('productCategory');
         const productPrice = document.getElementById('productPrice');
@@ -333,7 +311,7 @@
             event.preventDefault();
         }
 
-    });
+        });
     
     </script>
 
@@ -343,5 +321,5 @@
 </body>
 </html>
 <?php }else{
-  header("location:../login/login.php?answer=6");
+  header("location:../login_oficial/login.php?answer=6");
 } ?>

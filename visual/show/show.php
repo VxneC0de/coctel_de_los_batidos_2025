@@ -70,7 +70,7 @@
                         <label for="showDrop" class="mobile-item">Productos ▾</label>
                         
                         <ul class="drop-menu">
-                        <li><a href="../upload/upload.php">Subir Producto</a></li>
+                        <li><a href="../upload_oficial/upload.php">Subir Producto</a></li>
                         <li><a href="./show.php">Ver Productos</a></li>
                         </ul>
                     

@@ -54,7 +54,7 @@ if (!empty($errors)) {
                 $_SESSION['email'] = $v['email'];
                 
                 if ($v['status'] == 1) {
-                    header("Location: ../visual/upload/upload.php");
+                    header("Location: ../visual/upload_oficial/upload.php");
                 } else {
                     header("Location: ../visual/menu_client/menu_client.php");
                 }
@@ -128,7 +128,7 @@ if (!empty($errors)) {
     if(mysqli_query($connection, $sql)){
         header("location:../visual/show/show.php");
     } else {
-        header("location:../visual/upload/upload.php?answer=2");
+        header("location:../visual/upload_oficial/upload.php?answer=2");
     }
 
     break;
