@@ -212,6 +212,13 @@ if (!empty($errors)) {
         header("location:../visual/show_oficial/show.php");
     }
   break;
+
+  case 7:
+    //CART ADD
+
+    
+
+    break;
   
 
 };

@@ -17,6 +17,9 @@ ACOMODAR QUE CUANDO HAY UNA IMAGEN EN EL IMG, EL INPUT DE IMG AGARRE Y QUITE LA 
 SHOW:
 ACOMODAR MENSAJE DE SI ESTA SEGURO DE QUERER BORRAR 
 
+UPLOAD:
+Cuando se suba el precio, permita lo decimales, puse 40.50 y se subio 40
+
 ACOMODAR VISTA DE MENU EN HEADER_CONTENT MARGIN-TOP LISTOOOOOOO!!!!!
 @media screen and (max-width: 570px) {
     .hero {

@@ -334,8 +334,6 @@ while ($ver = mysqli_fetch_array($consult)) {
       
         </footer>
 
-
-
     
         <script>
           document.addEventListener('DOMContentLoaded', function() {
