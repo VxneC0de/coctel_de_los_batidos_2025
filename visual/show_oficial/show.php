@@ -11,43 +11,13 @@
     <link rel="stylesheet" href="./show.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-
-    <style>
-        td {
-            padding: 10px;
-        }
-        td button {
-            padding: 5px;
-        }
-        td a{
-            outline: none;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            padding: 6px;
-            padding-top: 10px;
-            color: #ffffff;
-        }
-
-        td a i{
-            font-size: 20px;
-        }
-        thead{
-            background-color: #C0EBA6;
-        }
-        th, td{
-            border-bottom: 1px solid #347928;
-        }
-    </style>
-
 </head>
 <body>
 
-<?php 
-    include "../../controller/connection.php";
-    include "../../controller/details.php";    
-?>
-
+    <?php 
+        include "../../controller/connection.php";
+        include "../../controller/details.php";    
+    ?>
 
     <div class="container">
 
@@ -59,26 +29,26 @@
                 <input type="radio" name="slider" id="close-btn">
                 
                 <ul class="nav-links">
+                  
+                  <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
+                  <li><a href="#">Tienda</a></li>
+    
+                  <li>
+                      
+                    <a href="#" class="desktop-item">Productos ▾</a>
+                    <input type="checkbox" id="showDrop">
+                    <label for="showDrop" class="mobile-item">Productos ▾</label>
                     
-                    <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                    <li><a href="../order/order.php">Ordenes</a></li>
-
-                    <li>
-                        
-                        <a href="#" class="desktop-item">Productos ▾</a>
-                        <input type="checkbox" id="showDrop">
-                        <label for="showDrop" class="mobile-item">Productos ▾</label>
-                        
-                        <ul class="drop-menu">
+                    <ul class="drop-menu">
                         <li><a href="../upload_oficial/upload.php">Subir Producto</a></li>
-                        <li><a href="./show.php">Ver Productos</a></li>
-                        </ul>
-                    
-                    </li>
-                    
-                    <li><a href="../menu_client/menu_client.php">Tienda</a></li>
-                
-                </ul>
+                        <li><a href=".show.php">Ver Productos</a></li>
+                    </ul>
+                  
+                  </li>
+                  
+                  <li><a href="../order/order.php">Órdenes</a></li>
+              
+                </ul> 
                 
                 <div class="header-right">
                     
@@ -86,7 +56,48 @@
                         <a href="#"><ion-icon name="person"></ion-icon></a>
                     </div>
                     
-                </div>          
+                </div>
+    
+                <div class="user_sidebar">
+                  
+                  <button class="close_user"><i class="fas fa-times"></i></button>
+                  
+                  <div class="user_header">
+                    <div class="name_user">
+                      <h2><?php echo $_SESSION['nick']; ?></h2>
+                    </div>
+                    <div class="email_user">
+                      <h4><?php echo $_SESSION['email']; ?></h4>
+                    </div>
+                  </div>
+    
+                  <div class="user_items">
+    
+                    <div class="user_item">
+    
+                      <div class="item_details">
+                        <div class="item_details_title_user">
+                          <i class='bx bx-cog'></i>
+                          <a href="#">Editar Perfil</a>
+                        </div>
+                      </div>
+    
+                    </div>
+    
+                    <div class="user_item">
+    
+                      <div class="item_details">
+                        <div class="item_details_title_user">
+                          <i class='bx bx-log-out-circle'></i>
+                          <a href="../../controller/actions.php?hidden=3">Cerrar Sesión</a>
+                        </div>
+                      </div>
+    
+                    </div>
+    
+                  </div>
+                  
+                </div>
                 
                 <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
             
@@ -97,41 +108,37 @@
         <section class="content">
 
             <div class="table">
-                
+
                 <div class="table_header">
-                
+
                     <div class="table_name">
                         <p>Detalles del Producto</p>
                     </div>
 
                     <div class="table_form">
-
                         <form method="post" action="#" class="search_container">
 
-                        <select class="search_input select-custom" name="id_category">
-                                <option value="" disabled selected>Elegir una Categoría</option>
-                            <?php
+                          <select class="search_input select-custom" name="id_category">
+                              <option value="" disabled selected>Elegir una Categoría</option>
+                              <?php
 
-                                $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
+                              $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
         
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
-                                }
+                              while ($row = mysqli_fetch_assoc($result)) {
+                                  echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
+                              }
 
-                            ?>
-                            </select>
-
-                            
-
-
-                            <button type="submit" class="search_button">
-                                <i class='bx bx-search'></i>
-                            </button>
+                              ?>
+                          </select>
+    
+                          <input class="search_input" list="products" type="text" name="search" placeholder="Nombre del Producto">
+    
+                          <button type="submit" class="search_button">
+                              <i class='bx bx-search'></i>
+                          </button>
                             
                         </form>
-
                     </div>
-
 
                 </div>
 
@@ -179,9 +186,7 @@
 
                         ?>
 
-
                         <tbody>
-
                             <td><img src="<?php echo $imgPath; ?>" alt="img"></td>
                             <td><?php echo $ver[2]; ?></td>
                             <td><?php echo $ver['name_category']; ?></td>
@@ -192,7 +197,6 @@
                                 <a class="button_action_1" href="../edit_oficial/edit.php?e=<?php echo $ver[0]; ?>"><i class='bx bx-edit-alt'></i></a>
                                 <a class="button_action_2" href="#" onclick="confirmation(<?php echo $ver[0]; ?>)"><i class='bx bx-trash'></i></a>
                             </td>
-        
                         </tbody>
 
                         <?php } ?>
@@ -244,6 +248,23 @@
         }
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const userIcon = document.querySelector('.user_icon a');
+          const userSidebar = document.querySelector('.user_sidebar');
+          const closeuser = document.querySelector('.close_user');
+      
+          userIcon.addEventListener('click', function(event) {
+            event.preventDefault();
+            userSidebar.style.right = '0';
+          });
+      
+          closeuser.addEventListener('click', function() {
+            userSidebar.style.right = '-100%';
+          });
+          
+        });
+    </script>
     
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

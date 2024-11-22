@@ -126,7 +126,7 @@ if (!empty($errors)) {
     $sql = "INSERT INTO product (id_category, name_product, description_product, img_product, price_product, date_product, quantity_product, status) VALUES ('$id_category', '$name', '$description', '$img', '$price', '$date', '$quantity', '$status')";
 
     if(mysqli_query($connection, $sql)){
-        header("location:../visual/show/show.php");
+        header("location:../visual/show_oficial/show.php");
     } else {
         header("location:../visual/upload_oficial/upload.php?answer=2");
     }
@@ -185,9 +185,9 @@ if (!empty($errors)) {
       $sql = "UPDATE product SET id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' WHERE id_product='$numberId'";
   
       if (mysqli_query($connection, $sql)) {
-          header("location:../visual/edit/edit.php?answer=1");
+          header("location:../visual/edit_oficial/edit.php?answer=1");
       } else {
-          header("location:../visual/edit/edit.php?answer=2");
+          header("location:../visual/edit_oficial/edit.php?answer=2");
       }
   
       break;
@@ -200,16 +200,16 @@ if (!empty($errors)) {
         mysqli_stmt_bind_param($statement, "i", $e);
         
         if (mysqli_stmt_execute($statement)) {
-            header("location:../visual/show/show.php");
+            header("location:../visual/show_oficial/show.php");
         } else {
             echo "<script>alert('Could not delete');</script>";
-            header("location:../visual/show/show.php");
+            header("location:../visual/show_oficial/show.php");
         }
         
         mysqli_stmt_close($statement);
     } else {
         echo "<script>alert('Query preparation failed');</script>";
-        header("location:../visual/show/show.php");
+        header("location:../visual/show_oficial/show.php");
     }
   break;
   

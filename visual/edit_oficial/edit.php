@@ -8,165 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="./upload.css">
+    <link rel="stylesheet" href="./edit.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-
-    <style>
-
-        .form-box{
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 60rem;
-            overflow: hidden;
-            z-index: 2;
-        }
-        .input-box_2 {
-            position: relative;
-            max-width: 500px;
-	        width: 100%;
-	        background: #C0EBA6;
-	        padding: 30px;
-	        border-radius: 30px;
-            margin-bottom: 25px;
-        }
-
-        .img_container{
-            display: flex;
-        }
-
-        .img-area {
-	        position: relative;
-            width: 100%;
-            height: 150px;
-            background: #242526;
-            margin-bottom: 20px;
-            border-radius: 30px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            transition: .2s ease;
-        }
-
-        .img-area .icon {
-	        font-size: 40px;
-            color: #ffffff;
-        }
-        .img-area h3 {
-	        font-size: 15px;
-	        font-weight: 500;
-	        margin-bottom: 6px;
-            color: #ffffff;
-        }
-        .img-area p {
-	        color: #ffffffc5;
-        }
-        .img-area p span {
-	        font-weight: 600;
-        }
-        .img-area img {
-	        position: absolute;
-	        top: 0;
-	        left: 0;
-	        width: 100%;
-	        height: 100%;
-	        object-fit: cover;
-	        object-position: center;
-	        z-index: 100;
-        }
-        .img-area::before {
-	        content: attr(data-img);
-	        position: absolute;
-	        top: 0;
-	        left: 0;
-	        width: 100%;
-	        height: 100%;
-	        background: rgba(0, 0, 0, .5);
-	        color: #fff;
-	        font-weight: 500;
-	        text-align: center;
-	        display: flex;
-	        justify-content: center;
-	        align-items: center;
-	        pointer-events: none;
-	        opacity: 0;
-	        transition: all .3s ease;
-	        z-index: 200;
-        }
-        .img-area.active:hover::before {
-	        opacity: 1;
-        }
-        .select-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 10px 0;
-            border-radius: 30px;
-            background: #242526;
-            color: #fff;
-            font-weight: 500;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all .3s ease;
-        }
-        .select-image:hover {
-            background: #347928;
-        }
-        .error_2 {
-            color: #dd1335;
-            font-weight: 600;
-            font-size: 12.5px;
-            padding-top: 4px;
-            margin-top: -25px;
-            margin-left: 10px;
-            position: relative;
-            margin-bottom: 0;
-            min-height: 18px;
-            display: flex;
-            align-items: center;
-        }
-
-        @media only screen and (max-width: 540px) {
-            .error, .error_2  {
-                font-size: 12.5px;
-            }
-
-            .error_two, .error_2 {
-                font-size: 12.5px;
-            }
-        }
-
-        @media only screen and (max-width: 455px) {
-
-            .error, .error_2  {
-                font-size: 11.5px;
-            }
-
-            .input-box .error {
-                width: 100%;
-            }
-
-            .error_two {
-                font-size: 11.5px;
-            }
-
-            .input-box .error_two {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
 
     <?php
         include "../../controller/connection.php";
-        include "../../controller/details.php";
     ?>
 
     <div class="container">
@@ -181,7 +30,7 @@
                 <ul class="nav-links">
                   
                   <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-                  <li><a href="#">Tienda</a></li>
+                    <li><a href="../menu_admin/menu_admin.php">Tienda</a></li>
     
                   <li>
                       
@@ -190,13 +39,13 @@
                     <label for="showDrop" class="mobile-item">Productos ▾</label>
                     
                     <ul class="drop-menu">
-                        <li><a href="./upload.php">Subir Producto</a></li>
-                        <li><a href="../show_oficial/show.php">Ver Productos</a></li>
+                        <li><a href="../upload_oficial/upload.php">Subir Producto</a></li>
+                        <li><a href="../show_oficial/show.php">Catálogo</a></li>
                     </ul>
                   
                   </li>
                   
-                  <li><a href="../order/order.php">Órdenes</a></li>
+                  <li><a href="#">Órdenes</a></li>
               
                 </ul> 
                 
@@ -256,18 +105,54 @@
 
         <section class="content">
 
+        <?php 
+            if(@$_GET['answer']==1){ ?>
+                <h2 class="h2_1">Its edition was successful</h2>
+                <meta http-equiv = "refresh" content = "2; url = ../show/show.php"/>
+        <?php }
+            if(@$_GET['answer']==2){ ?>
+                <h2 class="h2_2">There were problems registering, please try again later</h2>
+            <meta http-equiv = "refresh" content = "3; url = ../show/show.php"/>
+        <?php 
+            }
+
+            if(isset($_GET['answer'])){}else{
+        ?>
+
             <form action="../../controller/actions.php" method="post" class="form-box" enctype="multipart/form-data" id="productForm">
     
                 <div class="register-container" id="register">
         
                     <div class="top">
-                        <header>Subir Producto</header>
+                        <header>Editar Producto</header>
                     </div>
                     
                     <div class="two-forms">
+
+                    <?php
+                        include "../../controller/connection.php";
+
+                        // Obtener el ID del producto a editar
+                        $product_id = $_GET['e'];
+
+                        // Consulta para obtener los detalles del producto y la categoría
+                        $sql = "SELECT p.*, c.name_category 
+                                FROM product p 
+                                JOIN category c ON p.id_category = c.id 
+                                WHERE p.id_product = '$product_id'";
+
+                                $consult = mysqli_query($connection, $sql);
+                                $ver = mysqli_fetch_array($consult);
+
+                                // Consulta para obtener todas las categorías
+                                $sql_categories = "SELECT id, name_category FROM category WHERE status = 1";
+                                $result = mysqli_query($connection, $sql_categories);
+                    ?>
+
+                    <input type="hidden" name="numberId" value="<?php echo $ver[0]; ?>">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="productName">
+                            <input type="text" class="input-field" placeholder="Nombre del Producto" name="name" id="productName" value="<?php echo $ver[2]; ?>">
                             <i class='bx bxs-food-menu iconoOne'></i>
                             <div class="error_two"></div>
                         </div>
@@ -276,13 +161,10 @@
                             <select class="input-field select-custom" name="id_category" id="productCategory">
                                 <option value="" disabled selected>Elegir una Categoría</option>
                                     <?php
-
-                                    $result = mysqli_query($connection, "SELECT id, name_category FROM category WHERE status = 1");
-        
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        echo "<option value='{$row['id']}'>{$row['name_category']}</option>";
-                                    }
-
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $selected = $row['id'] == $ver['id_category'] ? 'selected' : '';
+                                            echo "<option value='{$row['id']}' $selected>{$row['name_category']}</option>";
+                                        }
                                     ?>
                             </select>
                             <i class='bx bxs-category' ></i>
@@ -294,16 +176,16 @@
                     <div class="two-forms">
                         
                         <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Precio" name="price" id="productPrice">
+                            <input type="text" class="input-field" placeholder="Precio" name="price" id="productPrice" value="<?php echo $ver[5]; ?>">
                             <i class='bx bxs-dollar-circle'></i>
                             <div class="error_two"></div>
                         </div>
                         
                         <div class="input-box select">
                             <select class="input-field select-custom" name="status" id="productAvailability">
-                                <option value="" disabled selected>Elegir Disponibilidad</option>
-                                <option value="1">Disponible</option>
-                                <option value="2">No Disponible</option>
+                                <option value="" disabled>Elegir Disponibilidad</option>
+                                <option value="1" <?php if($ver['status'] == 1) echo 'selected'; ?>>Disponible</option>
+                                <option value="2" <?php if($ver['status'] == 2) echo 'selected'; ?>>No Disponible</option>
                             </select>
                             <i class='bx bx-stats'></i>
                             <div class="error_two"></div>
@@ -312,9 +194,13 @@
                     </div>
                     
                     <div class="input-box">
-                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="productDate">
+                        <input type="date" class="input-field" placeholder="Fecha" name="date" id="productDate" value="<?php echo $ver[6]; ?>">
                         <i class='bx bxs-calendar'></i>
                         <div class="error"></div>
+                    </div>
+
+                    <div class="input-box">
+                        <img src="../../img/<?php echo basename($ver['img_product']); ?>" alt="Imagen Actual" width="100">
                     </div>
 
                     <div class="input-box_2">
@@ -325,33 +211,29 @@
                             <p>La imagen debe ser inferior a <span>2MB</span></p>
                         </div>
                         <div class="select-image" id="select-image"> 
-                            <p>Elegir imagen</p> 
+                            <p>Cambiar imagen</p> 
                         </div>
                     </div>
                     <div id="imageError" class="error_2"></div>
     
                     <div class="input-box">
-                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="productDescription"></textarea>
+                        <textarea class="textarea-field" placeholder="Descripción" maxlength="150" name="description" id="productDescription"><?php echo $ver[3]; ?></textarea>
                         <i class='bx bxs-comment-detail textarea-icon'></i>
                         <div class="error"></div>
                     </div>
                     
-                    <input type="hidden" name="hidden" value="4">
+                    <input type="hidden" name="hidden" value="5">
         
                     <div class="input-box">
-                        <input type="submit" class="submit" value="Subir">
+                        <input type="submit" class="submit" value="Subir Cambios">
                     </div>
         
                 </div>
             </form>
 
-        </section>
+            <?php } ?>
 
-        <?php 
-            if(@$_GET['answer']==2){ ?>
-                <h2 class="h2_2">There were problems registering, please try again later</h2>
-            <?php }
-        ?>
+        </section>
 
         <footer class="footer">
         
@@ -387,7 +269,7 @@
           });
           
         });
-    </script>   
+    </script>
 
     <script>
         const setError = (element, message) => {
@@ -549,5 +431,5 @@
 </body>
 </html>
 <?php }else{
-  header("location:../login_oficial/login.php?answer=6");
+  header("location:../login/login.php?answer=6");
 } ?>
