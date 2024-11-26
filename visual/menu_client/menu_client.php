@@ -245,7 +245,7 @@ $search = isset($_POST['search']) ? $_POST['search'] : '';
 $sql = "SELECT p.*, c.name_category 
         FROM product p 
         JOIN category c ON p.id_category = c.id
-        WHERE p.status = 1
+        /*WHERE p.status = 1*/ /*por si solo quiero que se muestre los disponibles*/
         ORDER BY p.id_category ASC";  // Ordenar por id_category
 
 if ($search != '') { 
@@ -276,63 +276,109 @@ while ($ver = mysqli_fetch_array($consult)) {
               <h4><?php echo $product['name_product']; ?></h4>
               <h2><?php echo number_format($product['price_product'], 2, ",", ".") . " Bs"; ?></h2>
 
-              <button class="btn_hero_2">Agregar al carrito</button>
+              <button class="btn_hero_2" data-id="<?php echo $product['id_product']; ?>">Agregar al carrito</button>
           </div>
       <?php endforeach; ?>
     </div>
   </section>
 <?php endforeach; ?>
 
+<div class="modal_overlay"></div>
 
+<section class="show_order">
+  <button class="close_show_order"><i class="fas fa-times"></i></button>
+  <div class="order_content">
+    <div class="image_section">
+      <img id="productImage" src="" alt="Producto" width="200">
+    </div>
+    <div class="details_section">
+      <div class="input_group">
+        <label for="productName">Nombre:</label>
+        <input type="text" id="productName" readonly>
+      </div>
+      <div class="input_group">
+        <label for="productCategory">Categoría:</label>
+        <input type="text" id="productCategory" readonly>
+      </div>
+      <div class="input_group">
+        <label for="productPrice">Precio:</label>
+        <input type="text" id="productPrice" readonly>
+      </div>
+      <div class="input_group">
+        <label for="productDescription">Descripción:</label>
+        <textarea id="productDescription" rows="4" readonly></textarea>
+      </div>
+      <div class="input_group">
+        <label for="productStatus">Estado:</label>
+        <input type="text" id="productStatus" readonly>
+      </div>
+      <div class="input_group quantity">
+        <label for="productQuantity">Cantidad:</label>
+        <div class="quantity_control">
+          <button class="decrement">-</button>
+          <input type="text" id="productQuantity" value="1" readonly>
+          <button class="increment">+</button>
+        </div>
+      </div>
+      <div class="input_group">
+        <button class="add_to_cart">Mandar al carrito</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <footer class="footer">
+<script>
+document.querySelectorAll('.btn_hero_2').forEach(button => {
+  button.addEventListener('click', function() {
+    const productId = this.getAttribute('data-id');
+    
+    // Hacer una llamada AJAX para obtener los detalles del producto
+    fetch(`get_product_details.php?id=${productId}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('productImage').src = `../../img/${data.img_product}`;
+        document.getElementById('productName').value = data.name_product;
+        document.getElementById('productCategory').value = data.name_category;
+        document.getElementById('productPrice').value = new Intl.NumberFormat('es-VE', { style: 'currency', currency: 'VES' }).format(data.price_product);
+        document.getElementById('productDescription').value = data.description_product;
         
-            <div class="section_container footer_container">
+        // Ajuste aquí para mostrar el estado correctamente
+        const statusText = (data.status == 1) ? "Disponible" : "No Disponible";
+        document.getElementById('productStatus').value = statusText;
 
-              <div class="footer_logo">
-                <img src="./assets/logo-white.png" alt="Logo">
-              </div>
+        document.querySelector('.modal_overlay').style.display = 'block';
+        document.querySelector('.show_order').style.display = 'flex';
+      })
+      .catch(error => console.error('Error:', error));
+  });
+});
 
-              <div class="footer_content">
+document.querySelector('.close_show_order').addEventListener('click', function() {
+  document.querySelector('.modal_overlay').style.display = 'none';
+  document.querySelector('.show_order').style.display = 'none';
+});
 
-                <p>Bienvenidos a nuestra página de empanadas, donde cada bocado es una fiesta de sabores. Nos enorgullecemos de ofrecer empanadas frescas y deliciosas, hechas con ingredientes de la más alta calidad. ¡Gracias por elegirnos y disfrutar de nuestras especialidades!</p>
+document.querySelector('.increment').addEventListener('click', function() {
+  const quantityInput = document.getElementById('productQuantity');
+  let quantity = parseInt(quantityInput.value);
+  quantity++;
+  quantityInput.value = quantity;
+});
 
-                <div>
+document.querySelector('.decrement').addEventListener('click', function() {
+  const quantityInput = document.getElementById('productQuantity');
+  let quantity = parseInt(quantityInput.value);
+  if (quantity > 1) {
+    quantity--;
+    quantityInput.value = quantity;
+  }
+});
 
-                  <ul class="footer_links">
+</script>
 
-                    <li>
-                      <span><i class='bx bx-map'></i></span>
-                      Calle los Apatames, Caracas, 1011
-                    </li>
 
-                    <li>
-                      <span><i class='bx bx-envelope'></i></span>
-                      cocteldelosbatidos2025@gmail.com
-                    </li>
 
-                  </ul>
-
-                  <div class="footer_socials">
-                    <a href="#" class="a_hero_2"><i class='bx bxl-instagram'></i></a>
-                    <a href="#" class="a_hero_2"><i class='bx bxl-whatsapp'></i></a>
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="footer_bar">
-              &copy; El Cóctel de los Batidos 2025. All right reserved
-              <a href="#">
-                <i class='bx bx-code-alt'></i>
-                By VxneC0de
-              </a>
-            </div>
-      
-        </footer>
+        
 
     
         <script>
@@ -380,17 +426,6 @@ while ($ver = mysqli_fetch_array($consult)) {
 
         </script>
 
-<script>
-    function openModal(productId) {
-        document.getElementById('productIdInput').value = productId;
-        document.getElementById('addToCartModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('addToCartModal').style.display = 'none';
-    }
-</script>
-
 
         <script src="https://unpkg.com/scrollreveal"></script>
 
@@ -418,6 +453,36 @@ while ($ver = mysqli_fetch_array($consult)) {
               });
             });
           });
+        </script>
+
+<script>
+        
+        document.querySelector('.btn_hero_2').addEventListener('click', function() {
+          document.querySelector('.modal_overlay').style.display = 'block';
+          document.querySelector('.show_order').style.display = 'flex';
+        });
+
+        document.querySelector('.close_show_order').addEventListener('click', function() {
+          document.querySelector('.modal_overlay').style.display = 'none';
+          document.querySelector('.show_order').style.display = 'none';
+        });
+
+        document.querySelector('.increment').addEventListener('click', function() {
+          const quantityInput = document.getElementById('productQuantity');
+          let quantity = parseInt(quantityInput.value);
+          quantity++;
+          quantityInput.value = quantity;
+        });
+
+        document.querySelector('.decrement').addEventListener('click', function() {
+          const quantityInput = document.getElementById('productQuantity');
+          let quantity = parseInt(quantityInput.value);
+          if (quantity > 1) {
+            quantity--;
+            quantityInput.value = quantity;
+          }
+        });
+        
         </script>
 
 
