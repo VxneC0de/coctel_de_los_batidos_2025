@@ -68,8 +68,9 @@
                 </div>
 
                 <div class="cart_items">
-                  
-                  <div class="cart_item">
+
+  <!-- 
+                <div class="cart_item">
 
                     <div class="remove_item">
                       <span><i class='bx bx-trash'></i></span>
@@ -92,6 +93,10 @@
                     </div>
 
                   </div>
+                
+  -->
+                  
+                  
 
                 </div>
 
@@ -342,12 +347,19 @@ document.querySelectorAll('.btn_hero_2').forEach(button => {
         document.getElementById('productPrice').value = new Intl.NumberFormat('es-VE', { style: 'currency', currency: 'VES' }).format(data.price_product);
         document.getElementById('productDescription').value = data.description_product;
         
-        // Ajuste aquí para mostrar el estado correctamente
         const statusText = (data.status == 1) ? "Disponible" : "No Disponible";
         document.getElementById('productStatus').value = statusText;
 
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'flex';
+
+        // Guarda los datos del producto actual para usarlo en "Mandar al carrito"
+        document.querySelector('.add_to_cart').dataset.product = JSON.stringify({
+          id: data.id_product,
+          name: data.name_product,
+          price: data.price_product,
+          quantity: 1
+        });
       })
       .catch(error => console.error('Error:', error));
   });
@@ -363,6 +375,11 @@ document.querySelector('.increment').addEventListener('click', function() {
   let quantity = parseInt(quantityInput.value);
   quantity++;
   quantityInput.value = quantity;
+
+  // Actualiza la cantidad en los datos del producto
+  const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
+  productData.quantity = quantity;
+  document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
 });
 
 document.querySelector('.decrement').addEventListener('click', function() {
@@ -372,7 +389,80 @@ document.querySelector('.decrement').addEventListener('click', function() {
     quantity--;
     quantityInput.value = quantity;
   }
+
+  // Actualiza la cantidad en los datos del producto
+  const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
+  productData.quantity = quantity;
+  document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
 });
+
+// Funcionalidad para "Mandar al carrito"
+document.querySelector('.add_to_cart').addEventListener('click', function() {
+  const productData = JSON.parse(this.dataset.product);
+  const cartItemsContainer = document.querySelector('.cart_items');
+
+  // Verificar si el producto ya está en el carrito
+  let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem => 
+    cartItem.querySelector('.item_details_title p').textContent === productData.name
+  );
+
+  if (existingCartItem) {
+    // Actualizar cantidad y precio del producto existente en el carrito
+    const existingQuantity = existingCartItem.querySelector('.qty strong');
+    const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
+    existingQuantity.textContent = newQuantity;
+
+    const existingPrice = existingCartItem.querySelector('.item_details_price span');
+    const newPrice = (parseFloat(existingPrice.textContent) + (productData.price * productData.quantity)).toFixed(2);
+    existingPrice.textContent = newPrice;
+  } else {
+    // Crear el nuevo cart_item
+    const cartItem = document.createElement('div');
+    cartItem.classList.add('cart_item');
+    
+    cartItem.innerHTML = `
+      <div class="remove_item">
+        <span><i class='bx bx-trash'></i></span>
+      </div>
+      <div class="item_details">
+        <div class="item_details_title">
+          <p>${productData.name}</p>
+        </div>
+        <div class="item_details_price">
+          <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
+        </div> 
+      </div>
+      <div class="qty">
+        <span>-</span>
+        <strong>${productData.quantity}</strong>
+        <span>+</span>
+      </div>
+    `;
+
+    // Añadir el nuevo item al carrito
+    cartItemsContainer.appendChild(cartItem);
+  }
+
+  // Actualizar subtotal
+  updateSubtotal();
+
+  // Cerrar el modal
+  document.querySelector('.modal_overlay').style.display = 'none';
+  document.querySelector('.show_order').style.display = 'none';
+});
+
+// Función para actualizar el subtotal del carrito
+function updateSubtotal() {
+  const cartItems = document.querySelectorAll('.cart_item');
+  let subtotal = 0;
+
+  cartItems.forEach(item => {
+    const price = parseFloat(item.querySelector('.item_details_price span').textContent);
+    subtotal += price;
+  });
+
+  document.querySelector('.subtotal span').textContent = subtotal.toFixed(2);
+}
 
 </script>
 
