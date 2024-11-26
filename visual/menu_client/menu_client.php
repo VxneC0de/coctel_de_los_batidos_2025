@@ -59,60 +59,37 @@
                   
               </div>
 
-              <div class="cart_sidebar">
-                
-                <button class="close_cart"><i class="fas fa-times"></i></button>
-                
-                <div class="cart_header">
-                  <h2>Tu Pedido</h2>
-                </div>
+              <form action="../../controller/actions.php" method="post" class="cart_sidebar">
+              <button class="close_cart" type="button"><i class="fas fa-times"></i></button>
+  
+  <div class="cart_header">
+    <h2>Tu Pedido</h2>
+  </div>
 
-                <div class="cart_items">
+  <div class="cart_items">
+    <!-- Producto 1 -->
+    <input type="hidden" name="id_user_cart[]" value="123">
+    <input type="hidden" name="id_product_cart[]" value="1">
+    <input type="hidden" name="price_cart[]" value="300.00">
+    <input type="hidden" name="quantity_cart[]" value="2">
+    <input type="hidden" name="status[]" value="1">
+  </div>
 
-  <!-- 
-                <div class="cart_item">
+  <div class="cart_actions">
+    <div class="subtotal">
+      <p>SUBTOTAL:</p>
+      <strong>Bs. <span>0</span></strong>
+      <strong>$. <span>0</span></strong>
+    </div>
 
-                    <div class="remove_item">
-                      <span><i class='bx bx-trash'></i></span>
-                    </div>
+    <input type="hidden" name="hidden" value="7">
 
-                    <div class="item_details">
-                      <div class="item_details_title">
-                          <p>Empanada de Carne</p>
-                      </div>
+    <button class="clean_btn">VACIAR CARRITO</button>
+    <button class="checkout_btn">IR AL PAGO</button>
+  </div>
+</form>
 
-                      <div class="item_details_price">
-                          <strong>Bs. <span>35</span></strong> 
-                      </div> 
-                    </div>
 
-                    <div class="qty">
-                      <span>-</span>
-                      <strong>1</strong>
-                      <span>+</span>
-                    </div>
-
-                  </div>
-                
-  -->
-                  
-                  
-
-                </div>
-
-                <div class="cart_actions">
-
-                  <div class="subtotal">
-                    <p>SUBTOTAL:</p>
-                    <strong>Bs. <span>525</span></strong>
-                    <strong>$. <span>10</span></strong>
-                  </div>
-
-                  <button class="clean_btn">VACIAR CARRITO</button>
-                  <button class="checkout_btn">IR AL PAGO</button> <!-- Botón de pago -->
-                </div>
-                
-              </div>
 
               <div class="user_sidebar">
                 
@@ -412,9 +389,15 @@ document.querySelector('.add_to_cart').addEventListener('click', function() {
     const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
     existingQuantity.textContent = newQuantity;
 
-    const existingPrice = existingCartItem.querySelector('.item_details_price span');
-    const newPrice = (parseFloat(existingPrice.textContent) + (productData.price * productData.quantity)).toFixed(2);
-    existingPrice.textContent = newPrice;
+    const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
+    const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
+    existingPriceSpan.textContent = newPrice;
+
+    // Actualizar inputs ocultos
+    const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
+    quantityInput.value = newQuantity;
+    const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
+    priceInput.value = newPrice;
   } else {
     // Crear el nuevo cart_item
     const cartItem = document.createElement('div');
@@ -441,6 +424,17 @@ document.querySelector('.add_to_cart').addEventListener('click', function() {
 
     // Añadir el nuevo item al carrito
     cartItemsContainer.appendChild(cartItem);
+
+    // Añadir inputs ocultos al formulario principal
+    const form = document.querySelector('.cart_sidebar');
+    const hiddenInputsHTML = `
+      <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
+      <input type="hidden" name="id_product_cart[]" value="${productData.id}">
+      <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
+      <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
+      <input type="hidden" name="status[]" value="1">
+    `;
+    form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
   }
 
   // Actualizar subtotal

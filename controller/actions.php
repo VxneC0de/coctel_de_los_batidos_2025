@@ -216,38 +216,22 @@ if (!empty($errors)) {
 
   case 7:
     
-        // CART ADD MULTIPLE
-
-        // Decodificar el JSON recibido
-        $data = json_decode(file_get_contents('php://input'), true);
-        $cartItems = $data['cartItems'];
-        $user_id = $_SESSION['who']; // ID del usuario
-
-        // Iniciar una transacción
-        mysqli_begin_transaction($connection);
-
-        try {
-            foreach ($cartItems as $item) {
-                $indice = $item['id']; // Asumiendo que el ID del producto está siendo enviado correctamente
-                $product_quantity = $item['quantity']; // Cantidad del producto
-                $product_price = $item['price']; // Precio del producto
-
-                // Consulta SQL para insertar datos
-                $query = "INSERT INTO cart (id_user_cart, id_product_cart, price_cart, quantity_cart, status) VALUES ('$user_id', '$indice', '$product_price', '$product_quantity', '1')";
-
-                // Ejecutar la consulta
-                mysqli_query($connection, $query);
-            }
-
-            // Confirmar la transacción
-            mysqli_commit($connection);
-            echo "Success";
-
-        } catch (Exception $e) {
-            // Revertir la transacción en caso de error
-            mysqli_rollback($connection);
-            echo "Error: " . $e->getMessage();
+    $user_id = $_SESSION['who'];
+    
+    foreach ($id_product_cart as $index => $product_id) {
+        $product_price = $price_cart[$index];
+        $product_quantity = $quantity_cart[$index];
+        $status_value = $status[$index];
+        
+        $query = "INSERT INTO cart (id_user_cart, id_product_cart, price_cart, quantity_cart, status) VALUES ('$user_id', '$product_id', '$product_price', '$product_quantity', '$status_value')";
+        
+        $consulta = mysqli_query($connection, $query);
+        
+        if (!$consulta) {
+            echo "Error: " . mysqli_error($connection);
         }
+    }
+    header("Location: ../visual/menu_client/menu_client.php");
     break;
 };
 
