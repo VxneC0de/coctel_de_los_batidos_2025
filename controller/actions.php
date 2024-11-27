@@ -235,16 +235,25 @@ if (!empty($errors)) {
     break;
 
 case 8:
-    //EDIT CARRITO
     
-    $sql = "UPDATE product SET id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' WHERE id_product='$numberId'";
-  
-    if (mysqli_query($connection, $sql)) {
-        header("location:../visual/edit_oficial/edit.php?answer=1");
-    } else {
-        header("location:../visual/edit_oficial/edit.php?answer=2");
-    }
+    // EDIT CARRITO
 
+    foreach ($id_cart as $index => $id_cart_value) {
+        $id_user_cart_value = $id_user_cart[$index];
+        $id_product_cart_value = $id_product_cart[$index];
+        $price_cart_value = $price_cart[$index];
+        $quantity_cart_value = $quantity_cart[$index];
+        $status_value = $status[$index];
+
+        $sql = "UPDATE cart SET id_user_cart='$id_user_cart_value', id_product_cart='$id_product_cart_value', price_cart='$price_cart_value', quantity_cart='$quantity_cart_value', status='$status_value' WHERE id_cart='$id_cart_value'";
+
+        if (mysqli_query($connection, $sql)) {
+            header("Location: ../visual/menu_client/menu_client.php?answer=1");
+        } else {
+            header("Location: ../visual/menu_client/menu_client.php?answer=2");
+        }
+    }
+    
 break;
 };
 

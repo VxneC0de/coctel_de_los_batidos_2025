@@ -21,14 +21,15 @@ payment
 CREATE TABLE payment (
     id_payment INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_user_payment INT(11) UNSIGNED NOT NULL,
-    id_order_payment INT(11) UNSIGNED NOT NULL,
     id_metodo_payment INT(11) UNSIGNED NOT NULL,
-    email_payment VARCHAR(100) NOT NULL,
-    area_payment VARCHAR(50) NOT NULL,
+    name_payment VARCHAR(50) NOT NULL,
+    lastName_payment VARCHAR(50) NOT NULL,
     phone_payment VARCHAR(20) NOT NULL,
+    description_payment TEXT NOT NULL,
     date_payment DATE NOT NULL,
     hour_payment TIME NOT NULL,
-    reference VARCHAR(50) NOT NULL,
+    reference_data VARCHAR(50) NOT NULL,
+    reference_phone VARCHAR(20) NOT NULL,
     img_payment VARCHAR(255)
 );
 
@@ -48,6 +49,7 @@ CREATE TABLE cart (
     id_cart INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_user_cart INT(11) UNSIGNED NOT NULL,
     id_product_cart INT(11) UNSIGNED NOT NULL,
+    price_cart DOUBLE NOT NULL,
     quantity_cart INT(11) UNSIGNED NOT NULL,
     status TINYINT(4) UNSIGNED NOT NULL
 );
@@ -71,6 +73,8 @@ orders
 CREATE TABLE orders (
     id_order INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_user_order INT(11) UNSIGNED NOT NULL,
+    id_payment_order INT(11) UNSIGNED NOT NULL,
+    id_cart_order INT(11) UNSIGNED NOT NULL,
     order_details TEXT NOT NULL,  -- Usamos TEXT para almacenar los detalles de los productos del carrito
     total DOUBLE NOT NULL,
     status TINYINT(4) UNSIGNED NOT NULL
