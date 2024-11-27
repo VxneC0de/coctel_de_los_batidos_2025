@@ -14,6 +14,11 @@
 </head>
 <body>
 
+<?php 
+    include "../../controller/connection.php";
+    include "../../controller/details.php";    
+?>
+
         <nav>
 
           <div class="wrapper_nav">
@@ -67,12 +72,68 @@
   </div>
 
   <div class="cart_items">
-    <!-- Producto 1 -->
-    <input type="hidden" name="id_user_cart[]" value="123">
-    <input type="hidden" name="id_product_cart[]" value="1">
-    <input type="hidden" name="price_cart[]" value="300.00">
-    <input type="hidden" name="quantity_cart[]" value="2">
-    <input type="hidden" name="status[]" value="1">
+
+  <?php
+include "../../controller/connection.php";
+
+// Asegúrate de que la sesión esté iniciada al principio del archivo
+if (isset($_SESSION['who'])) {
+    $user_id = $_SESSION['who'];
+
+    // Variables para filtrar
+    $search = isset($_POST['search']) ? $_POST['search'] : '';
+
+    // Construir la consulta SQL con los filtros aplicados
+    $sql = "
+        SELECT 
+            c.price_cart, 
+            c.quantity_cart, 
+            p.name_product 
+        FROM 
+            cart c 
+        JOIN 
+            product p 
+        ON 
+            c.id_product_cart = p.id_product 
+        WHERE 
+            c.id_user_cart = '$user_id' AND 
+            c.status = 1
+    ";
+
+    $consult = mysqli_query($connection, $sql);
+
+    while ($ver = mysqli_fetch_array($consult)) {
+        $nameProduct = $ver['name_product'];
+        $priceCart = $ver['price_cart'];
+        $quantityCart = $ver['quantity_cart'];
+?>
+
+<div class="cart_item">
+    <div class="remove_item">
+        <span><i class='bx bx-trash'></i></span>
+    </div>
+    <div class="item_details">
+        <div class="item_details_title">
+            <p><?php echo $nameProduct; ?></p>
+        </div>
+        <div class="item_details_price">
+            <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong> 
+        </div> 
+    </div>
+    <div class="qty">
+        <span>-</span>
+        <strong><?php echo $quantityCart; ?></strong>
+        <span>+</span>
+    </div>
+</div>
+
+<?php 
+    } 
+}
+?>
+
+
+   
   </div>
 
   <div class="cart_actions">
@@ -97,10 +158,10 @@
                 
                 <div class="user_header">
                   <div class="name_user">
-                    <h2>Carol</h2>
+                    <h2><?php echo $_SESSION['nick']; ?></h2>
                   </div>
                   <div class="email_user">
-                    <h4>carol@gmail.com</h4>
+                    <h4><?php echo $_SESSION['email']; ?></h4>
                   </div>
                 </div>
 
@@ -133,7 +194,7 @@
                     <div class="item_details">
                       <div class="item_details_title_user">
                         <i class='bx bx-log-out-circle'></i>
-                        <a href="#">Cerrar Sesión</a>
+                        <a href="../../controller/actions.php?hidden=3">Cerrar Sesión</a>
                       </div>
                     </div>
 
@@ -187,33 +248,9 @@
 
         </section>
 
-        <section class="section_container order_container" id="promociones">
+        <section class="section_container order_container">
 
           <h2 class="section_header">ELIGE Y DISFRUTA</h2>
-
-          <p class="section_description">
-            PROMOCIONES
-          </p>
-
-          <div class="order_grid">
-
-            <div class="order_card">
-              <img src="./assets/order-2.png" alt="order">
-              <h4>Mechada</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-            <div class="order_card">
-              <img src="./assets/order-3.png" alt="order">
-              <h4>Pollo</h4>
-              <h2>40bs</h2>
-
-              <button class="btn_hero_2">Agregar al carrito</button>
-            </div>
-
-          </div>
 
         </section>
 
@@ -576,5 +613,5 @@ function updateSubtotal() {
 </body>
 </html>
 <?php }else{
-  header("location:../login/login.php?answer=6");
+  header("location:../login_oficial/login.php?answer=6");
 } ?>

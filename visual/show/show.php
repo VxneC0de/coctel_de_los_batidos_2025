@@ -252,5 +252,5 @@
 </body>
 </html>
 <?php }else{
-  header("location:../login/login.php?answer=6");
+  header("location:../login_oficial/login.php?answer=6");
 } ?>

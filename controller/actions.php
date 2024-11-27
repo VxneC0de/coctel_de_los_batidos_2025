@@ -231,7 +231,7 @@ if (!empty($errors)) {
             echo "Error: " . mysqli_error($connection);
         }
     }
-    header("Location: ../visual/menu_client/menu_client.php");
+    header("Location: ../visual/payment/payment.php");
     break;
 };
 
