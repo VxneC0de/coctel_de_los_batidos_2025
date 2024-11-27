@@ -76,14 +76,11 @@
   <?php
 include "../../controller/connection.php";
 
-// Asegúrate de que la sesión esté iniciada al principio del archivo
 if (isset($_SESSION['who'])) {
     $user_id = $_SESSION['who'];
 
-    // Variables para filtrar
     $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-    // Construir la consulta SQL con los filtros aplicados
     $sql = "
         SELECT 
             c.price_cart, 
@@ -102,10 +99,13 @@ if (isset($_SESSION['who'])) {
 
     $consult = mysqli_query($connection, $sql);
 
+    $subtotal = 0;
+
     while ($ver = mysqli_fetch_array($consult)) {
         $nameProduct = $ver['name_product'];
         $priceCart = $ver['price_cart'];
         $quantityCart = $ver['quantity_cart'];
+        $subtotal += $priceCart;
 ?>
 
 <div class="cart_item">
@@ -131,16 +131,13 @@ if (isset($_SESSION['who'])) {
     } 
 }
 ?>
+</div>
 
-
-   
-  </div>
-
-  <div class="cart_actions">
+<div class="cart_actions">
     <div class="subtotal">
-      <p>SUBTOTAL:</p>
-      <strong>Bs. <span>0</span></strong>
-      <strong>$. <span>0</span></strong>
+        <p>SUBTOTAL:</p>
+        <strong>Bs. <span id="subtotal"><?php echo number_format($subtotal, 2, '.', ''); ?></span></strong>
+        <strong>$. <span>0</span></strong>
     </div>
 
     <input type="hidden" name="hidden" value="7">
@@ -367,12 +364,12 @@ document.querySelectorAll('.btn_hero_2').forEach(button => {
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'flex';
 
-        // Guarda los datos del producto actual para usarlo en "Mandar al carrito"
         document.querySelector('.add_to_cart').dataset.product = JSON.stringify({
           id: data.id_product,
           name: data.name_product,
           price: data.price_product,
-          quantity: 1
+          quantity: 1,
+          status: data.status
         });
       })
       .catch(error => console.error('Error:', error));
@@ -390,7 +387,6 @@ document.querySelector('.increment').addEventListener('click', function() {
   quantity++;
   quantityInput.value = quantity;
 
-  // Actualiza la cantidad en los datos del producto
   const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
   productData.quantity = quantity;
   document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
@@ -404,24 +400,25 @@ document.querySelector('.decrement').addEventListener('click', function() {
     quantityInput.value = quantity;
   }
 
-  // Actualiza la cantidad en los datos del producto
   const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
   productData.quantity = quantity;
   document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
 });
 
-// Funcionalidad para "Mandar al carrito"
 document.querySelector('.add_to_cart').addEventListener('click', function() {
   const productData = JSON.parse(this.dataset.product);
-  const cartItemsContainer = document.querySelector('.cart_items');
 
-  // Verificar si el producto ya está en el carrito
+  if (productData.status != 1) {
+    alert('El producto no está disponible, no se puede agregar al carrito.');
+    return;
+  }
+
+  const cartItemsContainer = document.querySelector('.cart_items');
   let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem => 
     cartItem.querySelector('.item_details_title p').textContent === productData.name
   );
 
   if (existingCartItem) {
-    // Actualizar cantidad y precio del producto existente en el carrito
     const existingQuantity = existingCartItem.querySelector('.qty strong');
     const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
     existingQuantity.textContent = newQuantity;
@@ -430,13 +427,11 @@ document.querySelector('.add_to_cart').addEventListener('click', function() {
     const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
     existingPriceSpan.textContent = newPrice;
 
-    // Actualizar inputs ocultos
     const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
     quantityInput.value = newQuantity;
     const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
     priceInput.value = newPrice;
   } else {
-    // Crear el nuevo cart_item
     const cartItem = document.createElement('div');
     cartItem.classList.add('cart_item');
     
@@ -459,10 +454,8 @@ document.querySelector('.add_to_cart').addEventListener('click', function() {
       </div>
     `;
 
-    // Añadir el nuevo item al carrito
     cartItemsContainer.appendChild(cartItem);
 
-    // Añadir inputs ocultos al formulario principal
     const form = document.querySelector('.cart_sidebar');
     const hiddenInputsHTML = `
       <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
@@ -474,15 +467,11 @@ document.querySelector('.add_to_cart').addEventListener('click', function() {
     form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
   }
 
-  // Actualizar subtotal
   updateSubtotal();
-
-  // Cerrar el modal
   document.querySelector('.modal_overlay').style.display = 'none';
   document.querySelector('.show_order').style.display = 'none';
 });
 
-// Función para actualizar el subtotal del carrito
 function updateSubtotal() {
   const cartItems = document.querySelectorAll('.cart_item');
   let subtotal = 0;
@@ -492,14 +481,11 @@ function updateSubtotal() {
     subtotal += price;
   });
 
-  document.querySelector('.subtotal span').textContent = subtotal.toFixed(2);
+  document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
 }
 
 </script>
-
-
-
-        
+ 
 
     
         <script>

@@ -233,6 +233,19 @@ if (!empty($errors)) {
     }
     header("Location: ../visual/payment/payment.php");
     break;
+
+case 8:
+    //EDIT CARRITO
+    
+    $sql = "UPDATE product SET id_category='$id_category', name_product='$name', description_product='$description', img_product='$img', price_product='$price', date_product='$date', status='$status' WHERE id_product='$numberId'";
+  
+    if (mysqli_query($connection, $sql)) {
+        header("location:../visual/edit_oficial/edit.php?answer=1");
+    } else {
+        header("location:../visual/edit_oficial/edit.php?answer=2");
+    }
+
+break;
 };
 
 
