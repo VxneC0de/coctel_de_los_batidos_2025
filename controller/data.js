@@ -34,14 +34,23 @@ CREATE TABLE payment (
 );
 
 user
-CREATE TABLE user (
+CREATE TABLE user_two (
     id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nick VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    verification_code TEXT NOT NULL,
+    email_verified_at DATETIME DEFAULT NULL,
     code VARCHAR(50),
     status TINYINT(4) UNSIGNED NOT NULL
 );
+
+CREATE TABLE `users` (
+  `verification_code` text NOT NULL,
+  `email_verified_at` datetime DEFAULT NULL
+);
+
+
 
 
 cart
@@ -66,7 +75,6 @@ CREATE TABLE product (
     date_product DATE NOT NULL,
     quantity_product INT(11) UNSIGNED NOT NULL,
     status TINYINT(4) UNSIGNED NOT NULL
-    
 );
 
 orders
@@ -92,8 +100,7 @@ INSERT INTO category (name_category, status) VALUES
 ('Empanadas', 1),
 ('Pastelitos', 1),
 ('Especiales', 1),
-('Hamburguesas', 1),
-('Perritos Calientes', 1),
+('Papas Rellenas', 1),
 ('Bebidas Frías', 1),
 ('Otros', 1);
 
