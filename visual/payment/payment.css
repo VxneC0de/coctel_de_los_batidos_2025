@@ -40,7 +40,7 @@ nav{
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 1000;
     width: 100%;
     background: #ffffff;
     box-shadow: 0px 2px 5px #347928;
@@ -712,68 +712,42 @@ nav input{
 
 /*======================= ERROR =======================*/
 
-.error {
-    color: #dd1335;
-    font-weight: 600;
-    font-size: 12.5px;
-    padding-top: 4px;
+.error_div{
+    padding: 25px;
     display: flex;
-    flex-direction: column;
-}
-
-.error_2 {
-    color: #dd1335;
-    font-weight: 600;
-    font-size: 12.5px;
-    padding-top: 4px;
-    margin-top: -25px;
-    margin-left: 10px;
-    position: relative;
-    margin-bottom: 0;
-    min-height: 18px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    display: none;
 }
 
-.error:last-child {
-    padding-top: 0;
-}
-  
-.input-box {
-    position: relative;
-    margin-bottom: 10px;
-}
-  
-.input-box .error {
-    position: absolute;
-    top: 52px;
-    left: 10px;
+.container_error{
+    border-top: 5px solid #dd1335;
+    background: #e9bcc3;
     width: 100%;
-}
-
-.error_two {
-    color: #dd1335;
-    font-weight: 600;
-    font-size: 12.5px;
-    padding-top: 4px;
+    height: 100%;
+    padding: 0 15px;
+    gap: 0.2rem;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    border-radius: 6px;
+    display: none;
 }
 
-.error_two:last-child {
-    padding-top: 0;
+.container_error p{
+    padding-top: 6px;
+    font-weight: 700;
+    font-size: 15px;
 }
-  
-.input-box {
-    position: relative;
-    margin-bottom: 10px;
+
+.container_error p span{
+    font-weight: 500;
 }
-  
-.input-box .error_two {
-    position: absolute;
-    top: 52px;
-    left: 10px;
-    width: 100%;
+
+.container_error p:last-child {
+    padding-top:6px;
+    padding-bottom: 6px;
 }
 
 /*======================= FOOTER =======================*/
