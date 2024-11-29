@@ -1,7 +1,4 @@
 <!DOCTYPE html>
-<?php
-  session_start();
-  if(isset ($_SESSION['who'])) { ?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -51,6 +48,13 @@
             <header>Orden</header>
             
             <form action="#" class="form_payment" id="orderForm">
+
+                <div class="error_div">
+
+                    <div class="container_error">
+                    </div>
+
+                </div>
                 
                 <div class="data">
                     
@@ -58,20 +62,17 @@
                     
                     <div class="input-box">
                         <label>Nombre <span>*</span></label>
-                        <input type="text" id="firstName" required />
-                        <div class="error"></div>
+                        <input type="text" id="firstName" />
                     </div>
                     
                     <div class="input-box">
                         <label>Apellido <span>*</span></label>
-                        <input type="text" id="lastName" required />
-                        <div class="error"></div>
+                        <input type="text" id="lastName" />
                     </div>
                     
                     <div class="input-box">
                         <label>Teléfono <span>*</span></label>
-                        <input type="text" id="phone" required />
-                        <div class="error"></div>
+                        <input type="text" id="phone" />
                     </div>
                 
                 </div>
@@ -122,29 +123,30 @@
                         
                         <div class="input-box">
                             <label>Fecha <span>*</span></label>
-                            <select id="pickupDate" required>
+                            <select id="pickupDate">
+                                <option value="" disabled selected>Elegir fecha</option>
                                 <option value="Hoy">Hoy</option>
                             </select>
-                            <div class="error"></div>
+
                         </div>
                         
                         <div class="input-box">
                             <label>Tiempo <span>*</span></label>
-                            <select id="pickupTime" required>
-                                <option value="asap">Tan pronto como sea posible</option>
-                                <option value="7-730">7:00 - 7:30</option>
-                                <option value="730-8">7:30 - 8:00</option>
-                                <option value="8-830">8:00 - 8:30</option>
-                                <option value="830-9">8:30 - 9:00</option>
-                                <option value="9-930">9:00 - 9:30</option>
-                                <option value="930-10">9:30 - 10:00</option>
-                                <option value="10-1030">10:00 - 10:30</option>
-                                <option value="1030-11">10:30 - 11:00</option>
-                                <option value="11-1130">11:00 - 11:30</option>
-                                <option value="1130-12">11:30 - 12:00</option>
-                                <option value="1230-13">12:30 - 13:00</option>
+                            <select id="pickupTime">
+                                <option value="" disabled selected>Elegir tiempo</option>
+                                <option value="Pronto">Tan pronto como sea posible</option>
+                                <option value="7:00-7:30">7:00 - 7:30</option>
+                                <option value="7:30-8:00">7:30 - 8:00</option>
+                                <option value="8:00-8:30">8:00 - 8:30</option>
+                                <option value="8:30-9:00">8:30 - 9:00</option>
+                                <option value="9:00-9:30">9:00 - 9:30</option>
+                                <option value="9:30-10:00">9:30 - 10:00</option>
+                                <option value="10:00-10:30">10:00 - 10:30</option>
+                                <option value="10:30-11:00">10:30 - 11:00</option>
+                                <option value="11:00-11:30">11:00 - 11:30</option>
+                                <option value="11:30-12:00">11:30 - 12:00</option>
+                                <option value="12:30-13:00">12:30 - 13:00</option>
                             </select>
-                            <div class="error"></div>
                         </div>
                 
         
@@ -167,13 +169,13 @@
                                 <div class="input-box">
                                     <label for="referencia-movil">Ultimos 4 números de la referencia <span>*</span></label>
                                     <input type="text" id="referencia-movil">
-                                    <div class="error"></div>
+        
                                 </div>
 
                                 <div class="input-box">
                                     <label for="telefono-movil">Número de telefono donde se hizo el pago <span>*</span></label>
                                     <input type="text" id="telefono-movil">
-                                    <div class="error"></div>
+        
                                 </div>
                                 
                                 <div class="input-box_2">
@@ -187,7 +189,6 @@
                                         <p>Subir Captura</p> 
                                     </div>
                                 </div>
-                                <div id="imageError-movil" class="error_2"></div>
 
                             </div>
 
@@ -212,7 +213,6 @@
                                     </div>
 
                                 </div>
-                                <div id="imageError-efectivo" class="error_2"></div>
                             </div>
                         </div>
           
@@ -348,156 +348,332 @@
         </div>
     
     </footer>
-    
-    
-    <script>
-    
-    // Mostrar carrito y fondo de superposición al hacer clic en el icono del carrito
-    
-    document.querySelector('.cart_icon').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('.modal_overlay').style.display = 'block';
-        document.querySelector('.show_cart').style.display = 'flex';
-    });
-    
-    // Cerrar carrito y fondo de superposición al hacer clic en el botón de cerrar
-    document.querySelector('.close').addEventListener('click', function() {
-        document.querySelector('.modal_overlay').style.display = 'none';
-        document.querySelector('.show_cart').style.display = 'none';
-    });
-    
-    // Cerrar el carrito al hacer clic fuera del área del carrito
-    document.querySelector('.modal_overlay').addEventListener('click', function() {
-        document.querySelector('.modal_overlay').style.display = 'none';
-        document.querySelector('.show_cart').style.display = 'none';
-    });
-
-    </script>
 
     <script>
     
-    document.addEventListener('DOMContentLoaded', () => {
-    // Función para ocultar detalles
-    function hideAllDetails() {
-        document.querySelectorAll('.details_movil, .details_efectivo, .details_tarjeta').forEach(detail => {
-            detail.style.display = 'none';
-        });
-    }
-
-    // Función para limpiar todos los inputs y áreas de imagen
-    function clearInputs() {
-        document.querySelectorAll('.details_movil input, .details_efectivo input, .details_movil textarea, .details_efectivo textarea').forEach(input => {
-            input.value = '';
-        });
-        document.querySelectorAll('.img-area').forEach(imgArea => {
-            imgArea.innerHTML = `
-                <i class='bx bxs-image-alt icon'></i>
-                <h3 class="title_area">Captura del pago</h3>
-                <p>La imagen debe ser inferior a <span>2MB</span></p>
-            `;
-            imgArea.classList.remove('active');
-            imgArea.dataset.img = '';
-        });
-    }
-
-    // Listeners para los inputs de tipo radio
-    document.querySelector('#radio-pago-movil').addEventListener('click', function() {
-        hideAllDetails();
-        clearInputs();
-        document.querySelector('.details_movil').style.display = 'flex';
-        console.log('Pago Móvil seleccionado');
-    });
-
-    document.querySelector('#radio-efectivo').addEventListener('click', function() {
-        hideAllDetails();
-        clearInputs();
-        document.querySelector('.details_efectivo').style.display = 'flex';
-        console.log('Efectivo seleccionado');
-    });
-
-    document.querySelector('#radio-tarjeta').addEventListener('click', function() {
-        hideAllDetails();
-        clearInputs();
-        document.querySelector('.details_tarjeta').style.display = 'flex';
-        console.log('Tarjeta seleccionada');
-    });
-
-    // Funcionalidad para la subida de imágenes
-    const selectImages = document.querySelectorAll('.select-image');
-    selectImages.forEach(selectImage => {
-        const inputFile = selectImage.parentElement.querySelector('input[type="file"]');
-        const imgArea = selectImage.parentElement.querySelector('.img-area');
+        // Mostrar carrito y fondo de superposición al hacer clic en el icono del carrito
         
-        selectImage.addEventListener('click', () => {
-            inputFile.click();
+        document.querySelector('.cart_icon').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.modal_overlay').style.display = 'block';
+            document.querySelector('.show_cart').style.display = 'flex';
         });
         
-        inputFile.addEventListener('change', () => {
-            const image = inputFile.files[0];
-            if (image.size < 2000000) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    // Elimina todas las imágenes previas
-                    const allImg = imgArea.querySelectorAll('img');
-                    allImg.forEach(img => img.remove());
-                    // Añade la nueva imagen
-                    const imgUrl = reader.result;
-                    const img = document.createElement('img');
-                    img.src = imgUrl;
-                    imgArea.appendChild(img);
-                    imgArea.classList.add('active');
-                    imgArea.dataset.img = image.name;
-                };
-                
-                reader.readAsDataURL(image);
-            } else {
-                alert("La imagen debe ser menor a 2MB");
-            }
+        // Cerrar carrito y fondo de superposición al hacer clic en el botón de cerrar
+        document.querySelector('.close').addEventListener('click', function() {
+            document.querySelector('.modal_overlay').style.display = 'none';
+            document.querySelector('.show_cart').style.display = 'none';
         });
-    });
-});
-
+        
+        // Cerrar el carrito al hacer clic fuera del área del carrito
+        document.querySelector('.modal_overlay').addEventListener('click', function() {
+            document.querySelector('.modal_overlay').style.display = 'none';
+            document.querySelector('.show_cart').style.display = 'none';
+        });
+    
     </script>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    const pickupDiv = document.querySelector('.pickup');
-    const radioInputs = document.querySelectorAll('input[name="payment"]');
+            const pickupTimeSelect = document.getElementById('pickupTime');
     
-    pickupDiv.addEventListener('click', () => {
-        // Desmarcar otros radio inputs
-        radioInputs.forEach(input => input.checked = false);
-        // Remover la clase 'selected' de todos los labels
-        document.querySelectorAll('.payment-option label').forEach(label => {
-            label.classList.remove('selected');
+            const updatePickupTimeOptions = () => {
+                const currentDate = new Date();
+                const currentHour = currentDate.getHours();
+                const currentMinute = currentDate.getMinutes();
+    
+                const timeOptions = [
+                    { value: "7:00-7:30", text: "7:00 - 7:30", hour: 7, minute: 0 },
+                    { value: "7:30-8:00", text: "7:30 - 8:00", hour: 7, minute: 30 },
+                    { value: "8:00-8:30", text: "8:00 - 8:30", hour: 8, minute: 0 },
+                    { value: "8:30-9:00", text: "8:30 - 9:00", hour: 8, minute: 30 },
+                    { value: "9:00-9:30", text: "9:00 - 9:30", hour: 9, minute: 0 },
+                    { value: "9:30-10:00", text: "9:30 - 10:00", hour: 9, minute: 30 },
+                    { value: "10:00-10:30", text: "10:00 - 10:30", hour: 10, minute: 0 },
+                    { value: "10:30-11:00", text: "10:30 - 11:00", hour: 10, minute: 30 },
+                    { value: "11:00-11:30", text: "11:00 - 11:30", hour: 11, minute: 0 },
+                    { value: "11:30-12:00", text: "11:30 - 12:00", hour: 11, minute: 30 },
+                    { value: "12:30-13:00", text: "12:30 - 13:00", hour: 12, minute: 30 }
+                ];
+    
+                // Limpiar opciones del select
+                pickupTimeSelect.innerHTML = '<option value="" disabled selected>Elegir tiempo</option>';
+    
+                // Agregar opción "Pronto" si la hora está entre 6:00 y 13:00
+                if (currentHour >= 6 && currentHour < 13) {
+                    const opt = document.createElement('option');
+                    opt.value = "Pronto";
+                    opt.text = "Tan pronto como sea posible";
+                    pickupTimeSelect.appendChild(opt);
+                }
+    
+                // Agregar opciones según la hora actual
+                timeOptions.forEach(option => {
+                    if (currentHour < option.hour || (currentHour === option.hour && currentMinute <= option.minute)) {
+                        const opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.text = option.text;
+                        pickupTimeSelect.appendChild(opt);
+                    }
+                });
+    
+                // Si la hora es mayor o igual a 13:00, quitar todas las opciones
+                if (currentHour >= 13 || currentHour < 6) {
+                    pickupTimeSelect.innerHTML = '<option value="" disabled selected>Elegir tiempo</option>';
+                }
+            }
+    
+            // Actualizar opciones al cargar la página
+            updatePickupTimeOptions();
+    
+            // Actualizar opciones cada minuto
+            setInterval(updatePickupTimeOptions, 60000);
         });
-        // Agregar la clase 'selected' al div pickup
-        pickupDiv.classList.add('selected');
-    });
+    </script> 
+    
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Función para ocultar detalles
+            function hideAllDetails() {
+                document.querySelectorAll('.details_movil, .details_efectivo, .details_tarjeta').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+            }
+    
+            // Función para limpiar todos los inputs y áreas de imagen
+            function clearInputs() {
+                document.querySelectorAll('.details_movil input, .details_efectivo input, .details_movil textarea, .details_efectivo textarea').forEach(input => {
+                    input.value = '';
+                });
+                document.querySelectorAll('.img-area').forEach(imgArea => {
+                    imgArea.innerHTML = `
+                        <i class='bx bxs-image-alt icon'></i>
+                        <h3 class="title_area">Captura del pago</h3>
+                        <p>La imagen debe ser inferior a <span>2MB</span></p>
+                    `;
+                    imgArea.classList.remove('active');
+                    imgArea.dataset.img = '';
+                });
+            }
+    
+            // Listeners para los inputs de tipo radio
+            document.querySelector('#radio-pago-movil').addEventListener('click', function() {
+                hideAllDetails();
+                clearInputs();
+                document.querySelector('.details_movil').style.display = 'flex';
+                console.log('Pago Móvil seleccionado');
+            });
+    
+            document.querySelector('#radio-efectivo').addEventListener('click', function() {
+                hideAllDetails();
+                clearInputs();
+                document.querySelector('.details_efectivo').style.display = 'flex';
+                console.log('Efectivo seleccionado');
+            });
+    
+            document.querySelector('#radio-tarjeta').addEventListener('click', function() {
+                hideAllDetails();
+                clearInputs();
+                document.querySelector('.details_tarjeta').style.display = 'flex';
+                console.log('Tarjeta seleccionada');
+            });
+    
 
-    // Listener para desmarcar el div pickup cuando un radio input se selecciona
-    radioInputs.forEach(input => {
-        input.addEventListener('click', () => {
-            pickupDiv.classList.remove('selected');
         });
-    });
-});
+    
+    </script>
+    
+    <script>
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const pickupDiv = document.querySelector('.pickup');
+            const radioInputs = document.querySelectorAll('input[name="payment"]');
+        
+            pickupDiv.addEventListener('click', () => {
+                // Desmarcar otros radio inputs
+                radioInputs.forEach(input => input.checked = false);
+                // Remover la clase 'selected' de todos los labels
+                document.querySelectorAll('.payment-option label').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                // Agregar la clase 'selected' al div pickup
+                pickupDiv.classList.add('selected');
+            });
+    
+            // Listener para desmarcar el div pickup cuando un radio input se selecciona
+            radioInputs.forEach(input => {
+                input.addEventListener('click', () => {
+                    pickupDiv.classList.remove('selected');
+                });
+            });
+        });
+    
     </script>
 
     <script>
+        const setError = (message) => {
+            const errorDisplay = document.querySelector('.container_error');
+            const errorItem = document.createElement('p');
+            errorItem.innerHTML = message;
+            errorDisplay.appendChild(errorItem);
+        }
     
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
+        const clearErrors = () => {
+            const errorDisplay = document.querySelector('.container_error');
+            while (errorDisplay.firstChild) {
+                errorDisplay.removeChild(errorDisplay.firstChild);
+            }
+        }
+    
+        const isStoreClosed = () => {
+            const currentDate = new Date();
+            const currentHour = currentDate.getHours();
+            return currentHour >= 13 || currentHour < 6;
+        }
+    
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const phone = document.getElementById('phone');
+            const pickupDate = document.getElementById('pickupDate');
+            const pickupTime = document.getElementById('pickupTime');
+            const referenciaMovil = document.getElementById('referencia-movil');
+            const telefonoMovil = document.getElementById('telefono-movil');
+            const fileMovil = document.getElementById('file-movil');
+            const fileEfectivo = document.getElementById('file-efectivo');
+            let valid = true;
+    
+            // Limpiar mensajes de error
+            clearErrors();
+            document.querySelector('.error_div').style.display = 'none';
+            document.querySelector('.container_error').style.display = 'none';
+    
+            if (isStoreClosed()) {
+                setError('La tienda está cerrada.');
+                valid = false;
+            }
+    
+            if (firstName.value.trim() === '') {
+                setError('Nombre <span>es un campo requerido.</span>');
+                valid = false;
+            } else if (!/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(firstName.value.trim())) {
+                setError('Nombre <span>Debe ingresar un nombre válido.</span>');
+                valid = false;
+            }
+    
+            if (lastName.value.trim() === '') {
+                setError('Apellido <span>es un campo requerido.</span>');
+                valid = false;
+            } else if (!/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(lastName.value.trim())) {
+                setError('Apellido <span>Debe ingresar un apellido válido.</span>');
+                valid = false;
+            }
+    
+            if (phone.value.trim() === '') {
+                setError('Teléfono <span>es un campo requerido.</span>');
+                valid = false;
+            } else if (!/^\d{11}$/.test(phone.value.trim())) {
+                setError('Teléfono <span>Debe ingresar un número de teléfono válido.</span>');
+                valid = false;
+            }
+    
+            if (pickupDate.value === '') {
+                setError('Fecha <span>es un campo requerido.</span>');
+                valid = false;
+            }
+    
+            if (pickupTime.value === '') {
+                setError('Tiempo <span>es un campo requerido.</span>');
+                valid = false;
+            }
+    
+            if (!document.querySelector('#radio-pago-movil').checked && !document.querySelector('#radio-efectivo').checked && !document.querySelector('#radio-tarjeta').checked) {
+                setError('Método de Pago <span>es un campo requerido.</span>');
+                valid = false;
+            }
+    
+            if (document.querySelector('#radio-pago-movil').checked) {
+                if (referenciaMovil.value.trim() === '') {
+                    setError('Datos del Pago Móvil <span>Referencia es requerida.</span>');
+                    valid = false;
+                } else if (!/^\d{4,}$/.test(referenciaMovil.value.trim())) {
+                    setError('Datos del Pago Móvil <span>Debe ingresar una referencia válida.</span>');
+                    valid = false;
+                }
+    
+                if (telefonoMovil.value.trim() === '') {
+                    setError('Datos del Pago Móvil <span>Número de teléfono es requerido.</span>');
+                    valid = false;
+                } else if (!/^\d{11,}$/.test(telefonoMovil.value.trim())) {
+                    setError('Datos del Pago Móvil <span>Debe ingresar un número de teléfono válido.</span>');
+                    valid = false;
+                }
+    
+                if (fileMovil.value.trim() === '') {
+                    setError('Datos del Pago Móvil <span>Imagen es requerida.</span>');
+                    valid = false;
+                }
+            }
+    
+            if (document.querySelector('#radio-efectivo').checked) {
+                if (fileEfectivo.value.trim() === '') {
+                    setError('Datos del Efectivo <span>Imagen es requerida.</span>');
+                    valid = false;
+                }
+            }
+    
+            if (!valid) {
+                document.querySelector('.error_div').style.display = 'flex';
+                document.querySelector('.container_error').style.display = 'flex';
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                event.preventDefault();
+            }
+        });
+    
+        document.querySelectorAll('.select-image').forEach(selectImage => {
+            const inputFile = selectImage.parentElement.querySelector('input[type="file"]');
+            const imgArea = selectImage.parentElement.querySelector('.img-area');
+        
+            selectImage.addEventListener('click', () => {
+                inputFile.click();
+            });
+    
+            inputFile.addEventListener('change', () => {
+                const image = inputFile.files[0];
+                if (image.size < 2000000) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const allImg = imgArea.querySelectorAll('img');
+                        allImg.forEach(img => img.remove());
+                        const imgUrl = reader.result;
+                        const img = document.createElement('img');
+                        img.src = imgUrl;
+                        imgArea.appendChild(img);
+                        imgArea.classList.add('active');
+                        imgArea.dataset.img = image.name;
+                    }
+                    reader.readAsDataURL(image);
+                } else {
+                    alert("La imagen debe ser menor a 2MB");
+                    setError('Datos del Pago Móvil/Efectivo <span>La imagen debe ser inferior a 2MB</span>');
+                }
             });
         });
-    });
-
+    </script>    
+      
+    <script>
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+    
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    
     </script>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -505,6 +681,3 @@
     
 </body>
 </html>
-<?php }else{
-  header("location:../login_oficial/login.php?answer=6");
-} ?>
