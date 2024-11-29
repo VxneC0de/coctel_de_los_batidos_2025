@@ -318,6 +318,18 @@ case 9:
         header("location:../visual/payment_oficial/payment.php?answer=2");
     }
  break;   
+ case 10:
+    $user_id = $_SESSION['who'];
+            
+    // Actualiza el estado de todos los productos en el carrito del usuario a 2
+    $sql = "UPDATE cart SET status = 2 WHERE id_user_cart = '$user_id' AND status = 1";
+            
+    if (mysqli_query($connection, $sql)) {
+        header("Location: ../visual/payment_oficial/payment.php?answer=1");
+    } else {
+        header("Location: ../visual/payment_oficial/payment.php?answer=2");
+    }
+break;
 };
 
 

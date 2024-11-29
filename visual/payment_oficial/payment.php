@@ -245,6 +245,7 @@ if (isset($_SESSION['who'])) { ?>
                 </div>
 
                 <input type="hidden" name="hidden" value="9">
+                <input type="hidden" name="hidden" value="10">
 
                 <div class="input-box box_submit">
                     <input type="submit" class="submit" value=" Confirmar el pedido">
