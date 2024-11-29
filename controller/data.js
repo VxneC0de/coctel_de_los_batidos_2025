@@ -34,6 +34,15 @@ CREATE TABLE payment (
 );
 
 user
+CREATE TABLE user (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nick VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    code VARCHAR(50),
+    status TINYINT(4) UNSIGNED NOT NULL
+);
+
 CREATE TABLE user_two (
     id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nick VARCHAR(50) NOT NULL,
@@ -44,12 +53,6 @@ CREATE TABLE user_two (
     code VARCHAR(50),
     status TINYINT(4) UNSIGNED NOT NULL
 );
-
-CREATE TABLE `users` (
-  `verification_code` text NOT NULL,
-  `email_verified_at` datetime DEFAULT NULL
-);
-
 
 
 

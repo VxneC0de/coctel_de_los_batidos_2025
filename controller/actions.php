@@ -31,7 +31,7 @@ if (!empty($errors)) {
     $errorFields = implode(',', $errors);
     header("location:../visual/login_oficial/login.php?answer=4&fields=$errorFields&nickRegister=$nickRegister&emailRegister=$emailRegister&errorLogin=1");
 } else {
-    $sql = "INSERT INTO user VALUES('', '', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
+    $sql = "INSERT INTO user VALUES('', '$nickRegister', '$emailRegister', MD5('$confirmRegister'), 0, 0)";
     if (mysqli_query($connection, $sql)) {
         header("location:../visual/login_oficial/login.php?answer=1");
     } else {
@@ -123,6 +123,11 @@ if (!empty($errors)) {
             echo "Error al subir el archivo.";
         }
     }
+
+    //Sanitizar el valor del precio
+    $price = str_replace(',', '.', $_POST['price']);
+    $price = filter_var($price, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
 
     $sql = "INSERT INTO product (id_category, name_product, description_product, img_product, price_product, date_product, quantity_product, status) VALUES ('$id_category', '$name', '$description', '$img', '$price', '$date', '$quantity', '$status')";
 
@@ -231,7 +236,7 @@ if (!empty($errors)) {
             echo "Error: " . mysqli_error($connection);
         }
     }
-    header("Location: ../visual/payment/payment.php");
+    header("Location: ../visual/payment_oficial/payment.php");
     break;
 
 case 8:
@@ -255,6 +260,64 @@ case 8:
     }
     
 break;
+case 9:
+    // INSERTAR DATOS DEL PAGO
+
+    // Imagen de Pago
+    $file = $_FILES['img']['tmp_name'];
+    $type = $_FILES['img']['type'];
+    $img = "";
+
+    if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
+        $sql = "SELECT MAX(id_payment) FROM payment";
+        $result = mysqli_query($connection, $sql);
+        $row = mysqli_fetch_array($result);
+
+        if (isset($row[0])) {
+            $max = $row[0] + 1;
+        } else {
+            $max = 1;
+        }
+
+        $ext = getimagesize($file);
+
+        if ($ext[2] == IMAGETYPE_GIF) {
+            $max = $max . ".gif";
+        } elseif ($ext[2] == IMAGETYPE_JPEG) {
+            $max = $max . ".jpg";
+        } elseif ($ext[2] == IMAGETYPE_PNG) {
+            $max = $max . ".png";
+        }
+
+        if (is_uploaded_file($file)) {
+            move_uploaded_file($file, '../img/' . $max);
+            $img = '../img/' . $max;
+        } else {
+            echo "Error al subir el archivo.";
+        }
+    }
+
+    // Insertar datos del pago
+    $id_user = $_SESSION['who']; // Obtener el id del usuario desde la sesión
+    $id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
+    $name = $_POST['namePay'];
+    $lastName = $_POST['lasnamePay'];
+    $phone = $_POST['phonePay'];
+    $notes = $_POST['notesPay'];
+    $date = $_POST['datePay'];
+    $hour = $_POST['hourPay'];
+    $reference_data = $_POST['reference_movil'] ?: ($_POST['reference_efectivo'] ?: '');
+    $reference_phone = $_POST['phone_movil'] ?: ($_POST['phone_efectivo'] ?: '');
+
+    $sql = "INSERT INTO payment (id_user_payment, id_metodo_payment, name_payment, lastName_payment, phone_payment, description_payment, date_payment, hour_payment, reference_data, reference_phone, img_payment) 
+            VALUES ('$id_user', '$id_metodo', '$name', '$lastName', '$phone', '$notes', '$date', '$hour', '$reference_data', '$reference_phone', '$img')";
+
+    if(mysqli_query($connection, $sql)){
+        header("location:../visual/menu_client/menu_client.php");
+    } else {
+        header("location:../visual/payment_oficial/payment.php?answer=2");
+    }
+ break;   
 };
 
 

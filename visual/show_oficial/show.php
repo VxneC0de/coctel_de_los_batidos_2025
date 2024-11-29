@@ -41,7 +41,7 @@
                     
                     <ul class="drop-menu">
                         <li><a href="../upload_oficial/upload.php">Subir Producto</a></li>
-                        <li><a href=".show.php">Ver Productos</a></li>
+                        <li><a href="./show.php">Ver Productos</a></li>
                     </ul>
                   
                   </li>
