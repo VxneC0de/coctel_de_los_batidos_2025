@@ -265,9 +265,10 @@ case 9:
 
     // Imagen de Pago
     $file = $_FILES['img']['tmp_name'];
-    $type = $_FILES['img']['type'];
-    $img = "";
+$type = $_FILES['img']['type'];
+$img = "";
 
+if (isset($file) && !empty($file)) {
     if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
         $sql = "SELECT MAX(id_payment) FROM payment";
         $result = mysqli_query($connection, $sql);
@@ -290,33 +291,40 @@ case 9:
         }
 
         if (is_uploaded_file($file)) {
-            move_uploaded_file($file, '../img/' . $max);
-            $img = '../img/' . $max;
+            if (move_uploaded_file($file, '../img_payment/' . $max)) {
+                $img = '../img_payment/' . $max;
+            } else {
+                echo "Error al mover el archivo.";
+            }
         } else {
             echo "Error al subir el archivo.";
         }
     }
+} else {
+    echo "No se seleccionó ningún archivo.";
+}
 
-    // Insertar datos del pago
-    $id_user = $_SESSION['who']; // Obtener el id del usuario desde la sesión
-    $id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
-    $name = $_POST['namePay'];
-    $lastName = $_POST['lasnamePay'];
-    $phone = $_POST['phonePay'];
-    $notes = $_POST['notesPay'];
-    $date = $_POST['datePay'];
-    $hour = $_POST['hourPay'];
-    $reference_data = $_POST['reference_movil'] ?: ($_POST['reference_efectivo'] ?: '');
-    $reference_phone = $_POST['phone_movil'] ?: ($_POST['phone_efectivo'] ?: '');
+// Insertar datos del pago
+$id_user = $_SESSION['who']; // Obtener el id del usuario desde la sesión
+$id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
+$name = $_POST['namePay'];
+$lastName = $_POST['lasnamePay'];
+$phone = $_POST['phonePay'];
+$notes = $_POST['notesPay'];
+$date = $_POST['datePay'];
+$hour = $_POST['hourPay'];
+$reference_data = $_POST['reference_movil'] ?: ($_POST['reference_efectivo'] ?: '');
+$reference_phone = $_POST['phone_movil'] ?: ($_POST['phone_efectivo'] ?: '');
 
-    $sql = "INSERT INTO payment (id_user_payment, id_metodo_payment, name_payment, lastName_payment, phone_payment, description_payment, date_payment, hour_payment, reference_data, reference_phone, img_payment) 
-            VALUES ('$id_user', '$id_metodo', '$name', '$lastName', '$phone', '$notes', '$date', '$hour', '$reference_data', '$reference_phone', '$img')";
+$sql = "INSERT INTO payment (id_user_payment, id_metodo_payment, name_payment, lastName_payment, phone_payment, description_payment, date_payment, hour_payment, reference_data, reference_phone, img_payment) 
+        VALUES ('$id_user', '$id_metodo', '$name', '$lastName', '$phone', '$notes', '$date', '$hour', '$reference_data', '$reference_phone', '$img')";
 
-    if(mysqli_query($connection, $sql)){
-        header("location:../visual/menu_client/menu_client.php");
-    } else {
-        header("location:../visual/payment_oficial/payment.php?answer=2");
-    }
+if(mysqli_query($connection, $sql)){
+    header("location:../visual/menu_client/menu_client.php");
+} else {
+    header("location:../visual/payment_oficial/payment.php?answer=2");
+}
+
  break;   
  case 10:
     $user_id = $_SESSION['who'];

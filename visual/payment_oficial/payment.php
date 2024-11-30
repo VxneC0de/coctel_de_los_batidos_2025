@@ -50,6 +50,13 @@ if (isset($_SESSION['who'])) { ?>
     </nav>
 
     <section class="section_container form_order">
+
+   
+    <?php if (!empty($errorMessage)): ?>
+        <div class="error-message" style="color:red;">
+            <?php echo $errorMessage; ?>
+        </div>
+    <?php endif; ?>
         
         <div class="payment_div">
             
@@ -245,7 +252,6 @@ if (isset($_SESSION['who'])) { ?>
                 </div>
 
                 <input type="hidden" name="hidden" value="9">
-                <input type="hidden" name="hidden" value="10">
 
                 <div class="input-box box_submit">
                     <input type="submit" class="submit" value=" Confirmar el pedido">
