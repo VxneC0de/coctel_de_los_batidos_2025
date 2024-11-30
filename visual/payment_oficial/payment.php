@@ -269,110 +269,111 @@ if (isset($_SESSION['who'])) { ?>
             
             <div class="cart_container">
                 
-                <form method="post" action="#" class="cart_items">
-
-                <?php
-                  include "../../controller/connection.php";
-
-                  if (isset($_SESSION['who'])) {
-                  $user_id = $_SESSION['who'];
-
-                  $search = isset($_POST['search']) ? $_POST['search'] : '';
-
-                  $sql = "
-                        SELECT 
-                        c.price_cart, 
-                        c.quantity_cart, 
-                        p.name_product 
-                        FROM 
-                        cart c 
-                        JOIN 
-                        product p 
-                        ON 
-                        c.id_product_cart = p.id_product 
-                        WHERE 
-                        c.id_user_cart = '$user_id' AND 
-                        c.status = 1
-                  ";
-
-                  $consult = mysqli_query($connection, $sql);
-
-                  $subtotal = 0;
-
-                  while ($ver = mysqli_fetch_array($consult)) {
-                    $nameProduct = $ver['name_product'];
-                    $priceCart = $ver['price_cart'];
-                    $quantityCart = $ver['quantity_cart'];
-                    $subtotal += $priceCart;
-                  ?>
-                    
-                    <div class="cart_item" data-price-cart="<?php echo $priceCart; ?>" data-quantity-cart="<?php echo $quantityCart; ?>">
-                        
-                        <div class="cart_right">
-                            
-                            <div class="item_details">
-                                
-                                <div class="item_details_title">
-                                    <p><?php echo $nameProduct; ?></p>
-                                </div>
-              
-                                <div class="item_details_price">
-                                <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong>
-                                </div> 
-
-                            </div>
-          
-                            <div class="quantity">
-
-                                <div class="quantity_control">
-                                    <button class="decrement">-</button>
-                                    <input type="text" id="productQuantity" value="<?php echo $quantityCart; ?>" readonly>
-                                    <button class="increment">+</button>
-                                </div>
-
-                            </div>
-          
-                            <div class="remove_item">
-                                <a><i class='bx bx-trash'></i></a>
-                            </div>
-          
-                        </div>
-          
-                        <div class="cart_left">
-                            
-                            <div class="total">
-                              <div class="item_price_complete">Bs. <span class="item_total"><?php echo number_format($priceCart * $quantityCart, 2, '.', ''); ?></span></div>
-                            </div>
-          
-                        </div>
-          
-                    </div>
-
-                <?php
-                  }
-                }
-              ?>
-          
-                </form>
+            <form method="post" action="#" class="cart_items">
                 
-                <div class="cart_total">
+                <?php
+                
+                include "../../controller/connection.php";
+                
+                if (isset($_SESSION['who'])) {
+                    $user_id = $_SESSION['who'];
+                    $search = isset($_POST['search']) ? $_POST['search'] : '';
                     
-                    <div class="total_data">
-                        <span>Subtotal</span>
-                        <span class="subtotal_amount">Bs. 0,00</span>
+                    $sql = "
+                    SELECT 
+                    c.price_cart, 
+                    c.quantity_cart, 
+                    p.name_product,
+                    p.price_product
+                    FROM 
+                    cart c 
+                    JOIN 
+                    product p 
+                    ON 
+                    c.id_product_cart = p.id_product 
+                    WHERE 
+                    c.id_user_cart = '$user_id' AND 
+                    c.status = 1
+                    ";
+                    
+                    $consult = mysqli_query($connection, $sql);
+                    $subtotal = 0;
+                    
+                    while ($ver = mysqli_fetch_array($consult)) {
+                        $nameProduct = $ver['name_product'];
+                        $priceCart = $ver['price_cart'];
+                        $quantityCart = $ver['quantity_cart'];
+                        $priceProduct = $ver['price_product'];
+                        $totalProduct = $priceProduct * $quantityCart;
+                        $subtotal += $totalProduct;
+                    ?>
+                    
+                <div class="cart_item" data-price-cart="<?php echo $priceCart; ?>" data-quantity-cart="<?php echo $quantityCart; ?>">
+                    
+                    <div class="cart_right">
+                    
+                        <div class="item_details">
+                
+                            <div class="item_details_title">
+                                <p><?php echo $nameProduct; ?></p>
+                            </div>
+
+                            <div class="item_details_price">
+                                <strong>Bs. <span><?php echo number_format($priceProduct, 2, ",", "."); ?></span></strong>
+                            </div>
+                        </div>
+
+                        <div class="quantity">
+                            <div class="quantity_control">
+                                <button class="decrement">-</button>
+                                <input type="text" id="productQuantity" value="<?php echo $quantityCart; ?>" readonly>
+                                <button class="increment">+</button>
+                            </div>
+                        </div>
+
+                        <div class="remove_item">
+                            <a><i class='bx bx-trash'></i></a>
+                        </div>
+
                     </div>
+
+                    <div class="cart_left">
             
-                    <div class="total_data">
-                        <span>Envío</span>
-                        <span>--</span>
+                        <div class="total">
+                            <div class="item_price_complete">Bs. <span class="item_total"><?php echo number_format($totalProduct, 2, '.', ''); ?></span></div>
+                        </div>
                     </div>
-            
-                    <div class="total_data">
-                        <span>TOTAL</span>
-                        <span class="total_amount">Bs. 0,00</span>
-                    </div>
-          
+
                 </div>
+
+                <?php
+                    }
+                    $formattedSubtotal = number_format($subtotal, 2, ',', '.');
+                    $formattedTotal = number_format($subtotal, 2, ',', '.');
+                }
+                ?>
+
+            </form>
+            
+            <div class="cart_total">
+
+                <div class="total_data">
+                    <span>Subtotal</span>
+                    <span class="subtotal_amount">Bs. <?php echo $formattedSubtotal; ?></span>
+                </div>
+
+                <div class="total_data">
+                    <span>Envío</span>
+                    <span>--</span>
+                </div>
+
+                <div class="total_data">
+                    <span>TOTAL</span>
+                    <span class="total_amount">Bs. <?php echo $formattedTotal; ?></span>
+                </div>
+
+            </div>
+
                 
                 <div class="cart_close">
                     <button class="close">Cerrar</button>
@@ -400,20 +401,12 @@ if (isset($_SESSION['who'])) { ?>
     
     </footer>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', (event) => {
-        const cartItems = document.querySelectorAll('.cart_item');
-        
-        cartItems.forEach(item => {
-            const priceCart = parseFloat(item.getAttribute('data-price-cart'));
-            const quantityCart = parseInt(item.getAttribute('data-quantity-cart'));
-            const total = priceCart * quantityCart;
-            
-            item.querySelector('.item_total').innerText = total.toFixed(2);
-        });
-      });
-  </script>
-
+    <script> 
+        document.addEventListener('DOMContentLoaded', (event) => { 
+            const totalAmount = "<?php echo $formattedTotal; ?>"; 
+            document.getElementById('cart_total_amount').innerText = "Bs. " + totalAmount; 
+        }); 
+    </script>
 
     <script>
     
@@ -437,35 +430,6 @@ if (isset($_SESSION['who'])) { ?>
             document.querySelector('.show_cart').style.display = 'none';
         });
     
-    </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        let subtotal = 0;
-        const cartItems = document.querySelectorAll('.cart_item');
-        
-        cartItems.forEach(item => {
-            const priceCart = parseFloat(item.getAttribute('data-price-cart'));
-            const quantityCart = parseInt(item.getAttribute('data-quantity-cart'));
-            const total = priceCart * quantityCart;
-            
-            // Suma el total de cada producto al subtotal
-            subtotal += total;
-            
-            // Actualiza el total del producto individual en la vista
-            item.querySelector('.item_total').innerText = total.toFixed(2);
-        });
-        
-        // Formatea el subtotal a dos decimales
-        const formattedSubtotal = subtotal.toFixed(2);
-        
-        // Actualiza el subtotal y el total en la vista
-        document.querySelector('.subtotal_amount').innerText = `Bs. ${formattedSubtotal}`;
-        document.querySelector('.total_amount').innerText = `Bs. ${formattedSubtotal}`;
-        
-        // Actualiza el subtotal en el icono del carrito
-        document.querySelector('#cart_total_amount').innerText = `Bs. ${formattedSubtotal}`;
-    });
     </script>
 
     <script>
