@@ -201,18 +201,6 @@
 
                 </div>
 
-                <div class="pagination">
-
-                    <div><i class='bx bx-chevrons-left'></i></div>
-                    <div><i class='bx bx-chevron-left'></i></div>
-                    <div>1</div>
-                    <div>2</div>
-                    <div>3</div>
-                    <div><i class='bx bx-chevron-right'></i></div>
-                    <div><i class='bx bx-chevrons-right'></i></div>
-                    
-                </div>
-
             </div>
 
         </section>

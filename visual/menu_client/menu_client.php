@@ -75,65 +75,68 @@ if (isset($_SESSION['who'])) { ?>
 
           <div class="cart_items">
 
-            <?php
-            include "../../controller/connection.php";
+    <?php
+    include "../../controller/connection.php";
 
-            if (isset($_SESSION['who'])) {
-              $user_id = $_SESSION['who'];
+    if (isset($_SESSION['who'])) {
+        $user_id = $_SESSION['who'];
 
-              $search = isset($_POST['search']) ? $_POST['search'] : '';
+        $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-              $sql = "
-        SELECT 
-            c.price_cart, 
-            c.quantity_cart, 
-            p.name_product 
-        FROM 
-            cart c 
-        JOIN 
-            product p 
-        ON 
-            c.id_product_cart = p.id_product 
-        WHERE 
-            c.id_user_cart = '$user_id' AND 
-            c.status = 1
-    ";
+        $sql = "
+            SELECT 
+                c.id_cart, 
+                c.price_cart, 
+                c.quantity_cart, 
+                p.name_product 
+            FROM 
+                cart c 
+            JOIN 
+                product p 
+            ON 
+                c.id_product_cart = p.id_product 
+            WHERE 
+                c.id_user_cart = '$user_id' AND 
+                c.status = 1
+        ";
 
-              $consult = mysqli_query($connection, $sql);
+        $consult = mysqli_query($connection, $sql);
 
-              $subtotal = 0;
+        $subtotal = 0;
 
-              while ($ver = mysqli_fetch_array($consult)) {
-                $nameProduct = $ver['name_product'];
-                $priceCart = $ver['price_cart'];
-                $quantityCart = $ver['quantity_cart'];
-                $subtotal += $priceCart;
-            ?>
+        while ($ver = mysqli_fetch_array($consult)) {
+            $id_cart = $ver['id_cart']; // Asegúrate de asignar el id_cart aquí
+            $nameProduct = $ver['name_product'];
+            $priceCart = $ver['price_cart'];
+            $quantityCart = $ver['quantity_cart'];
+            $subtotal += $priceCart;
+    ?>
 
-                <div class="cart_item">
-                  <div class="remove_item">
-                    <span><i class='bx bx-trash'></i></span>
-                  </div>
-                  <div class="item_details">
+            <div class="cart_item">
+                <div class="remove_item">
+                <a href="#" onclick="deleteProductDirectly(<?php echo $id_cart; ?>)"><i class='bx bx-trash'></i></a>
+                </div>
+                <div class="item_details">
                     <div class="item_details_title">
-                      <p><?php echo $nameProduct; ?></p>
+                        <p><?php echo $nameProduct; ?></p>
                     </div>
                     <div class="item_details_price">
-                      <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong>
+                        <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong>
                     </div>
-                  </div>
-                  <div class="qty">
+                </div>
+                <div class="qty">
                     <span>-</span>
                     <strong><?php echo $quantityCart; ?></strong>
                     <span>+</span>
-                  </div>
                 </div>
+            </div>
 
-            <?php
-              }
-            }
-            ?>
-          </div>
+    <?php
+        }
+    }
+    ?>
+</div>
+
 
           <div class="cart_actions">
             <div class="subtotal">
@@ -144,8 +147,7 @@ if (isset($_SESSION['who'])) { ?>
 
             <input type="hidden" name="hidden" value="7">
 
-            <button class="clean_btn">VACIAR CARRITO</button>
-            <button class="checkout_btn">IR AL PAGO</button>
+            <button type="submit" class="checkout_btn">IR AL PAGO</button>
           </div>
         </form>
 
@@ -345,6 +347,13 @@ if (isset($_SESSION['who'])) { ?>
       </div>
     </section>
 
+    <script> 
+    function deleteProductDirectly(cod) { 
+    window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=11"; 
+}
+
+    </script>
+
     <script>
       document.querySelectorAll('.btn_hero_2').forEach(button => {
         button.addEventListener('click', function() {
@@ -412,86 +421,80 @@ if (isset($_SESSION['who'])) { ?>
 
       // Funcionalidad para "Mandar al carrito"
       document.querySelector('.add_to_cart').addEventListener('click', function() {
-        const productData = JSON.parse(this.dataset.product);
+    const productData = JSON.parse(this.dataset.product);
 
-        if (productData.status != 1) {
-          alert('El producto no está disponible, no se puede agregar al carrito.');
-          return;
-        }
+    if (productData.status != 1) {
+        alert('El producto no está disponible, no se puede agregar al carrito.');
+        return;
+    }
 
-        const cartItemsContainer = document.querySelector('.cart_items');
-        let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem =>
-          cartItem.querySelector('.item_details_title p').textContent === productData.name
-        );
+    const cartItemsContainer = document.querySelector('.cart_items');
+    let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem =>
+        cartItem.querySelector('.item_details_title p').textContent === productData.name
+    );
 
-        const form = document.querySelector('.cart_sidebar');
+    const form = document.querySelector('.cart_sidebar');
 
-        if (existingCartItem) {
-          const existingQuantity = existingCartItem.querySelector('.qty strong');
-          const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
-          existingQuantity.textContent = newQuantity;
+    if (existingCartItem) {
+        const existingQuantity = existingCartItem.querySelector('.qty strong');
+        const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
+        existingQuantity.textContent = newQuantity;
 
-          const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
-          const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
-          existingPriceSpan.textContent = newPrice;
+        const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
+        const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
+        existingPriceSpan.textContent = newPrice;
 
-          const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
-          quantityInput.value = newQuantity;
-          const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
-          priceInput.value = newPrice;
+        const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
+        quantityInput.value = newQuantity;
+        const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
+        priceInput.value = newPrice;
+    } else {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart_item');
 
-          // Agregar el input oculto para actualizar el carrito
-          const hiddenUpdateInput = document.createElement('input');
-          hiddenUpdateInput.type = 'hidden';
-          hiddenUpdateInput.name = 'hidden';
-          hiddenUpdateInput.value = '8';
-          form.appendChild(hiddenUpdateInput);
+        cartItem.innerHTML = `
+            <div class="remove_item">
+                <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
+            </div>
+            <div class="item_details">
+                <div class="item_details_title">
+                    <p>${productData.name}</p>
+                </div>
+                <div class="item_details_price">
+                    <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
+                </div> 
+            </div>
+            <div class="qty">
+                <span>-</span>
+                <strong>${productData.quantity}</strong>
+                <span>+</span>
+            </div>
+        `;
 
-          // Agregar input oculto para id_cart
-          const idCartInput = document.createElement('input');
-          idCartInput.type = 'hidden';
-          idCartInput.name = 'id_cart[]';
-          idCartInput.value = existingCartItem.dataset.cartId; // Asegúrate de que id_cart esté configurado correctamente
-          form.appendChild(idCartInput);
-        } else {
-          const cartItem = document.createElement('div');
-          cartItem.classList.add('cart_item');
+        cartItemsContainer.appendChild(cartItem);
 
-          cartItem.innerHTML = `
-      <div class="remove_item">
-        <span><i class='bx bx-trash'></i></span>
-      </div>
-      <div class="item_details">
-        <div class="item_details_title">
-          <p>${productData.name}</p>
-        </div>
-        <div class="item_details_price">
-          <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
-        </div> 
-      </div>
-      <div class="qty">
-        <span>-</span>
-        <strong>${productData.quantity}</strong>
-        <span>+</span>
-      </div>
-    `;
+        const hiddenInputsHTML = `
+            <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
+            <input type="hidden" name="id_product_cart[]" value="${productData.id}">
+            <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
+            <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
+            <input type="hidden" name="status[]" value="1">
+        `;
+        form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
 
-          cartItemsContainer.appendChild(cartItem);
+        // Añadir evento click para eliminar el producto del DOM
+        cartItem.querySelector('.remove_cart_item').addEventListener('click', function(e) {
+            e.preventDefault();
+            cartItem.remove();
+            updateSubtotal();
+        });
+    }
 
-          const hiddenInputsHTML = `
-      <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
-      <input type="hidden" name="id_product_cart[]" value="${productData.id}">
-      <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
-      <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
-      <input type="hidden" name="status[]" value="1">
-    `;
-          form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
-        }
+    updateSubtotal();
+    document.querySelector('.modal_overlay').style.display = 'none';
+    document.querySelector('.show_order').style.display = 'none';
+});
 
-        updateSubtotal();
-        document.querySelector('.modal_overlay').style.display = 'none';
-        document.querySelector('.show_order').style.display = 'none';
-      });
 
       function updateSubtotal() {
         const cartItems = document.querySelectorAll('.cart_item');
@@ -505,8 +508,6 @@ if (isset($_SESSION['who'])) { ?>
         document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
       }
     </script>
-
-
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
@@ -577,18 +578,6 @@ if (isset($_SESSION['who'])) { ?>
     </script>
 
     <script>
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-
-          document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-          });
-        });
-      });
-    </script>
-
-    <script>
       document.querySelector('.btn_hero_2').addEventListener('click', function() {
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'flex';
@@ -597,22 +586,6 @@ if (isset($_SESSION['who'])) { ?>
       document.querySelector('.close_show_order').addEventListener('click', function() {
         document.querySelector('.modal_overlay').style.display = 'none';
         document.querySelector('.show_order').style.display = 'none';
-      });
-
-      document.querySelector('.increment').addEventListener('click', function() {
-        const quantityInput = document.getElementById('productQuantity');
-        let quantity = parseInt(quantityInput.value);
-        quantity++;
-        quantityInput.value = quantity;
-      });
-
-      document.querySelector('.decrement').addEventListener('click', function() {
-        const quantityInput = document.getElementById('productQuantity');
-        let quantity = parseInt(quantityInput.value);
-        if (quantity > 1) {
-          quantity--;
-          quantityInput.value = quantity;
-        }
       });
     </script>
 

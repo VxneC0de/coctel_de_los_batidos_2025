@@ -338,6 +338,48 @@ if(mysqli_query($connection, $sql)){
         header("Location: ../visual/payment_oficial/payment.php?answer=2");
     }
 break;
+case 11:
+    // DELETE from cart
+    $sql = "DELETE FROM cart WHERE id_cart=?";
+    if ($statement = mysqli_prepare($connection, $sql)) {
+        mysqli_stmt_bind_param($statement, "i", $e);
+        
+        if (mysqli_stmt_execute($statement)) {
+            header("location:../visual/menu_client/menu_client.php");
+        } else {
+            echo "<script>alert('Could not delete');</script>";
+            header("location:../visual/menu_client/menu_client.php");
+        }
+        
+        mysqli_stmt_close($statement);
+    } else {
+        echo "<script>alert('Query preparation failed');</script>";
+        header("location:../visual/menu_client/menu_client.php");
+    }
+    break;
+case 12:
+
+    // DELETE all products from cart for the current user
+    $user_id = $_SESSION['who']; // Obtener el ID del usuario de la sesión
+
+    $sql = "DELETE FROM cart WHERE id_user_cart=?";
+    if ($statement = mysqli_prepare($connection, $sql)) {
+        mysqli_stmt_bind_param($statement, "i", $user_id);
+        
+        if (mysqli_stmt_execute($statement)) {
+            header("location:../visual/menu_client/menu_client.php");
+        } else {
+            echo "<script>alert('Could not delete');</script>";
+            header("location:../visual/menu_client/menu_client.php");
+        }
+        
+        mysqli_stmt_close($statement);
+    } else {
+        echo "<script>alert('Query preparation failed');</script>";
+        header("location:../visual/menu_client/menu_client.php");
+    }
+
+    break;
 };
 
 
