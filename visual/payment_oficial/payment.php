@@ -2,7 +2,7 @@
 <?php
 session_start();
 if (isset($_SESSION['who'])) { ?>
-  <html lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -378,6 +378,11 @@ if (isset($_SESSION['who'])) { ?>
                 <div class="total_data">
                     <span>Envío</span>
                     <span>--</span>
+                </div>
+
+                <div class="total_data">
+                    <span>TOTAL</span>
+                    <span class="total_amount">Bs. <?php echo $formattedTotal; ?></span>
                 </div>
 
                 <div class="total_data">

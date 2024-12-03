@@ -1,7 +1,7 @@
 <?php
 
 include "connection.php";
-session_start(); // Asegúrate de que la sesión esté iniciada para acceder a $_SESSION
+session_start();
 extract($_POST);
 extract($_GET);
 
@@ -390,11 +390,38 @@ case 10:
         header("location:../visual/menu_client/menu_client.php");
     }
     break;
-case 11:
-
-    break;
+    case 11:
+        // Sanitize input values to prevent SQL injection
+        $precio = mysqli_real_escape_string($connection, $_POST['precio']);
+        $fecha = mysqli_real_escape_string($connection, $_POST['date']);
+    
+        // Check if a record already exists for the given date
+        $checkSql = "SELECT id FROM tasas_de_cambio WHERE fecha_cambio = '$fecha'";
+        $result = mysqli_query($connection, $checkSql);
+    
+        if (mysqli_num_rows($result) > 0) {
+            // Record exists, perform update
+            $row = mysqli_fetch_assoc($result);
+            $id = $row['id'];
+    
+            $sql = "UPDATE tasas_de_cambio SET tasa_cambio = '$precio', fecha_cambio = '$fecha', status = 1 WHERE id = '$id'";
+            
+            if(mysqli_query($connection, $sql)){
+                header("location:../visual/menu_admin/menu_admin.php?answer=1");
+            } else {
+                header("location:../visual/menu_admin/menu_admin.php?answer=2");
+            }
+        } else {
+            // Record does not exist, perform insert
+            $sql = "INSERT INTO tasas_de_cambio (tasa_cambio, fecha_cambio, status) VALUES ('$precio', '$fecha', 1)";
+        
+            if(mysqli_query($connection, $sql)){
+                header("location:../visual/menu_admin/menu_admin.php?answer=1");
+            } else {
+                header("location:../visual/menu_admin/menu_admin.php?answer=2");
+            }
+        }
+        break;
 };
-
-
 
 ?>;

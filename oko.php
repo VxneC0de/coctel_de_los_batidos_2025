@@ -74,3 +74,5 @@ Asegúrate de ajustar el código de acuerdo a tu estructura y datos reales. Con 
 Si tienes más preguntas o necesitas más ajustes, ¡aquí estoy para ayudarte! */
 
 ?>;
+
+
