@@ -85,7 +85,6 @@ CREATE TABLE orders (
     id_order INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_user_order INT(11) UNSIGNED NOT NULL,
     id_payment_order INT(11) UNSIGNED NOT NULL,
-    id_cart_order INT(11) UNSIGNED NOT NULL,
     order_details TEXT NOT NULL,  -- Usamos TEXT para almacenar los detalles de los productos del carrito
     total DOUBLE NOT NULL,
     status TINYINT(4) UNSIGNED NOT NULL

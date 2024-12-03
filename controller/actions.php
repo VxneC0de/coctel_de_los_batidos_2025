@@ -4,6 +4,53 @@ include "connection.php";
 session_start(); // Asegúrate de que la sesión esté iniciada para acceder a $_SESSION
 extract($_POST);
 extract($_GET);
+
+function handleFileUpload($fileKey, $connection) {
+    $file = $_FILES[$fileKey]['tmp_name'];
+    $type = $_FILES[$fileKey]['type'];
+    $img = "";
+
+    if (isset($file) && !empty($file)) {
+        if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
+            $sql = "SELECT MAX(id_payment) FROM payment";
+            $result = mysqli_query($connection, $sql);
+            $row = mysqli_fetch_array($result);
+
+            if (isset($row[0])) {
+                $max = $row[0] + 1;
+            } else {
+                $max = 1;
+            }
+
+            $ext = getimagesize($file);
+
+            if ($ext[2] == IMAGETYPE_GIF) {
+                $max = $max . ".gif";
+            } elseif ($ext[2] == IMAGETYPE_JPEG) {
+                $max = $max . ".jpg";
+            } elseif ($ext[2] == IMAGETYPE_PNG) {
+                $max = $max . ".png";
+            }
+
+            if (is_uploaded_file($file)) {
+                if (move_uploaded_file($file, '../img_payment/' . $max)) {
+                    $img = '../img_payment/' . $max;
+                } else {
+                    echo "Error al mover el archivo.";
+                }
+            } else {
+                echo "Error al subir el archivo.";
+            }
+        } else {
+            echo "Tipo de archivo no permitido.";
+        }
+    } else {
+        echo "No se seleccionó ningún archivo.";
+    }
+
+    return $img;
+}
+
 switch($hidden){
   case 1:
     //REGISTER
@@ -262,83 +309,69 @@ case 8:
 break;
 case 9:
     // INSERTAR DATOS DEL PAGO
+    $id_user = $_SESSION['who'];
+    $id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
+    $name = $_POST['namePay'];
+    $lastName = $_POST['lasnamePay'];
+    $phone = $_POST['phonePay'];
+    $notes = $_POST['notesPay'];
+    $date = $_POST['datePay'];
+    $hour = $_POST['hourPay'];
+    $reference_data = $_POST['reference_movil'] ?: ($_POST['reference_efectivo'] ?: '');
+    $reference_phone = $_POST['phone_movil'] ?: ($_POST['phone_efectivo'] ?: '');
 
-    // Imagen de Pago
-    $file = $_FILES['img']['tmp_name'];
-$type = $_FILES['img']['type'];
-$img = "";
-
-if (isset($file) && !empty($file)) {
-    if (strpos($type, "gif") !== false || strpos($type, "jpeg") !== false || strpos($type, "jpg") !== false || strpos($type, "png") !== false) {
-        $sql = "SELECT MAX(id_payment) FROM payment";
-        $result = mysqli_query($connection, $sql);
-        $row = mysqli_fetch_array($result);
-
-        if (isset($row[0])) {
-            $max = $row[0] + 1;
-        } else {
-            $max = 1;
-        }
-
-        $ext = getimagesize($file);
-
-        if ($ext[2] == IMAGETYPE_GIF) {
-            $max = $max . ".gif";
-        } elseif ($ext[2] == IMAGETYPE_JPEG) {
-            $max = $max . ".jpg";
-        } elseif ($ext[2] == IMAGETYPE_PNG) {
-            $max = $max . ".png";
-        }
-
-        if (is_uploaded_file($file)) {
-            if (move_uploaded_file($file, '../img_payment/' . $max)) {
-                $img = '../img_payment/' . $max;
-            } else {
-                echo "Error al mover el archivo.";
-            }
-        } else {
-            echo "Error al subir el archivo.";
-        }
+    // Manejo de archivos para los dos tipos de pagos
+    $img = "";
+    if (isset($_FILES['img_movil']['tmp_name']) && !empty($_FILES['img_movil']['tmp_name'])) {
+        $img = handleFileUpload('img_movil', $connection);
+    } elseif (isset($_FILES['img_efectivo']['tmp_name']) && !empty($_FILES['img_efectivo']['tmp_name'])) {
+        $img = handleFileUpload('img_efectivo', $connection);
     }
-} else {
-    echo "No se seleccionó ningún archivo.";
-}
 
-// Insertar datos del pago
-$id_user = $_SESSION['who']; // Obtener el id del usuario desde la sesión
-$id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
-$name = $_POST['namePay'];
-$lastName = $_POST['lasnamePay'];
-$phone = $_POST['phonePay'];
-$notes = $_POST['notesPay'];
-$date = $_POST['datePay'];
-$hour = $_POST['hourPay'];
-$reference_data = $_POST['reference_movil'] ?: ($_POST['reference_efectivo'] ?: '');
-$reference_phone = $_POST['phone_movil'] ?: ($_POST['phone_efectivo'] ?: '');
+    $sql_payment = "INSERT INTO payment (id_user_payment, id_metodo_payment, name_payment, lastName_payment, phone_payment, description_payment, date_payment, hour_payment, reference_data, reference_phone, img_payment) 
+            VALUES ('$id_user', '$id_metodo', '$name', '$lastName', '$phone', '$notes', '$date', '$hour', '$reference_data', '$reference_phone', '$img')";
 
-$sql = "INSERT INTO payment (id_user_payment, id_metodo_payment, name_payment, lastName_payment, phone_payment, description_payment, date_payment, hour_payment, reference_data, reference_phone, img_payment) 
-        VALUES ('$id_user', '$id_metodo', '$name', '$lastName', '$phone', '$notes', '$date', '$hour', '$reference_data', '$reference_phone', '$img')";
+    if (mysqli_query($connection, $sql_payment)) {
+        $id_payment = mysqli_insert_id($connection); // Obtener el ID del pago recién insertado
 
-if(mysqli_query($connection, $sql)){
-    header("location:../visual/menu_client/menu_client.php");
-} else {
-    header("location:../visual/payment_oficial/payment.php?answer=2");
-}
+        // OBTENER PRODUCTOS DEL CARRITO
+        $sql_cart = "SELECT c.id_product_cart, c.quantity_cart, p.price_product
+                     FROM cart c 
+                     JOIN product p ON c.id_product_cart = p.id_product
+                     WHERE c.id_user_cart = '$id_user' AND c.status = 1";
+        $result_cart = mysqli_query($connection, $sql_cart);
 
- break;   
- case 10:
-    $user_id = $_SESSION['who'];
-            
-    // Actualiza el estado de todos los productos en el carrito del usuario a 2
-    $sql = "UPDATE cart SET status = 2 WHERE id_user_cart = '$user_id' AND status = 1";
-            
-    if (mysqli_query($connection, $sql)) {
-        header("Location: ../visual/payment_oficial/payment.php?answer=1");
+        $order_details = "";
+        $total = 0;
+        while ($row_cart = mysqli_fetch_assoc($result_cart)) {
+            $id_product = $row_cart['id_product_cart'];
+            $quantity = $row_cart['quantity_cart'];
+            $price = $row_cart['price_product'];
+            $subtotal = $price * $quantity;
+            $total += $subtotal;
+            $order_details .= "Producto: $id_product, Cantidad: $quantity, Subtotal: $subtotal\n";
+        }
+
+        // INSERTAR NUEVO PEDIDO EN LA TABLA ORDERS
+        $sql_order = "INSERT INTO orders (id_user_order, id_payment_order, order_details, total, status) 
+                      VALUES ('$id_user', '$id_payment', '$order_details', '$total', 1)";
+
+        if (mysqli_query($connection, $sql_order)) {
+            $id_order = mysqli_insert_id($connection);
+
+            // ACTUALIZAR EL ESTADO DE TODOS LOS PRODUCTOS EN EL CARRITO A 2
+            $sql_update_cart = "UPDATE cart SET status = 2 WHERE id_user_cart = '$id_user' AND status = 1";
+            mysqli_query($connection, $sql_update_cart);
+
+            header("Location: ../visual/menu_client/menu_client.php");
+        } else {
+            header("Location: ../visual/payment_oficial/payment.php?answer=2");
+        }
     } else {
         header("Location: ../visual/payment_oficial/payment.php?answer=2");
     }
-break;
-case 11:
+    break;
+case 10:
     // DELETE from cart
     $sql = "DELETE FROM cart WHERE id_cart=?";
     if ($statement = mysqli_prepare($connection, $sql)) {
@@ -357,27 +390,7 @@ case 11:
         header("location:../visual/menu_client/menu_client.php");
     }
     break;
-case 12:
-
-    // DELETE all products from cart for the current user
-    $user_id = $_SESSION['who']; // Obtener el ID del usuario de la sesión
-
-    $sql = "DELETE FROM cart WHERE id_user_cart=?";
-    if ($statement = mysqli_prepare($connection, $sql)) {
-        mysqli_stmt_bind_param($statement, "i", $user_id);
-        
-        if (mysqli_stmt_execute($statement)) {
-            header("location:../visual/menu_client/menu_client.php");
-        } else {
-            echo "<script>alert('Could not delete');</script>";
-            header("location:../visual/menu_client/menu_client.php");
-        }
-        
-        mysqli_stmt_close($statement);
-    } else {
-        echo "<script>alert('Query preparation failed');</script>";
-        header("location:../visual/menu_client/menu_client.php");
-    }
+case 11:
 
     break;
 };

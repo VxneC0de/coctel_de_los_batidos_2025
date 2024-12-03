@@ -256,8 +256,9 @@ nav input{
   
 .quantity {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 15px;
+    flex-direction: column;
 }
   
 .quantity_control {

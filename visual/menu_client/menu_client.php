@@ -354,6 +354,25 @@ if (isset($_SESSION['who'])) { ?>
 
     </script>
 
+    <?php
+      include "../../controller/connection.php";
+
+      if (isset($_SESSION['who'])) {
+        $user_id = $_SESSION['who'];
+        $sql = "SELECT SUM(quantity_cart) as total_quantity FROM cart WHERE id_user_cart = '$user_id' AND status = 1";
+        $consult = mysqli_query($connection, $sql);
+        $row = mysqli_fetch_assoc($consult);
+        $total_quantity = $row['total_quantity'] ? $row['total_quantity'] : 0;
+      } else {
+        $total_quantity = 0;
+      }
+    ?>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('.cart_icon span').textContent = <?php echo $total_quantity; ?>;
+      });
+    </script>
+
     <script>
       document.querySelectorAll('.btn_hero_2').forEach(button => {
         button.addEventListener('click', function() {
@@ -390,7 +409,7 @@ if (isset($_SESSION['who'])) { ?>
         });
       });
 
-      document.querySelector('.close_show_order').addEventListener('click', function() {
+        document.querySelector('.close_show_order').addEventListener('click', function() {
         document.querySelector('.modal_overlay').style.display = 'none';
         document.querySelector('.show_order').style.display = 'none';
       });
@@ -425,6 +444,9 @@ if (isset($_SESSION['who'])) { ?>
 
     if (productData.status != 1) {
         alert('El producto no está disponible, no se puede agregar al carrito.');
+        // Close the modal after alert is acknowledged
+        document.querySelector('.modal_overlay').style.display = 'none';
+        document.querySelector('.show_order').style.display = 'none';
         return;
     }
 
@@ -434,6 +456,8 @@ if (isset($_SESSION['who'])) { ?>
     );
 
     const form = document.querySelector('.cart_sidebar');
+
+    let isExistingProduct = false;
 
     if (existingCartItem) {
         const existingQuantity = existingCartItem.querySelector('.qty strong');
@@ -448,6 +472,8 @@ if (isset($_SESSION['who'])) { ?>
         quantityInput.value = newQuantity;
         const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
         priceInput.value = newPrice;
+
+        isExistingProduct = true;
     } else {
         const cartItem = document.createElement('div');
         cartItem.classList.add('cart_item');
@@ -487,26 +513,45 @@ if (isset($_SESSION['who'])) { ?>
             e.preventDefault();
             cartItem.remove();
             updateSubtotal();
+            updateCartQuantity();
         });
     }
 
     updateSubtotal();
-    document.querySelector('.modal_overlay').style.display = 'none';
-    document.querySelector('.show_order').style.display = 'none';
+    updateCartQuantity(productData.quantity, isExistingProduct);
+
+    // Close the modal regardless of new or existing product
+    document.querySelector('.modal_overlay').style.display = 'none'; 
+    document.querySelector('.show_order').style.display = 'none'; 
 });
 
+function updateCartQuantity(addedQuantity, isExistingProduct) {
+    const cartIcon = document.querySelector('.cart_icon span');
+    let currentQuantity = parseInt(cartIcon.textContent);
+    
+    if (isExistingProduct) {
+        // Do not increment the total count if it's an existing product being updated
+        currentQuantity += addedQuantity;
+    } else {
+        // Increment the total count for new products
+        currentQuantity += addedQuantity;
+    }
+    
+    cartIcon.textContent = currentQuantity;
+}
 
-      function updateSubtotal() {
-        const cartItems = document.querySelectorAll('.cart_item');
-        let subtotal = 0;
+function updateSubtotal() {
+    const cartItems = document.querySelectorAll('.cart_item');
+    let subtotal = 0;
 
-        cartItems.forEach(item => {
-          const price = parseFloat(item.querySelector('.item_details_price span').textContent);
-          subtotal += price;
-        });
+    cartItems.forEach(item => {
+        const price = parseFloat(item.querySelector('.item_details_price span').textContent);
+        subtotal += price;
+    });
 
-        document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
-      }
+    document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
+}
+
     </script>
 
     <script>
@@ -551,7 +596,6 @@ if (isset($_SESSION['who'])) { ?>
         });
       });
     </script>
-
 
     <script src="https://unpkg.com/scrollreveal"></script>
 

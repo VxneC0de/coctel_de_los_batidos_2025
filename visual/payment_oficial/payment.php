@@ -11,6 +11,14 @@ if (isset($_SESSION['who'])) { ?>
     <link rel="stylesheet" href="./payment.css">
     <title>Pago</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <style>
+        .quantity {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-direction: column;
+}
+    </style>
 </head>
 <body>
 
@@ -194,7 +202,7 @@ if (isset($_SESSION['who'])) { ?>
                                 </div>
                                 
                                 <div class="input-box_2">
-                                    <input type="file" name="img" id="file-movil" accept="image/*" hidden>
+                                    <input type="file" name="img_movil" id="file-movil" accept="image/*" hidden>
                                     <div class="img-area" data-img="">
                                         <i class='bx bxs-image-alt icon'></i>
                                         <h3 class="title_area">Captura del pago</h3>
@@ -217,7 +225,7 @@ if (isset($_SESSION['who'])) { ?>
                           
                                 <div class="input-box_2">
 
-                                    <input type="file" name="img" id="file-efectivo" accept="image/*" hidden>
+                                    <input type="file" name="img_efectivo" id="file-efectivo" accept="image/*" hidden>
                                     <div class="img-area" data-img="">
                                         <i class='bx bxs-image-alt icon'></i>
                                         <h3 class="title_area">Captura del pago</h3>
@@ -330,10 +338,9 @@ if (isset($_SESSION['who'])) { ?>
                         </div>
 
                         <div class="quantity">
+                            <strong><label for="productQuantity">Cantidad:</label></strong>
                             <div class="quantity_control">
-                                <button class="decrement">-</button>
                                 <input type="text" id="productQuantity" value="<?php echo $quantityCart; ?>" readonly>
-                                <button class="increment">+</button>
                             </div>
                         </div>
 

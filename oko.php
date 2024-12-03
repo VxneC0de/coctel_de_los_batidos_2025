@@ -1,75 +1,76 @@
 <?php
-    include "../../controller/connection.php";
 
-    // Variables para filtrar
-    $search = isset($_POST['search']) ? $_POST['search'] : '';
+/*
+¡Por supuesto! Aquí tienes un ejemplo de cómo podrías mostrar los detalles de la orden, con el nombre del producto, el precio, la cantidad y el monto total calculado.
 
-    // Construir la consulta SQL con los filtros aplicados y ordenar por id_category
-    $sql = "SELECT p.*, c.name_category 
-        FROM product p 
-        JOIN category c ON p.id_category = c.id
-        /*WHERE p.status = 1*/ /*por si solo quiero que se muestre los disponibles*/
-        ORDER BY p.id_category ASC";  // Ordenar por id_category
+Primero, asegúrate de haber recuperado el order_details de la base de datos. Luego, puedes procesar y mostrar esta información en una tabla de HTML como se describe. Aquí tienes el código:
 
-    if ($search != '') {
-      $sql .= " AND p.name_product LIKE '%$search%'";
+*/
+
+// Supongamos que ya has recuperado el `order_details` y está almacenado en $order_details
+$order_details = "Producto: 1, Cantidad: 1, Subtotal: 45\nProducto: 2, Cantidad: 3, Subtotal: 135\nProducto: 5, Cantidad: 2, Subtotal: 90";
+
+// Dividir los detalles por líneas
+$order_items = explode("\n", trim($order_details));
+
+// Conexión a la base de datos
+include "./controller/connection.php";
+
+echo "<table border='1'>";
+echo "<tr>
+        <th>Nombre del producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Monto total</th>
+      </tr>";
+
+foreach ($order_items as $item) {
+    // Asegúrate de que no esté procesando una línea vacía
+    if (!empty($item)) {
+        // Dividir cada detalle en partes
+        $parts = explode(", ", $item);
+        
+        // Extraer los valores
+        $product_id = str_replace("Producto: ", "", $parts[0]);
+        $quantity = str_replace("Cantidad: ", "", $parts[1]);
+        $subtotal = str_replace("Subtotal: ", "", $parts[2]);
+
+        // Consulta adicional para obtener el nombre y el precio del producto
+        $product_query = "SELECT name_product, price_product FROM product WHERE id_product = '$product_id'";
+        $result = mysqli_query($connection, $product_query);
+        $product_data = mysqli_fetch_assoc($result);
+
+        $product_name = $product_data['name_product'];
+        $price = $product_data['price_product'];
+
+        // Calcular el monto total
+        $total = $price * $quantity;
+
+        echo "<tr>
+                <td>{$product_name}</td>
+                <td>Bs. " . number_format($price, 2, ',', '.') . "</td>
+                <td>{$quantity}</td>
+                <td>Bs. " . number_format($total, 2, ',', '.') . "</td>
+              </tr>";
     }
+}
 
-    $consult = mysqli_query($connection, $sql);
+echo "</table>";
 
-    // Array para almacenar los productos por categoría
-    $productsByCategory = [];
 
-    while ($ver = mysqli_fetch_array($consult)) {
-      $productsByCategory[$ver['id_category']][] = $ver;
-    }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const addToCartButtons = document.querySelectorAll('.btn_hero_2');
 
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Asumiendo que has establecido una variable de sesión para identificar al usuario
-                    // Aquí solo verificamos si la variable de sesión 'who' está definida
-                    <?php if (!isset($_SESSION['who'])): ?>
-                        alert('Debe registrarse para poder hacer un pedido.');
-                        window.location.href = '../login_oficial/login.php';
-                    <?php else: ?>
-                        // Código para agregar el producto al carrito aquí
-                        alert('Producto agregado al carrito.');
-                    <?php endif; ?>
-                });
-            });
-        });
-    </script>
-</head>
-<body>
-    <?php foreach ($productsByCategory as $categoryId => $products): ?>
-      <section class="section_container order_container" id="<?php echo strtolower($products[0]['name_category']); ?>">
+/*
+Explicación del Código:
+Recuperar y Dividir los Detalles de la Orden: El order_details se divide en líneas, cada una representando un producto.
 
-        <p class="section_description">
-          <?php echo strtoupper($products[0]['name_category']); ?>
-        </p>
+Consulta para Obtener Detalles del Producto: Se hace una consulta a la base de datos para obtener el nombre y el precio del producto basado en el id_product.
 
-        <div class="order_grid">
-          <?php foreach ($products as $product): ?>
-            <div class="order_card">
-              <img src="<?php echo "../../img/" . basename($product['img_product']); ?>" alt="order">
-              <h4><?php echo $product['name_product']; ?></h4>
-              <h2><?php echo number_format($product['price_product'], 2, ",", ".") . " Bs"; ?></h2>
+Calcular el Monto Total: Se calcula el monto total multiplicando la cantidad por el precio del producto.
 
-              <button class="btn_hero_2" data-id="<?php echo $product['id_product']; ?>">Agregar al carrito</button>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      </section>
-    <?php endforeach; ?>
-</body>
-</html>
+Mostrar los Detalles en una Tabla: Los detalles se presentan en una tabla HTML con columnas para el nombre del producto, precio, cantidad y monto total.
+
+Asegúrate de ajustar el código de acuerdo a tu estructura y datos reales. Con este enfoque, podrás mostrar todos los detalles relevantes de manera clara y ordenada.
+
+Si tienes más preguntas o necesitas más ajustes, ¡aquí estoy para ayudarte! */
+
+?>;
