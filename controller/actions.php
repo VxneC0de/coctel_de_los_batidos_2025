@@ -363,7 +363,7 @@ case 9:
             $sql_update_cart = "UPDATE cart SET status = 2 WHERE id_user_cart = '$id_user' AND status = 1";
             mysqli_query($connection, $sql_update_cart);
 
-            header("Location: ../visual/menu_client/menu_client.php");
+            header("Location: ../visual/order_client/order.php");
         } else {
             header("Location: ../visual/payment_oficial/payment.php?answer=2");
         }
