@@ -361,8 +361,23 @@ if (isset($_SESSION['who'])) { ?>
 
                 <?php
                     }
+
                     $formattedSubtotal = number_format($subtotal, 2, ',', '.');
                     $formattedTotal = number_format($subtotal, 2, ',', '.');
+
+                    // Obtener la tasa de cambio más reciente de la tabla tasas_de_cambio
+                    $tasaSql = "SELECT tasa_cambio FROM tasas_de_cambio ORDER BY fecha_cambio DESC LIMIT 1";
+                    $tasaResult = mysqli_query($connection, $tasaSql);
+                    
+                    if ($tasaResult && mysqli_num_rows($tasaResult) > 0) {
+                        $tasaRow = mysqli_fetch_assoc($tasaResult);
+                        $tasaCambio = $tasaRow['tasa_cambio'];
+                        $totalEfectivo = $subtotal / $tasaCambio;
+                        $formattedTotalEfectivo = number_format($totalEfectivo, 2, ',', '.');
+                    } else {
+                        $tasaCambio = 1; // Valor por defecto en caso de no encontrar la tasa
+                        $formattedTotalEfectivo = number_format($subtotal / $tasaCambio, 2, ',', '.');
+                    }
                 }
                 ?>
 
@@ -381,14 +396,15 @@ if (isset($_SESSION['who'])) { ?>
                 </div>
 
                 <div class="total_data">
-                    <span>TOTAL</span>
+                    <span>TOTAL EN BS</span>
                     <span class="total_amount">Bs. <?php echo $formattedTotal; ?></span>
                 </div>
 
                 <div class="total_data">
-                    <span>TOTAL</span>
-                    <span class="total_amount">Bs. <?php echo $formattedTotal; ?></span>
+                    <span>TOTAL EN EFECTIVO</span>
+                    <span class="total_amount_efectivo">$. <?php echo $formattedTotalEfectivo; ?></span>
                 </div>
+
 
             </div>
 
@@ -402,6 +418,7 @@ if (isset($_SESSION['who'])) { ?>
         </div>
   
     </section>
+
     
     <footer class="footer">
         
