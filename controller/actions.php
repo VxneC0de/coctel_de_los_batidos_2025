@@ -310,6 +310,7 @@ break;
 case 9:
     // INSERTAR DATOS DEL PAGO
     $id_user = $_SESSION['who'];
+    echo $_POST['payment_method']; // Verifica el valor recibido
     $id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
     $name = $_POST['namePay'];
     $lastName = $_POST['lasnamePay'];

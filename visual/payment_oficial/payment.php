@@ -185,7 +185,7 @@ if (isset($_SESSION['who'])) { ?>
 
                         <div class="payment-option" id="pago-movil">
                             
-                            <input type="radio" name="payment" id="radio-pago-movil">
+                            <input type="radio" name="payment_method" id="radio-pago-movil" value="movil">
                             <label for="radio-pago-movil" class="label_pago">Pago Móvil</label>
                             <div class="details_movil" id="details-movil">
 
@@ -219,7 +219,7 @@ if (isset($_SESSION['who'])) { ?>
           
                         <div class="payment-option" id="efectivo">
 
-                            <input type="radio" name="payment" id="radio-efectivo">
+                            <input type="radio" name="payment_method" id="radio-efectivo" value="efectivo">
                             <label for="radio-efectivo" class="label_pago">Efectivo</label>
                             <div class="details_efectivo" id="details-efectivo">
                           
@@ -241,7 +241,7 @@ if (isset($_SESSION['who'])) { ?>
           
                         <div class="payment-option" id="tarjeta">
 
-                            <input type="radio" name="payment" id="radio-tarjeta">
+                            <input type="radio" name="payment_method" id="radio-tarjeta" value="tarjeta">
                             <label for="radio-tarjeta" class="label_pago">Tarjeta</label>
                             <div class="details_tarjeta" id="details-tarjeta">
                           
@@ -584,7 +584,7 @@ if (isset($_SESSION['who'])) { ?>
 
         document.addEventListener('DOMContentLoaded', () => {
             const pickupDiv = document.querySelector('.pickup');
-            const radioInputs = document.querySelectorAll('input[name="payment"]');
+            const radioInputs = document.querySelectorAll('input[name="payment_method"]');
         
             pickupDiv.addEventListener('click', () => {
                 // Desmarcar otros radio inputs

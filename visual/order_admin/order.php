@@ -195,7 +195,7 @@ if (isset($_SESSION['who'])) { ?>
 
         <div class="modal_overlay"></div>
 
-        <section class="show_order" id="orderModal" style="display:none;">
+        <section class="show_order" id="orderModal">
     <button class="close_show_order"><i class="fas fa-times"></i></button>
     <div class="order_header">
         <h2>Informacion del pedido</h2>
@@ -219,8 +219,43 @@ if (isset($_SESSION['who'])) { ?>
         </div>
     </div>
     <div class="table_details">
-        <!-- Aquí irían los detalles del pedido (productos, precios, etc.) -->
+    <div class="table_section_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Monto total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Suponiendo que $order_details contiene los detalles del pedido en formato de texto
+                $product_lines = explode("\n", $ver['order_details']);
+                foreach ($product_lines as $line) {
+                    list($producto, $cantidad, $subtotal) = explode(",", $line);
+                    $product_id = explode(": ", $producto)[1];
+                    $cantidad = explode(": ", $cantidad)[1];
+                    $subtotal = explode(": ", $subtotal)[1];
+                    
+                    // Aquí puedes obtener el nombre del producto de la base de datos usando $product_id
+                    $product_name = "Nombre del producto"; // Reemplazar esto con la lógica adecuada
+
+                    echo "<tr>";
+                    echo "<td>$product_name</td>";
+                    echo "<td>BS. $subtotal</td>";
+                    echo "<td>$cantidad</td>";
+                    echo "<td>$$subtotal</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
+</div>
+    </div>
+
     <div class="total_amount">
         <label for="total_bs">Total Bs:</label>
         <span id="total_bs"></span>
