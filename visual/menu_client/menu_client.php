@@ -75,15 +75,15 @@ if (isset($_SESSION['who'])) { ?>
 
           <div class="cart_items">
 
-    <?php
-    include "../../controller/connection.php";
+            <?php
+            include "../../controller/connection.php";
 
-    if (isset($_SESSION['who'])) {
-        $user_id = $_SESSION['who'];
+            if (isset($_SESSION['who'])) {
+              $user_id = $_SESSION['who'];
 
-        $search = isset($_POST['search']) ? $_POST['search'] : '';
+              $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-        $sql = "
+              $sql = "
             SELECT 
                 c.id_cart, 
                 c.price_cart, 
@@ -100,42 +100,42 @@ if (isset($_SESSION['who'])) { ?>
                 c.status = 1
         ";
 
-        $consult = mysqli_query($connection, $sql);
+              $consult = mysqli_query($connection, $sql);
 
-        $subtotal = 0;
+              $subtotal = 0;
 
-        while ($ver = mysqli_fetch_array($consult)) {
-            $id_cart = $ver['id_cart']; // Asegúrate de asignar el id_cart aquí
-            $nameProduct = $ver['name_product'];
-            $priceCart = $ver['price_cart'];
-            $quantityCart = $ver['quantity_cart'];
-            $subtotal += $priceCart;
-    ?>
+              while ($ver = mysqli_fetch_array($consult)) {
+                $id_cart = $ver['id_cart']; // Asegúrate de asignar el id_cart aquí
+                $nameProduct = $ver['name_product'];
+                $priceCart = $ver['price_cart'];
+                $quantityCart = $ver['quantity_cart'];
+                $subtotal += $priceCart;
+                ?>
 
-            <div class="cart_item">
-                <div class="remove_item">
-                <a href="#" onclick="deleteProductDirectly(<?php echo $id_cart; ?>)"><i class='bx bx-trash'></i></a>
-                </div>
-                <div class="item_details">
+                <div class="cart_item">
+                  <div class="remove_item">
+                    <a href="#" onclick="deleteProductDirectly(<?php echo $id_cart; ?>)"><i class='bx bx-trash'></i></a>
+                  </div>
+                  <div class="item_details">
                     <div class="item_details_title">
-                        <p><?php echo $nameProduct; ?></p>
+                      <p><?php echo $nameProduct; ?></p>
                     </div>
                     <div class="item_details_price">
-                        <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong>
+                      <strong>Bs. <span><?php echo number_format($priceCart, 2, '.', ''); ?></span></strong>
                     </div>
-                </div>
-                <div class="qty">
-                    <span>-</span>
+                  </div>
+                  <div class="qty">
+                    <span class="decrement">-</span>
                     <strong><?php echo $quantityCart; ?></strong>
-                    <span>+</span>
+                    <span class="increment">+</span>
+                  </div>
                 </div>
-            </div>
 
-    <?php
-        }
-    }
-    ?>
-</div>
+                <?php
+              }
+            }
+            ?>
+          </div>
 
 
           <div class="cart_actions">
@@ -218,7 +218,8 @@ if (isset($_SESSION['who'])) { ?>
         <div class="hero_text">
           <h2>#Sabores para cualquier momento</h2>
           <h1>¡El Cóctel de los Batidos 2025 te da la bienvenida!</h1>
-          <p>Impulsa tu día con nuestras empanadas, pastelitos y jugos naturales. ¡Disfruta de una combinación perfecta de sabor y energía en tus mañanas!</p>
+          <p>Impulsa tu día con nuestras empanadas, pastelitos y jugos naturales. ¡Disfruta de una combinación perfecta de
+            sabor y energía en tus mañanas!</p>
 
         </div>
 
@@ -267,7 +268,7 @@ if (isset($_SESSION['who'])) { ?>
         JOIN category c ON p.id_category = c.id
         /*WHERE p.status = 1*/ /*por si solo quiero que se muestre los disponibles*/
         ORDER BY p.id_category ASC";  // Ordenar por id_category
-
+  
     if ($search != '') {
       $sql .= " AND p.name_product LIKE '%$search%'";
     }
@@ -347,35 +348,35 @@ if (isset($_SESSION['who'])) { ?>
       </div>
     </section>
 
-    <script> 
-    function deleteProductDirectly(cod) { 
-    window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=10"; 
-}
+    <script>
+      function deleteProductDirectly(cod) {
+        window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=10";
+      }
 
     </script>
 
     <?php
-      include "../../controller/connection.php";
+    include "../../controller/connection.php";
 
-      if (isset($_SESSION['who'])) {
-        $user_id = $_SESSION['who'];
-        $sql = "SELECT SUM(quantity_cart) as total_quantity FROM cart WHERE id_user_cart = '$user_id' AND status = 1";
-        $consult = mysqli_query($connection, $sql);
-        $row = mysqli_fetch_assoc($consult);
-        $total_quantity = $row['total_quantity'] ? $row['total_quantity'] : 0;
-      } else {
-        $total_quantity = 0;
-      }
+    if (isset($_SESSION['who'])) {
+      $user_id = $_SESSION['who'];
+      $sql = "SELECT SUM(quantity_cart) as total_quantity FROM cart WHERE id_user_cart = '$user_id' AND status = 1";
+      $consult = mysqli_query($connection, $sql);
+      $row = mysqli_fetch_assoc($consult);
+      $total_quantity = $row['total_quantity'] ? $row['total_quantity'] : 0;
+    } else {
+      $total_quantity = 0;
+    }
     ?>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.cart_icon span').textContent = <?php echo $total_quantity; ?>;
       });
     </script>
 
     <script>
       document.querySelectorAll('.btn_hero_2').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           const productId = this.getAttribute('data-id');
 
           // Hacer una llamada AJAX para obtener los detalles del producto
@@ -409,163 +410,212 @@ if (isset($_SESSION['who'])) { ?>
         });
       });
 
-        document.querySelector('.close_show_order').addEventListener('click', function() {
+      document.querySelector('.close_show_order').addEventListener('click', function () {
         document.querySelector('.modal_overlay').style.display = 'none';
         document.querySelector('.show_order').style.display = 'none';
       });
 
-      document.querySelector('.increment').addEventListener('click', function() {
-        const quantityInput = document.getElementById('productQuantity');
-        let quantity = parseInt(quantityInput.value);
-        quantity++;
-        quantityInput.value = quantity;
+      // Increment and decrement functionality for .qty section
+      document.querySelectorAll('.qty .increment').forEach(button => {
+        button.addEventListener('click', function () {
+          const quantityElement = this.previousElementSibling;
+          let quantity = parseInt(quantityElement.textContent);
+          quantity++;
+          quantityElement.textContent = quantity;
 
-        const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
-        productData.quantity = quantity;
-        document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
+          // Update hidden input fields and subtotal
+          updateCartItem(this.closest('.cart_item'), quantity);
+        });
       });
 
-      document.querySelector('.decrement').addEventListener('click', function() {
-        const quantityInput = document.getElementById('productQuantity');
-        let quantity = parseInt(quantityInput.value);
-        if (quantity > 1) {
-          quantity--;
-          quantityInput.value = quantity;
-        }
+      document.querySelectorAll('.qty .decrement').forEach(button => {
+        button.addEventListener('click', function () {
+          const quantityElement = this.nextElementSibling;
+          let quantity = parseInt(quantityElement.textContent);
+          if (quantity > 1) {
+            quantity--;
+            quantityElement.textContent = quantity;
 
-        const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
-        productData.quantity = quantity;
-        document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
+            // Update hidden input fields and subtotal
+            updateCartItem(this.closest('.cart_item'), quantity);
+          }
+        });
+      });
+
+      // Increment and decrement functionality for .quantity_control section
+      document.querySelectorAll('.quantity_control .increment').forEach(button => {
+        button.addEventListener('click', function () {
+          const quantityInput = document.getElementById('productQuantity');
+          let quantity = parseInt(quantityInput.value);
+          quantity++;
+          quantityInput.value = quantity;
+
+          // Update product data and hidden input fields
+          const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
+          productData.quantity = quantity;
+          document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
+        });
+      });
+
+      document.querySelectorAll('.quantity_control .decrement').forEach(button => {
+        button.addEventListener('click', function () {
+          const quantityInput = document.getElementById('productQuantity');
+          let quantity = parseInt(quantityInput.value);
+          if (quantity > 1) {
+            quantity--;
+            quantityInput.value = quantity;
+
+            // Update product data and hidden input fields
+            const productData = JSON.parse(document.querySelector('.add_to_cart').dataset.product);
+            productData.quantity = quantity;
+            document.querySelector('.add_to_cart').dataset.product = JSON.stringify(productData);
+          }
+        });
       });
 
       // Funcionalidad para "Mandar al carrito"
-      document.querySelector('.add_to_cart').addEventListener('click', function() {
-    const productData = JSON.parse(this.dataset.product);
+      document.querySelector('.add_to_cart').addEventListener('click', function () {
+        const productData = JSON.parse(this.dataset.product);
 
-    if (productData.status != 1) {
-        alert('El producto no está disponible, no se puede agregar al carrito.');
-        // Close the modal after alert is acknowledged
-        document.querySelector('.modal_overlay').style.display = 'none';
-        document.querySelector('.show_order').style.display = 'none';
-        return;
-    }
+        if (productData.status != 1) {
+          alert('El producto no está disponible, no se puede agregar al carrito.');
+          // Close the modal after alert is acknowledged
+          document.querySelector('.modal_overlay').style.display = 'none';
+          document.querySelector('.show_order').style.display = 'none';
+          return;
+        }
 
-    const cartItemsContainer = document.querySelector('.cart_items');
-    let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem =>
-        cartItem.querySelector('.item_details_title p').textContent === productData.name
-    );
+        const cartItemsContainer = document.querySelector('.cart_items');
+        let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem =>
+          cartItem.querySelector('.item_details_title p').textContent === productData.name
+        );
 
-    const form = document.querySelector('.cart_sidebar');
+        const form = document.querySelector('.cart_sidebar');
 
-    let isExistingProduct = false;
+        let isExistingProduct = false;
 
-    if (existingCartItem) {
-        const existingQuantity = existingCartItem.querySelector('.qty strong');
-        const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
-        existingQuantity.textContent = newQuantity;
+        if (existingCartItem) {
+          const existingQuantity = existingCartItem.querySelector('.qty strong');
+          const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
+          existingQuantity.textContent = newQuantity;
 
-        const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
-        const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
-        existingPriceSpan.textContent = newPrice;
+          const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
+          const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
+          existingPriceSpan.textContent = newPrice;
 
-        const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
-        quantityInput.value = newQuantity;
-        const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
-        priceInput.value = newPrice;
+          const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
+          quantityInput.value = newQuantity;
+          const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
+          priceInput.value = newPrice;
 
-        isExistingProduct = true;
-    } else {
-        const cartItem = document.createElement('div');
-        cartItem.classList.add('cart_item');
+          isExistingProduct = true;
+        } else {
+          const cartItem = document.createElement('div');
+          cartItem.classList.add('cart_item');
 
-        cartItem.innerHTML = `
-            <div class="remove_item">
-                <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
-            </div>
-            <div class="item_details">
-                <div class="item_details_title">
-                    <p>${productData.name}</p>
-                </div>
-                <div class="item_details_price">
-                    <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
-                </div> 
-            </div>
-            <div class="qty">
-                <span>-</span>
-                <strong>${productData.quantity}</strong>
-                <span>+</span>
-            </div>
-        `;
+          cartItem.innerHTML = `
+                                <div class="remove_item">
+                                    <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
+                                </div>
+                                <div class="item_details">
+                                    <div class="item_details_title">
+                                        <p>${productData.name}</p>
+                                    </div>
+                                    <div class="item_details_price">
+                                        <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
+                                    </div> 
+                                </div>
+                                <div class="qty">
+                                    <span>-</span>
+                                    <strong>${productData.quantity}</strong>
+                                    <span>+</span>
+                                </div>
+                            `;
 
-        cartItemsContainer.appendChild(cartItem);
+          cartItemsContainer.appendChild(cartItem);
 
-        const hiddenInputsHTML = `
-            <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
-            <input type="hidden" name="id_product_cart[]" value="${productData.id}">
-            <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
-            <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
-            <input type="hidden" name="status[]" value="1">
-        `;
-        form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
+          const hiddenInputsHTML = `
+                                <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
+                                <input type="hidden" name="id_product_cart[]" value="${productData.id}">
+                                <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
+                                <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
+                                <input type="hidden" name="status[]" value="1">
+                            `;
+          form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
 
-        // Añadir evento click para eliminar el producto del DOM
-        cartItem.querySelector('.remove_cart_item').addEventListener('click', function(e) {
+          // Añadir evento click para eliminar el producto del DOM
+          cartItem.querySelector('.remove_cart_item').addEventListener('click', function (e) {
             e.preventDefault();
             cartItem.remove();
             updateSubtotal();
             updateCartQuantity();
+          });
+        }
+
+        updateSubtotal();
+        updateCartQuantity(productData.quantity, isExistingProduct);
+
+        // Close the modal regardless of new or existing product
+        document.querySelector('.modal_overlay').style.display = 'none';
+        document.querySelector('.show_order').style.display = 'none';
+      });
+
+      function updateCartQuantity(addedQuantity, isExistingProduct) {
+        const cartIcon = document.querySelector('.cart_icon span');
+        let currentQuantity = parseInt(cartIcon.textContent);
+
+        if (isExistingProduct) {
+          // Do not increment the total count if it's an existing product being updated
+          currentQuantity += addedQuantity;
+        } else {
+          // Increment the total count for new products
+          currentQuantity += addedQuantity;
+        }
+
+        cartIcon.textContent = currentQuantity;
+      }
+
+      // Update subtotal function
+      function updateSubtotal() {
+        const cartItems = document.querySelectorAll('.cart_item');
+        let subtotal = 0;
+
+        cartItems.forEach(item => {
+          const price = parseFloat(item.querySelector('.item_details_price span').textContent);
+          subtotal += price;
         });
-    }
 
-    updateSubtotal();
-    updateCartQuantity(productData.quantity, isExistingProduct);
+        document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
+      }
 
-    // Close the modal regardless of new or existing product
-    document.querySelector('.modal_overlay').style.display = 'none'; 
-    document.querySelector('.show_order').style.display = 'none'; 
-});
+      // Function to update cart item quantity
+      function updateCartItem(cartItem, newQuantity) {
+        const quantityInput = cartItem.querySelector('input[name="quantity_cart[]"]');
+        quantityInput.value = newQuantity;
 
-function updateCartQuantity(addedQuantity, isExistingProduct) {
-    const cartIcon = document.querySelector('.cart_icon span');
-    let currentQuantity = parseInt(cartIcon.textContent);
-    
-    if (isExistingProduct) {
-        // Do not increment the total count if it's an existing product being updated
-        currentQuantity += addedQuantity;
-    } else {
-        // Increment the total count for new products
-        currentQuantity += addedQuantity;
-    }
-    
-    cartIcon.textContent = currentQuantity;
-}
+        // Update the price in the cart item
+        const priceElement = cartItem.querySelector('.item_details_price span');
+        const pricePerItem = parseFloat(priceElement.dataset.pricePerItem);
+        priceElement.textContent = (pricePerItem * newQuantity).toFixed(2);
 
-function updateSubtotal() {
-    const cartItems = document.querySelectorAll('.cart_item');
-    let subtotal = 0;
-
-    cartItems.forEach(item => {
-        const price = parseFloat(item.querySelector('.item_details_price span').textContent);
-        subtotal += price;
-    });
-
-    document.querySelector('#subtotal').textContent = subtotal.toFixed(2);
-}
+        // Update the subtotal
+        updateSubtotal();
+      }
 
     </script>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         const userIcon = document.querySelector('.user_icon a');
         const userSidebar = document.querySelector('.user_sidebar');
         const closeuser = document.querySelector('.close_user');
 
-        userIcon.addEventListener('click', function(event) {
+        userIcon.addEventListener('click', function (event) {
           event.preventDefault();
           userSidebar.style.right = '0';
         });
 
-        closeuser.addEventListener('click', function() {
+        closeuser.addEventListener('click', function () {
           userSidebar.style.right = '-100%';
         });
 
@@ -573,17 +623,17 @@ function updateSubtotal() {
     </script>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         const cartIcon = document.querySelector('.cart_icon a');
         const cartSidebar = document.querySelector('.cart_sidebar');
         const closeCart = document.querySelector('.close_cart');
 
-        cartIcon.addEventListener('click', function(event) {
+        cartIcon.addEventListener('click', function (event) {
           event.preventDefault();
           cartSidebar.style.right = '0';
         });
 
-        closeCart.addEventListener('click', function() {
+        closeCart.addEventListener('click', function () {
           cartSidebar.style.right = '-100%';
         });
       });
@@ -622,12 +672,12 @@ function updateSubtotal() {
     </script>
 
     <script>
-      document.querySelector('.btn_hero_2').addEventListener('click', function() {
+      document.querySelector('.btn_hero_2').addEventListener('click', function () {
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'flex';
       });
 
-      document.querySelector('.close_show_order').addEventListener('click', function() {
+      document.querySelector('.close_show_order').addEventListener('click', function () {
         document.querySelector('.modal_overlay').style.display = 'none';
         document.querySelector('.show_order').style.display = 'none';
       });
