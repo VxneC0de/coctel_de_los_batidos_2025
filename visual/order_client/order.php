@@ -123,13 +123,13 @@ if (isset($_SESSION['who'])) { ?>
             FROM orders o
             JOIN user u ON o.id_user_order = u.id
             JOIN payment p ON o.id_payment_order = p.id_payment
-            WHERE o.id_user_order = $currentUserId AND o.status != 3
+            WHERE o.id_user_order = $currentUserId
         ";
 
         if ($search != '') { 
             $sql .= " AND u.nick LIKE '%$search%'"; 
         }
-
+        
         $consult = mysqli_query($connection, $sql);
 
         while ($ver = mysqli_fetch_array($consult)) {

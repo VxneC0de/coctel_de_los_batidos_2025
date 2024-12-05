@@ -11,9 +11,18 @@ if (isset($_SESSION['who'])) { ?>
     <link rel="stylesheet" href="./order.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <script>
+    // Recargar la página cada 1 minuto (60000 milisegundos)
+    setInterval(function(){
+        location.reload();
+    }, 60000); // 60000 milisegundos = 1 minuto
+    </script>
 </head>
 <body>
 
+<?php
+        include "../../controller/connection.php";
+    ?>
 
         <nav>
             <div class="wrapper_nav">
@@ -120,16 +129,16 @@ if (isset($_SESSION['who'])) { ?>
 
         // Construir la consulta SQL
         $sql = "
-            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details, p.img_payment
-            FROM orders o
-            JOIN user u ON o.id_user_order = u.id
-            JOIN payment p ON o.id_payment_order = p.id_payment
-            WHERE o.status != 3
-        ";
+    SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details, p.img_payment
+    FROM orders o
+    JOIN user u ON o.id_user_order = u.id
+    JOIN payment p ON o.id_payment_order = p.id_payment
+";
 
-        if ($search != '') { 
-            $sql .= " AND u.nick LIKE '%$search%'"; 
-        }
+if ($search != '') { 
+    $sql .= " WHERE u.nick LIKE '%$search%'"; 
+}
+
 
         $consult = mysqli_query($connection, $sql);
 
@@ -199,106 +208,105 @@ if (isset($_SESSION['who'])) { ?>
         <div class="modal_overlay"></div>
 
         <section class="show_order" id="orderModal">
-    <button class="close_show_order"><i class="fas fa-times"></i></button>
-    <div class="order_header">
-        <h2>Información del pedido</h2>
-    </div>
-    <div class="user_info">
-        <div class="name_field">
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" readonly>
+    <form id="orderForm" method="post" action="update_status.php">
+        <button class="close_show_order"><i class="fas fa-times"></i></button>
+        <div class="order_header">
+            <h2>Información del pedido</h2>
         </div>
-        <div class="surname_field">
-            <label for="surname">Apellido:</label>
-            <input type="text" id="surname" readonly>
+        <div class="user_info">
+            <div class="name_field">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" readonly>
+            </div>
+            <div class="surname_field">
+                <label for="surname">Apellido:</label>
+                <input type="text" id="surname" readonly>
+            </div>
+            <div class="email_field">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" readonly>
+            </div>
+            <div class="cellphone_field">
+                <label for="cellphone">Celular:</label>
+                <input type="tel" id="cellphone" readonly>
+            </div>
         </div>
-        <div class="email_field">
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" readonly>
-        </div>
-        <div class="cellphone_field">
-            <label for="cellphone">Celular:</label>
-            <input type="tel" id="cellphone" readonly>
-        </div>
-    </div>
 
-    <div class="table_details">
-
-                <div class="table_header_list">
-                    <div class="table_name">
-                        <p>Productos</p>
-                    </div>
+        <div class="table_details">
+            <div class="table_header_list">
+                <div class="table_name">
+                    <p>Productos</p>
                 </div>
-
-        <div class="table_section_list">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre del producto</th>
-                        <th>Precio</th>
-                        <th>Cantidad</th>
-                        <th>Monto total</th>
-                    </tr>
-                </thead>
-                <tbody id="orderDetailsTableBody">
-                    <!-- Detalles del pedido serán insertados aquí -->
-                </tbody>
-            </table>
+            </div>
+            <div class="table_section_list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre del producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Monto total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderDetailsTableBody">
+                        <!-- Detalles del pedido serán insertados aquí -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-    </div>
+        <div class="total_amount">
+            <label for="total_bs">Total Bs:</label>
+            <span id="total_bs"></span>
+            <label for="total_ef">Total Efectivo:</label>
+            <span id="total_ef"></span>
+        </div>
 
-    <div class="total_amount">
-        <label for="total_bs">Total Bs:</label>
-        <span id="total_bs"></span>
-        <label for="total_ef">Total Efectivo:</label>
-        <span id="total_ef"></span>
-    </div>
+        <div class="user_payment">
+            <div class="payment_method">
+                <label for="payment">Forma de Pago:</label>
+                <input type="text" id="payment" readonly>
+            </div>
+            <div class="payment_method">
+                <label for="capture">Captura del pago:</label>
+                <span class="icon_clickable"><i class='bx bx-image'></i></span>
+            </div>
+            <div class="payment_method">
+                <label for="reference">Referencia:</label>
+                <input type="text" id="reference" readonly>
+            </div>
+            <div class="payment_method">
+                <label for="phone">Celular de pago:</label>
+                <input type="text" id="phone" readonly>
+            </div>
+            <div class="order_time">
+                <label for="selectedDate">Fecha del Pedido:</label>
+                <input type="text" id="selectedDate" value="Hoy" readonly>
+            </div>
+            <div class="order_time">
+                <label for="selectedTime">Hora del Pedido:</label>
+                <input type="text" id="selectedTime" readonly>
+            </div>
+        </div>
 
-    <div class="user_payment">
-        <div class="payment_method">
-            <label for="payment">Forma de Pago:</label>
-            <input type="text" id="payment" readonly>
+        <div class="status_list">
+            <label for="status_pedido">Estatus del Pedido</label>
+            <select id="status_pedido" name="status_pedido" class="status_select">
+                <option value="1">En confirmación</option>
+                <option value="2">En proceso</option>
+                <option value="3">Listo</option>
+                <option value="4">Entregado</option>
+            </select>
         </div>
-        <div class="payment_method">
-            <label for="capture">Captura del pago:</label>
-            <span class="icon_clickable"><i class='bx bx-image'></i></span>
-        </div>
-        <div class="payment_method">
-            <label for="reference">Referencia:</label>
-            <input type="text" id="reference" readonly>
-        </div>
-        <div class="payment_method">
-            <label for="phone">Celular de pago:</label>
-            <input type="text" id="phone" readonly>
-        </div>
-        <div class="order_time">
-            <label for="selectedDate">Fecha del Pedido:</label>
-            <input type="text" id="selectedDate" value="Hoy" readonly>
-        </div>
-        <div class="order_time">
-            <label for="selectedTime">Hora del Pedido:</label>
-            <input type="text" id="selectedTime" readonly>
-        </div>
-    </div>
+        
+        <input type="hidden" name="order_id" id="order_id">
+        <input type="hidden" name="hidden" value="12">
 
-    <div class="status_list">
-        <label for="status_pedido">Estatus del Pedido</label>
-        <select id="status_pedido" class="status_select">
-            <option value="confirmacion">En confirmación</option>
-            <option value="proceso">En proceso</option>
-            <option value="listo">Listo</option>
-            <option value="entregado">Entregado</option>
-        </select>
-    </div>
-
-    <div class="box_submit">
-        <input type="submit" class="submit" value="Actualizar estatus">
-    </div>
-    
+        <div class="box_submit">
+            <input type="submit" class="submit" value="Actualizar estatus">
+        </div>
+    </form>
         </section>
-
-
           
         <section class="show_data">
     <button class="close_show_data"><i class="fas fa-times"></i></button>
@@ -384,6 +392,7 @@ document.querySelectorAll('.button_action_1').forEach(button => {
         document.getElementById('reference').value = reference;
         document.getElementById('phone').value = refPhone;
         document.getElementById('selectedTime').value = time;
+        document.getElementById('order_id').value = idOrder;
 
         // Establecer el valor del select de estado
         document.getElementById('status_pedido').value = statusText;
