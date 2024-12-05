@@ -1,70 +1,93 @@
-<?php
-
-
-// Supongamos que ya has recuperado el `order_details` y está almacenado en $order_details
-$order_details = "Producto: 1, Cantidad: 1, Subtotal: 45\nProducto: 2, Cantidad: 3, Subtotal: 135\nProducto: 5, Cantidad: 2, Subtotal: 90";
-
-// Dividir los detalles por líneas
-$order_items = explode("\n", trim($order_details));
-
-// Conexión a la base de datos
-include "./controller/connection.php";
-
-echo "<table border='1'>";
-echo "<tr>
-        <th>Nombre del producto</th>
-        <th>Precio</th>
-        <th>Cantidad</th>
-        <th>Monto total</th>
-      </tr>";
-
-foreach ($order_items as $item) {
-    // Asegúrate de que no esté procesando una línea vacía
-    if (!empty($item)) {
-        // Dividir cada detalle en partes
-        $parts = explode(", ", $item);
-        
-        // Extraer los valores
-        $product_id = str_replace("Producto: ", "", $parts[0]);
-        $quantity = str_replace("Cantidad: ", "", $parts[1]);
-        $subtotal = str_replace("Subtotal: ", "", $parts[2]);
-
-        // Consulta adicional para obtener el nombre y el precio del producto
-        $product_query = "SELECT name_product, price_product FROM product WHERE id_product = '$product_id'";
-        $result = mysqli_query($connection, $product_query);
-        $product_data = mysqli_fetch_assoc($result);
-
-        $product_name = $product_data['name_product'];
-        $price = $product_data['price_product'];
-
-        // Calcular el monto total
-        $total = $price * $quantity;
-
-        echo "<tr>
-                <td>{$product_name}</td>
-                <td>Bs. " . number_format($price, 2, ',', '.') . "</td>
-                <td>{$quantity}</td>
-                <td>Bs. " . number_format($total, 2, ',', '.') . "</td>
-              </tr>";
-    }
+function updateCartQuantity() {
+    const cartIcon = document.querySelector('.cart_icon span');
+    const uniqueProductsCount = document.querySelectorAll('.cart_items .cart_item').length;
+    cartIcon.textContent = uniqueProductsCount;
 }
 
-echo "</table>";
+// Funcionalidad para "Mandar al carrito"
+document.querySelector('.add_to_cart').addEventListener('click', function() {
+    const productData = JSON.parse(this.dataset.product);
 
+    if (productData.status != 1) {
+        alert('El producto no está disponible, no se puede agregar al carrito.');
+        document.querySelector('.modal_overlay').style.display = 'none';
+        document.querySelector('.show_order').style.display = 'none';
+        return;
+    }
 
+    const cartItemsContainer = document.querySelector('.cart_items');
+    let existingCartItem = Array.from(cartItemsContainer.querySelectorAll('.cart_item')).find(cartItem =>
+        cartItem.querySelector('.item_details_title p').textContent === productData.name
+    );
 
-/*
-Explicación del Código:
-Recuperar y Dividir los Detalles de la Orden: El order_details se divide en líneas, cada una representando un producto.
+    const form = document.querySelector('.cart_sidebar');
 
-Consulta para Obtener Detalles del Producto: Se hace una consulta a la base de datos para obtener el nombre y el precio del producto basado en el id_product.
+    if (existingCartItem) {
+        const existingQuantity = existingCartItem.querySelector('.qty strong');
+        const newQuantity = parseInt(existingQuantity.textContent) + productData.quantity;
+        existingQuantity.textContent = newQuantity;
 
-Calcular el Monto Total: Se calcula el monto total multiplicando la cantidad por el precio del producto.
+        const existingPriceSpan = existingCartItem.querySelector('.item_details_price span');
+        const newPrice = (parseFloat(existingPriceSpan.textContent) + (productData.price * productData.quantity)).toFixed(2);
+        existingPriceSpan.textContent = newPrice;
 
-Mostrar los Detalles en una Tabla: Los detalles se presentan en una tabla HTML con columnas para el nombre del producto, precio, cantidad y monto total.
+        const quantityInput = existingCartItem.querySelector('input[name="quantity_cart[]"]');
+        quantityInput.value = newQuantity;
+        const priceInput = existingCartItem.querySelector('input[name="price_cart[]"]');
+        priceInput.value = newPrice;
+    } else {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart_item');
 
-Asegúrate de ajustar el código de acuerdo a tu estructura y datos reales. Con este enfoque, podrás mostrar todos los detalles relevantes de manera clara y ordenada.
+        cartItem.innerHTML = `
+            <div class="remove_item">
+                <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
+            </div>
+            <div class="item_details">
+                <div class="item_details_title">
+                    <p>${productData.name}</p>
+                </div>
+                <div class="item_details_price">
+                    <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
+                </div>
+            </div>
+            <div class="qty">
+                <span>-</span>
+                <strong>${productData.quantity}</strong>
+                <span>+</span>
+            </div>
+        `;
 
-Si tienes más preguntas o necesitas más ajustes, ¡aquí estoy para ayudarte! */
+        cartItemsContainer.appendChild(cartItem);
 
-?>;
+        const hiddenInputsHTML = `
+            <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
+            <input type="hidden" name="id_product_cart[]" value="${productData.id}">
+            <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
+            <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
+            <input type="hidden" name="status[]" value="1">
+        `;
+        form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
+
+        // Añadir evento click para eliminar el producto del DOM
+        cartItem.querySelector('.remove_cart_item').addEventListener('click', function(e) {
+            e.preventDefault();
+            cartItem.remove();
+            updateSubtotal();
+            updateCartQuantity();
+        });
+    }
+
+    updateSubtotal();
+    updateCartQuantity();
+
+    // Cerrar el modal independientemente de si es un producto nuevo o existente
+    document.querySelector('.modal_overlay').style.display = 'none';
+    document.querySelector('.show_order').style.display = 'none';
+});
+
+// Al cargar el carrito desde la base de datos
+document.addEventListener('DOMContentLoaded', function() {
+    const cartItemsCount = document.querySelectorAll('.cart_items .cart_item').length;
+    document.querySelector('.cart_icon span').textContent = cartItemsCount;
+});
