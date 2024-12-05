@@ -592,7 +592,7 @@ nav input {
 }
 
 .header_content {
-    margin-top: 5rem; //REVISAR EN OTRAS VISTAS
+    margin-top: 5rem;
 }
 
 .header_content h2 {
@@ -844,6 +844,7 @@ nav input {
     border-radius: 5px;
     background-color: #f9f9f9;
     color: #333;
+    pointer-events: none;
 }
 
 .input_group textarea {
@@ -1266,7 +1267,7 @@ nav input {
 
 @media screen and (max-width: 570px) {
     .hero {
-        height: auto; //revisar
+        height: auto;
     }
 }
 

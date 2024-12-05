@@ -14,8 +14,8 @@ CREATE TABLE payment (
     lastName_payment VARCHAR(50) NOT NULL,
     phone_payment VARCHAR(20) NOT NULL,
     description_payment TEXT NOT NULL,
-    date_payment DATE NOT NULL,
-    hour_payment TIME NOT NULL,
+    date_payment VARCHAR(50) NOT NULL,
+    hour_payment VARCHAR(50) NOT NULL,
     reference_data VARCHAR(50) NOT NULL,
     reference_phone VARCHAR(20) NOT NULL,
     img_payment VARCHAR(255)
@@ -121,7 +121,38 @@ CREATE TABLE user_two (
 
 */
 
+/*
+case 7:
 
+        $user_id = $_SESSION['who'];
+
+        foreach ($id_product_cart as $index => $product_id) {
+            $product_price = $price_cart[$index];
+            $product_quantity = $quantity_cart[$index];
+            $status_value = $status[$index];
+
+            // Verificar si el producto ya existe en el carrito para ese usuario
+            $checkQuery = "SELECT * FROM cart WHERE id_user_cart = '$user_id' AND id_product_cart = '$product_id'";
+            $checkResult = mysqli_query($connection, $checkQuery);
+
+            if (mysqli_num_rows($checkResult) > 0) {
+                // Actualizar la cantidad del producto en el carrito
+                $query = "UPDATE cart SET quantity_cart = '$product_quantity', price_cart = '$product_price' WHERE id_user_cart = '$user_id' AND id_product_cart = '$product_id'";
+            } else {
+                // Insertar el nuevo producto en el carrito
+                $query = "INSERT INTO cart (id_user_cart, id_product_cart, price_cart, quantity_cart, status) VALUES ('$user_id', '$product_id', '$product_price', '$product_quantity', '$status_value')";
+            }
+
+            $consulta = mysqli_query($connection, $query);
+
+            if (!$consulta) {
+                echo "Error: " . mysqli_error($connection);
+            }
+        }
+        header("Location: ../visual/payment_oficial/payment.php");
+        break;
+
+*/
 
 
 

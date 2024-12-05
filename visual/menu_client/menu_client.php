@@ -12,6 +12,24 @@ if (isset($_SESSION['who'])) { ?>
     <link rel="stylesheet" href="./menu_client.css">
     <title>Sing In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+    <style>
+      .input_group input,
+      .input_group textarea {
+        flex-basis: 70%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        color: #333;
+        pointer-events: none;
+      }
+
+      .close_ocult{
+        display: none;
+      }
+    </style>
+
   </head>
 
   <body>
@@ -105,7 +123,7 @@ if (isset($_SESSION['who'])) { ?>
               $subtotal = 0;
 
               while ($ver = mysqli_fetch_array($consult)) {
-                $id_cart = $ver['id_cart']; // Asegúrate de asignar el id_cart aquí
+                $id_cart = $ver['id_cart'];
                 $nameProduct = $ver['name_product'];
                 $priceCart = $ver['price_cart'];
                 $quantityCart = $ver['quantity_cart'];
@@ -266,7 +284,6 @@ if (isset($_SESSION['who'])) { ?>
     $sql = "SELECT p.*, c.name_category 
         FROM product p 
         JOIN category c ON p.id_category = c.id
-        /*WHERE p.status = 1*/ /*por si solo quiero que se muestre los disponibles*/
         ORDER BY p.id_category ASC";  // Ordenar por id_category
   
     if ($search != '') {
@@ -325,7 +342,7 @@ if (isset($_SESSION['who'])) { ?>
             <label for="productPrice">Precio:</label>
             <input type="text" id="productPrice" readonly>
           </div>
-          <div class="input_group">
+          <div class="input_group close_ocult">
             <label for="productDescription">Descripción:</label>
             <textarea id="productDescription" rows="4" readonly></textarea>
           </div>
@@ -514,33 +531,33 @@ if (isset($_SESSION['who'])) { ?>
           cartItem.classList.add('cart_item');
 
           cartItem.innerHTML = `
-                                <div class="remove_item">
-                                    <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
-                                </div>
-                                <div class="item_details">
-                                    <div class="item_details_title">
-                                        <p>${productData.name}</p>
-                                    </div>
-                                    <div class="item_details_price">
-                                        <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
-                                    </div> 
-                                </div>
-                                <div class="qty">
-                                    <span>-</span>
-                                    <strong>${productData.quantity}</strong>
-                                    <span>+</span>
-                                </div>
-                            `;
+                                  <div class="remove_item">
+                                      <a href="#" class="remove_cart_item"><i class='bx bx-trash'></i></a>
+                                  </div>
+                                  <div class="item_details">
+                                      <div class="item_details_title">
+                                          <p>${productData.name}</p>
+                                      </div>
+                                      <div class="item_details_price">
+                                          <strong>Bs. <span>${(productData.price * productData.quantity).toFixed(2)}</span></strong>
+                                      </div> 
+                                  </div>
+                                  <div class="qty">
+                                      <span>-</span>
+                                      <strong>${productData.quantity}</strong>
+                                      <span>+</span>
+                                  </div>
+                              `;
 
           cartItemsContainer.appendChild(cartItem);
 
           const hiddenInputsHTML = `
-                                <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
-                                <input type="hidden" name="id_product_cart[]" value="${productData.id}">
-                                <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
-                                <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
-                                <input type="hidden" name="status[]" value="1">
-                            `;
+                                  <input type="hidden" name="id_user_cart[]" value="${productData.user_id}">
+                                  <input type="hidden" name="id_product_cart[]" value="${productData.id}">
+                                  <input type="hidden" name="price_cart[]" value="${(productData.price * productData.quantity).toFixed(2)}">
+                                  <input type="hidden" name="quantity_cart[]" value="${productData.quantity}">
+                                  <input type="hidden" name="status[]" value="1">
+                              `;
           form.insertAdjacentHTML('beforeend', hiddenInputsHTML);
 
           // Añadir evento click para eliminar el producto del DOM

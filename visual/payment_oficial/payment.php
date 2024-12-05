@@ -344,10 +344,6 @@ if (isset($_SESSION['who'])) { ?>
                             </div>
                         </div>
 
-                        <div class="remove_item">
-                            <a><i class='bx bx-trash'></i></a>
-                        </div>
-
                     </div>
 
                     <div class="cart_left">

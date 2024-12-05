@@ -276,17 +276,7 @@ switch ($hidden) {
             $product_quantity = $quantity_cart[$index];
             $status_value = $status[$index];
 
-            // Verificar si el producto ya existe en el carrito para ese usuario
-            $checkQuery = "SELECT * FROM cart WHERE id_user_cart = '$user_id' AND id_product_cart = '$product_id'";
-            $checkResult = mysqli_query($connection, $checkQuery);
-
-            if (mysqli_num_rows($checkResult) > 0) {
-                // Actualizar la cantidad del producto en el carrito
-                $query = "UPDATE cart SET quantity_cart = '$product_quantity', price_cart = '$product_price' WHERE id_user_cart = '$user_id' AND id_product_cart = '$product_id'";
-            } else {
-                // Insertar el nuevo producto en el carrito
-                $query = "INSERT INTO cart (id_user_cart, id_product_cart, price_cart, quantity_cart, status) VALUES ('$user_id', '$product_id', '$product_price', '$product_quantity', '$status_value')";
-            }
+            $query = "INSERT INTO cart (id_user_cart, id_product_cart, price_cart, quantity_cart, status) VALUES ('$user_id', '$product_id', '$product_price', '$product_quantity', '$status_value')";
 
             $consulta = mysqli_query($connection, $query);
 
@@ -296,6 +286,7 @@ switch ($hidden) {
         }
         header("Location: ../visual/payment_oficial/payment.php");
         break;
+
     case 8:
 
         // EDIT CARRITO
