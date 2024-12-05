@@ -372,8 +372,9 @@ document.querySelectorAll('.button_action_1').forEach(button => {
 
         orderDetails.forEach(item => {
             const product_id = item.id_product;
+            const price = parseFloat(item.price); // Convertir price a un número
             const quantity = item.quantity;
-            const subtotal = item.subtotal;
+            const subtotal = parseFloat(item.subtotal); // Convertir subtotal a un número
 
             // Obtener el nombre del producto desde la base de datos usando product_id
             const xhr = new XMLHttpRequest();
@@ -384,9 +385,9 @@ document.querySelectorAll('.button_action_1').forEach(button => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${product_name}</td>
-                <td>BS. ${subtotal}</td>
+                <td>Bs. ${price.toFixed(2)}</td>
                 <td>${quantity}</td>
-                <td>BS. ${subtotal}</td>
+                <td>Bs. ${subtotal.toFixed(2)}</td>
             `;
             orderDetailsTableBody.appendChild(row);
         });

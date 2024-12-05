@@ -103,7 +103,6 @@ if (isset($_SESSION['who'])) { ?>
                         <thead>
                             <th>N° de Orden</th>
                             <th>Cliente</th>
-                            <th>Monto</th>
                             <th>Pedido</th>
                             <th>Ver Orden</th>
                         </thead>
@@ -111,7 +110,6 @@ if (isset($_SESSION['who'])) { ?>
                         <tbody>
                             <td>1</td>
                             <td><p>Vanessa</p><p>Rubio</p></td>
-                            <td>Bs. 40</td>
                             <td>
                                 <div class="status_list_order">
                                   <p>En Proceso.</p>
