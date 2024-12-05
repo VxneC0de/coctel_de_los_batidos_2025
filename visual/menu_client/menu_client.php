@@ -349,7 +349,7 @@ if (isset($_SESSION['who'])) { ?>
 
     <script> 
     function deleteProductDirectly(cod) { 
-    window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=11"; 
+    window.location.href = "../../controller/actions.php?e=" + cod + "&hidden=10"; 
 }
 
     </script>

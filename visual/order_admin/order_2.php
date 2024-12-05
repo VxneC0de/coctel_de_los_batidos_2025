@@ -1,3 +1,44 @@
+<div class="table_section_list">
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre del producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Monto total</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+            // Suponiendo que `order_details` contiene los detalles del pedido en formato JSON
+            $order_details = json_decode($ver['order_details'], true);
+            foreach ($order_details as $item) {
+                $product_id = $item['id_product'];
+                $quantity = $item['quantity'];
+                $subtotal = $item['subtotal'];
+
+                // Obtener el nombre del producto desde la base de datos usando $product_id
+                $sql_product_name = "SELECT name_product FROM product WHERE id_product = '$product_id'";
+                $result_product_name = mysqli_query($connection, $sql_product_name);
+                $row_product_name = mysqli_fetch_assoc($result_product_name);
+                $product_name = $row_product_name['name_product'] ?? 'Producto desconocido';
+
+                echo "<tr>";
+                echo "<td>$product_name</td>";
+                echo "<td>BS. $subtotal</td>";
+                echo "<td>$quantity</td>";
+                echo "<td>BS. $subtotal</td>";
+                echo "</tr>";
+            }
+        ?>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
 <div class="table_section">
     <?php
         include "../../controller/connection.php";
@@ -7,7 +48,7 @@
 
         // Construir la consulta SQL
         $sql = "
-            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status
+            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details
             FROM orders o
             JOIN user u ON o.id_user_order = u.id
             JOIN payment p ON o.id_payment_order = p.id_payment
@@ -80,15 +121,49 @@
                 </td>
             </tr>
         </tbody>
-
     </table>
 
-    <?php } ?>
+    <div class="table_section_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Monto total</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+                // Suponiendo que `order_details` contiene los detalles del pedido en formato JSON
+                $order_details = json_decode($ver['order_details'], true);
+                foreach ($order_details as $item) {
+                    $product_id = $item['id_product'];
+                    $quantity = $item['quantity'];
+                    $subtotal = $item['subtotal'];
 
+                    // Obtener el nombre del producto desde la base de datos usando $product_id
+                    $sql_product_name = "SELECT name_product FROM product WHERE id_product = '$product_id'";
+                    $result_product_name = mysqli_query($connection, $sql_product_name);
+                    $row_product_name = mysqli_fetch_assoc($result_product_name);
+                    $product_name = $row_product_name['name_product'] ?? 'Producto desconocido';
+
+                    echo "<tr>";
+                    echo "<td>$product_name</td>";
+                    echo "<td>BS. $subtotal</td>";
+                    echo "<td>$quantity</td>";
+                    echo "<td>BS. $subtotal</td>";
+                    echo "</tr>";
+                }
+            ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php } ?>
 </div>
 
-<!-- Modal -->
-<section class="show_order" id="orderModal" style="display:none;">
+<section class="show_order" id="orderModal">
     <button class="close_show_order"><i class="fas fa-times"></i></button>
     <div class="order_header">
         <h2>Informacion del pedido</h2>
@@ -112,8 +187,45 @@
         </div>
     </div>
     <div class="table_details">
-        <!-- Aquí irían los detalles del pedido (productos, precios, etc.) -->
+    <div class="table_section_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Monto total</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+                // Suponiendo que `order_details` contiene los detalles del pedido en formato JSON
+                $order_details = json_decode($ver['order_details'], true);
+                foreach ($order_details as $item) {
+                    $product_id = $item['id_product'];
+                    $quantity = $item['quantity'];
+                    $subtotal = $item['subtotal'];
+
+                    // Obtener el nombre del producto desde la base de datos usando $product_id
+                    $sql_product_name = "SELECT name_product FROM product WHERE id_product = '$product_id'";
+                    $result_product_name = mysqli_query($connection, $sql_product_name);
+                    $row_product_name = mysqli_fetch_assoc($result_product_name);
+                    $product_name = $row_product_name['name_product'] ?? 'Producto desconocido';
+
+                    echo "<tr>";
+                    echo "<td>$product_name</td>";
+                    echo "<td>BS. $subtotal</td>";
+                    echo "<td>$quantity</td>";
+                    echo "<td>BS. $subtotal</td>";
+                    echo "</tr>";
+                }
+            ?>
+            </tbody>
+        </table>
     </div>
+</div>
+    </div>
+
     <div class="total_amount">
         <label for="total_bs">Total Bs:</label>
         <span id="total_bs"></span>
@@ -139,7 +251,7 @@
         </div>
         <div class="order_time">
             <label for="selectedDate">Fecha del Pedido:</label>
-            <input type="text" id="selectedDate" readonly>
+            <input type="text" id="selectedDate" value="Hoy" readonly>
         </div>
         <div class="order_time">
             <label for="selectedTime">Hora del Pedido:</label>
@@ -160,115 +272,57 @@
     </div>
 </section>
 
+<script>
+    document.querySelectorAll('.button_action_1').forEach(button => {
+        button.addEventListener('click', function() {
+            const idOrder = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const surname = this.getAttribute('data-surname');
+            const email = this.getAttribute('data-email');
+            const phone = this.getAttribute('data-phone');
+            const totalBs = this.getAttribute('data-total-bs');
+            const totalEf = this.getAttribute('data-total-ef');
+            const payment = this.getAttribute('data-payment');
+            const reference = this.getAttribute('data-reference');
+            const refPhone = this.getAttribute('data-ref-phone');
+            const time = this.getAttribute('data-time');
+            const statusText = this.getAttribute('data-status');
 
-<input type="text" id="selectedDate" value="Hoy" readonly>
+            // Populate modal fields with order data
+            document.getElementById('name').value = name;
+            document.getElementById('surname').value = surname;
+            document.getElementById('email').value = email;
+            document.getElementById('cellphone').value = phone;
+            document.getElementById('total_bs').innerText = `Bs. ${totalBs}`;
+            document.getElementById('total_ef').innerText = `Bs. ${totalEf}`;
+            document.getElementById('payment').value = payment;
+            document.getElementById('reference').value = reference;
+            document.getElementById('phone').value = refPhone;
+            document.getElementById('selectedTime').value = time;
 
+            // Set the status select value
+            document.getElementById('status_pedido').value = statusText;
 
+            // Display the modal
+            document.querySelector('.modal_overlay').style.display = 'block';
+            document.querySelector('.show_order').style.display = 'block';
+            document.querySelector('.show_data').style.display = 'none';
+        });
+    });
 
-<section class="show_order" id="orderModal">
+    document.querySelector('.close_show_order').addEventListener('click', function() {
+        document.querySelector('.modal_overlay').style.display = 'none';
+        document.querySelector('.show_order').style.display = 'none';
+    });
 
-            <button class="close_show_order"><i class="fas fa-times"></i></button>
-          
-            <div class="order_header">
-                <h2>Informacion del pedido</h2>
-            </div>
+    document.querySelector('.icon_clickable').addEventListener('click', function() {
+        document.querySelector('.show_data').style.display = 'block';
+        document.querySelector('.modal_overlay').style.display = 'block';
+        document.querySelector('.show_order').style.display = 'none';
+    });
 
-            <div class="user_info">
-                <div class="name_field">
-                    <label for="name">Nombre:</label>
-                    <input type="text" id="name" readonly>
-                </div>
-                <div class="surname_field">
-                    <label for="surname">Apellido:</label>
-                    <input type="text" id="surname" readonly>
-                </div>
-                <div class="email_field">
-                    <label for="email">Correo Electronico:</label>
-                    <input type="email" id="email" readonly>
-                </div>
-                <div class="cellphone_field">
-                    <label for="cellphone">Celular:</label>
-                    <input type="tel" id="cellphone" readonly>
-                </div>
-            </div>
-
-            <div class="table_details">
-                <div class="table_header_list">
-                    <div class="table_name">
-                        <p>Productos</p>
-                    </div>
-                </div>
-                <div class="table_section_list">
-                    <table>
-                        <thead>
-                            <th>Nombre del producto</th>
-                            <th>Precio</th>
-                            <th>Cantidad</th>
-                            <th>Monto total</th>
-                        </thead>
-                        <tbody>
-                            <td>Churros</td>
-                            <td>BS. 45</td>
-                            <td>2</td>
-                            <td>$4,00</td>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="total_amount">
-                <label for="total_bs">Total Bs:</label>
-                <span id="total_bs"></span>
-                <label for="total_ef">Total Efectivo:</label>
-                <span id="total_ef"></span>
-              </div>
-
-            <div class="user_payment">
-              
-                <div class="payment_method">
-                  <label for="payment">Forma de Pago:</label>
-                  <input type="text" id="payment" value="Tarjeta de Crédito" readonly>
-                </div>
-              
-                <div class="payment_method">
-                  <label for="capture">Captura del pago:</label>
-                  <span class="icon_clickable"><i class='bx bx-image'></i></span>
-                </div>
-              
-                <div class="payment_method">
-                  <label for="reference">Referencia:</label>
-                  <input type="text" id="reference" readonly>
-                </div>
-              
-                <div class="payment_method">
-                  <label for="phone">Celular de pago:</label>
-                  <input type="text" id="phone" readonly>
-                </div>
-              
-                <div class="order_time">
-                  <label for="selectedDate">Fecha del Pedido:</label>
-                  <input type="text" id="selectedDate" value="Hoy" readonly>
-                </div>
-              
-                <div class="order_time">
-                  <label for="selectedTime">Hora del Pedido:</label>
-                  <input type="text" id="selectedTime" readonly>
-                </div>
-              
-              </div>              
-              
-            <div class="status_list">
-              <label for="status_pedido">Estatus del Pedido</label>
-              <select id="status_pedido" class="status_select">
-                  <option value="confirmacion" disabled selected>En confirmación</option>
-                  <option value="proceso">En proceso</option>
-                  <option value="listo">Listo</option>
-                  <option value="entregado">Entregado</option>
-              </select>
-            </div>
-
-            <div class="box_submit">
-                <input type="submit" class="submit" value="Actualizar estatus">
-            </div>
-            
-        </section>
+    document.querySelector('.close_show_data').addEventListener('click', function() {
+        document.querySelector('.show_data').style.display = 'none';
+        document.querySelector('.show_order').style.display = 'block';
+    });
+</script>

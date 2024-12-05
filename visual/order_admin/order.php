@@ -109,7 +109,7 @@ if (isset($_SESSION['who'])) { ?>
 
         // Construir la consulta SQL
         $sql = "
-            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status
+            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details
             FROM orders o
             JOIN user u ON o.id_user_order = u.id
             JOIN payment p ON o.id_payment_order = p.id_payment
@@ -178,16 +178,15 @@ if (isset($_SESSION['who'])) { ?>
                     </div>
                 </td>
                 <td>
-                    <a class="button_action_1" data-id="<?php echo $ver['id_order']; ?>" data-name="<?php echo $ver['name_payment']; ?>" data-surname="<?php echo $ver['lastName_payment']; ?>" data-email="<?php echo $ver['email']; ?>" data-phone="<?php echo $ver['phone_payment']; ?>" data-total-bs="<?php echo $ver['total_bs']; ?>" data-total-ef="<?php echo $ver['total_ef']; ?>" data-payment="<?php echo $metodoPago; ?>" data-reference="<?php echo $ver['reference_data']; ?>" data-ref-phone="<?php echo $ver['reference_phone']; ?>" data-time="<?php echo $ver['hour_payment']; ?>" data-status="<?php echo $statusText; ?>"><i class='bx bx-show-alt'></i></a>
+                    <a class="button_action_1" data-id="<?php echo $ver['id_order']; ?>" data-name="<?php echo $ver['name_payment']; ?>" data-surname="<?php echo $ver['lastName_payment']; ?>" data-email="<?php echo $ver['email']; ?>" data-phone="<?php echo $ver['phone_payment']; ?>" data-total-bs="<?php echo $ver['total_bs']; ?>" data-total-ef="<?php echo $ver['total_ef']; ?>" data-payment="<?php echo $metodoPago; ?>" data-reference="<?php echo $ver['reference_data']; ?>" data-ref-phone="<?php echo $ver['reference_phone']; ?>" data-time="<?php echo $ver['hour_payment']; ?>" data-status="<?php echo $statusText; ?>" data-order-details="<?php echo htmlspecialchars($ver['order_details']); ?>"><i class='bx bx-show-alt'></i></a>
                 </td>
             </tr>
         </tbody>
-
     </table>
 
     <?php } ?>
+</div>
 
-                </div>
 
             </div>
 
@@ -198,7 +197,7 @@ if (isset($_SESSION['who'])) { ?>
         <section class="show_order" id="orderModal">
     <button class="close_show_order"><i class="fas fa-times"></i></button>
     <div class="order_header">
-        <h2>Informacion del pedido</h2>
+        <h2>Información del pedido</h2>
     </div>
     <div class="user_info">
         <div class="name_field">
@@ -210,7 +209,7 @@ if (isset($_SESSION['who'])) { ?>
             <input type="text" id="surname" readonly>
         </div>
         <div class="email_field">
-            <label for="email">Correo Electronico:</label>
+            <label for="email">Correo Electrónico:</label>
             <input type="email" id="email" readonly>
         </div>
         <div class="cellphone_field">
@@ -219,43 +218,22 @@ if (isset($_SESSION['who'])) { ?>
         </div>
     </div>
     <div class="table_details">
-    <div class="table_section_list">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre del producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Monto total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Suponiendo que $order_details contiene los detalles del pedido en formato de texto
-                $product_lines = explode("\n", $ver['order_details']);
-                foreach ($product_lines as $line) {
-                    list($producto, $cantidad, $subtotal) = explode(",", $line);
-                    $product_id = explode(": ", $producto)[1];
-                    $cantidad = explode(": ", $cantidad)[1];
-                    $subtotal = explode(": ", $subtotal)[1];
-                    
-                    // Aquí puedes obtener el nombre del producto de la base de datos usando $product_id
-                    $product_name = "Nombre del producto"; // Reemplazar esto con la lógica adecuada
-
-                    echo "<tr>";
-                    echo "<td>$product_name</td>";
-                    echo "<td>BS. $subtotal</td>";
-                    echo "<td>$cantidad</td>";
-                    echo "<td>$$subtotal</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <div class="table_section_list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody id="orderDetailsTableBody">
+                    <!-- Detalles del pedido serán insertados aquí -->
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-    </div>
-
     <div class="total_amount">
         <label for="total_bs">Total Bs:</label>
         <span id="total_bs"></span>
@@ -300,7 +278,9 @@ if (isset($_SESSION['who'])) { ?>
     <div class="box_submit">
         <input type="submit" class="submit" value="Actualizar estatus">
     </div>
-        </section>
+</section>
+
+
           
         <section class="show_data">
 
@@ -352,8 +332,8 @@ if (isset($_SESSION['who'])) { ?>
         });
     </script>
 
-    <script>
-      document.querySelectorAll('.button_action_1').forEach(button => {
+<script>
+document.querySelectorAll('.button_action_1').forEach(button => {
     button.addEventListener('click', function() {
         const idOrder = this.getAttribute('data-id');
         const name = this.getAttribute('data-name');
@@ -367,8 +347,11 @@ if (isset($_SESSION['who'])) { ?>
         const refPhone = this.getAttribute('data-ref-phone');
         const time = this.getAttribute('data-time');
         const statusText = this.getAttribute('data-status');
+        
+        let orderDetails = this.getAttribute('data-order-details');
+        orderDetails = orderDetails ? JSON.parse(orderDetails) : [];
 
-        // Populate modal fields with order data
+        // Llenar los campos del modal con los datos de la orden
         document.getElementById('name').value = name;
         document.getElementById('surname').value = surname;
         document.getElementById('email').value = email;
@@ -380,10 +363,35 @@ if (isset($_SESSION['who'])) { ?>
         document.getElementById('phone').value = refPhone;
         document.getElementById('selectedTime').value = time;
 
-        // Set the status select value
+        // Establecer el valor del select de estado
         document.getElementById('status_pedido').value = statusText;
 
-        // Display the modal
+        // Llenar los detalles del pedido en la tabla del modal
+        const orderDetailsTableBody = document.getElementById('orderDetailsTableBody');
+        orderDetailsTableBody.innerHTML = ''; // Limpiar contenido previo
+
+        orderDetails.forEach(item => {
+            const product_id = item.id_product;
+            const quantity = item.quantity;
+            const subtotal = item.subtotal;
+
+            // Obtener el nombre del producto desde la base de datos usando product_id
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `get_product_name.php?product_id=${product_id}`, false); // Asegúrate de que esta ruta es correcta
+            xhr.send(null);
+            const product_name = xhr.responseText.trim(); // Eliminar espacios en blanco
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${product_name}</td>
+                <td>BS. ${subtotal}</td>
+                <td>${quantity}</td>
+                <td>BS. ${subtotal}</td>
+            `;
+            orderDetailsTableBody.appendChild(row);
+        });
+
+        // Mostrar el modal
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'block';
         document.querySelector('.show_data').style.display = 'none';
@@ -406,7 +414,7 @@ document.querySelector('.close_show_data').addEventListener('click', function() 
     document.querySelector('.show_order').style.display = 'block';
 });
 
-    </script>
+</script>
 
     
 

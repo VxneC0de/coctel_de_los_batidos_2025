@@ -1,11 +1,5 @@
 <?php
 
-/*
-¡Por supuesto! Aquí tienes un ejemplo de cómo podrías mostrar los detalles de la orden, con el nombre del producto, el precio, la cantidad y el monto total calculado.
-
-Primero, asegúrate de haber recuperado el order_details de la base de datos. Luego, puedes procesar y mostrar esta información en una tabla de HTML como se describe. Aquí tienes el código:
-
-*/
 
 // Supongamos que ya has recuperado el `order_details` y está almacenado en $order_details
 $order_details = "Producto: 1, Cantidad: 1, Subtotal: 45\nProducto: 2, Cantidad: 3, Subtotal: 135\nProducto: 5, Cantidad: 2, Subtotal: 90";

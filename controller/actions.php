@@ -310,7 +310,6 @@ break;
 case 9:
     // INSERTAR DATOS DEL PAGO
     $id_user = $_SESSION['who'];
-    echo $_POST['payment_method']; // Verifica el valor recibido
     $id_metodo = ($_POST['payment_method'] == "movil" ? 1 : ($_POST['payment_method'] == "efectivo" ? 2 : 3));
     $name = $_POST['namePay'];
     $lastName = $_POST['lasnamePay'];
@@ -342,7 +341,7 @@ case 9:
                      WHERE c.id_user_cart = '$id_user' AND c.status = 1";
         $result_cart = mysqli_query($connection, $sql_cart);
 
-        $order_details = "";
+        $order_details = [];
         $total_bs = 0;
         while ($row_cart = mysqli_fetch_assoc($result_cart)) {
             $id_product = $row_cart['id_product_cart'];
@@ -350,25 +349,28 @@ case 9:
             $price = $row_cart['price_product'];
             $subtotal = $price * $quantity;
             $total_bs += $subtotal;
-            $order_details .= "Producto: $id_product, Cantidad: $quantity, Subtotal: $subtotal\n";
+            
+            // Guardar detalles en un array
+            $order_details[] = [
+                'id_product' => $id_product,
+                'quantity' => $quantity,
+                'subtotal' => $subtotal
+            ];
         }
 
-        // OBTENER LA TASA DE CAMBIO MÁS RECIENTE
+        // Convertir array a JSON para almacenarlo en order_details
+        $order_details_json = json_encode($order_details);
+
+        // Obtener la tasa de cambio más reciente
         $tasaSql = "SELECT tasa_cambio FROM tasas_de_cambio ORDER BY fecha_cambio DESC LIMIT 1";
         $tasaResult = mysqli_query($connection, $tasaSql);
-        
-        if ($tasaResult && mysqli_num_rows($tasaResult) > 0) {
-            $tasaRow = mysqli_fetch_assoc($tasaResult);
-            $tasaCambio = $tasaRow['tasa_cambio'];
-            $total_ef = $total_bs / $tasaCambio;
-        } else {
-            $tasaCambio = 1; // Valor por defecto en caso de no encontrar la tasa
-            $total_ef = $total_bs / $tasaCambio;
-        }
+        $tasaRow = mysqli_fetch_assoc($tasaResult);
+        $tasaCambio = $tasaRow['tasa_cambio'] ?? 1;
+        $total_ef = $total_bs / $tasaCambio;
 
         // INSERTAR NUEVO PEDIDO EN LA TABLA ORDERS
         $sql_order = "INSERT INTO orders (id_user_order, id_payment_order, order_details, total_bs, total_ef, status) 
-                      VALUES ('$id_user', '$id_payment', '$order_details', '$total_bs', '$total_ef', 1)";
+                      VALUES ('$id_user', '$id_payment', '$order_details_json', '$total_bs', '$total_ef', 1)";
 
         if (mysqli_query($connection, $sql_order)) {
             $id_order = mysqli_insert_id($connection);

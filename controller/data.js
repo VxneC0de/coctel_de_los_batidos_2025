@@ -4,18 +4,6 @@ para borrar:
 DROP TABLE IF EXISTS metodo;
 
 
-metodo
-CREATE TABLE metodo (
-    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name_metodo VARCHAR(50) NOT NULL,
-    status TINYINT(4) UNSIGNED NOT NULL
-);
-
-INSERT INTO metodo (name_metodo, status) VALUES
-('Pago Móvil', 1),
-('Efectivo', 1),
-('Tarjeta', 1);
-
 
 payment
 CREATE TABLE payment (
@@ -34,7 +22,7 @@ CREATE TABLE payment (
 );
 
 user
-CREATE TABLE user (
+user (
     id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nick VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -42,18 +30,6 @@ CREATE TABLE user (
     code VARCHAR(50),
     status TINYINT(4) UNSIGNED NOT NULL
 );
-
-CREATE TABLE user_two (
-    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    nick VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    verification_code TEXT NOT NULL,
-    email_verified_at DATETIME DEFAULT NULL,
-    code VARCHAR(50),
-    status TINYINT(4) UNSIGNED NOT NULL
-);
-
 
 
 cart
@@ -77,14 +53,6 @@ CREATE TABLE product (
     price_product DOUBLE NOT NULL,
     date_product DATE NOT NULL,
     quantity_product INT(11) UNSIGNED NOT NULL,
-    status TINYINT(4) UNSIGNED NOT NULL
-);
-
-tasa de cambio
-CREATE TABLE tasas_de_cambio (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    tasa_cambio DECIMAL(10, 4) NOT NULL,
-    fecha_cambio DATE NOT NULL,
     status TINYINT(4) UNSIGNED NOT NULL
 );
 
@@ -115,5 +83,40 @@ INSERT INTO category (name_category, status) VALUES
 ('Papas Rellenas', 1),
 ('Bebidas Frías', 1),
 ('Otros', 1);
+
+
+
+
+tasa de cambio
+CREATE TABLE tasas_de_cambio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tasa_cambio DECIMAL(10, 4) NOT NULL,
+    fecha_cambio DATE NOT NULL,
+    status TINYINT(4) UNSIGNED NOT NULL
+);
+
+metodo
+CREATE TABLE metodo (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name_metodo VARCHAR(50) NOT NULL,
+    status TINYINT(4) UNSIGNED NOT NULL
+);
+
+INSERT INTO metodo (name_metodo, status) VALUES
+('Pago Móvil', 1),
+('Efectivo', 1),
+('Tarjeta', 1);
+
+
+CREATE TABLE user_two (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nick VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    verification_code TEXT NOT NULL,
+    email_verified_at DATETIME DEFAULT NULL,
+    code VARCHAR(50),
+    status TINYINT(4) UNSIGNED NOT NULL
+);
 
 */
