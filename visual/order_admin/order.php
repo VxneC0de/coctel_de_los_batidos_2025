@@ -101,7 +101,18 @@ if (isset($_SESSION['who'])) { ?>
                 </div>
 
                 <div class="table_section">
-    <?php
+    
+    <table>
+        <thead>
+            <tr>
+                <th>N° de Orden</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Ver Orden</th>
+            </tr>
+        </thead>
+
+        <?php
         include "../../controller/connection.php";
 
         // Variables para filtrar
@@ -109,7 +120,7 @@ if (isset($_SESSION['who'])) { ?>
 
         // Construir la consulta SQL
         $sql = "
-            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details
+            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details, p.img_payment
             FROM orders o
             JOIN user u ON o.id_user_order = u.id
             JOIN payment p ON o.id_payment_order = p.id_payment
@@ -155,15 +166,6 @@ if (isset($_SESSION['who'])) { ?>
             }
     ?>
 
-    <table>
-        <thead>
-            <tr>
-                <th>N° de Orden</th>
-                <th>Cliente</th>
-                <th>Status</th>
-                <th>Ver Orden</th>
-            </tr>
-        </thead>
 
         <tbody>
             <tr>
@@ -178,14 +180,16 @@ if (isset($_SESSION['who'])) { ?>
                     </div>
                 </td>
                 <td>
-                    <a class="button_action_1" data-id="<?php echo $ver['id_order']; ?>" data-name="<?php echo $ver['name_payment']; ?>" data-surname="<?php echo $ver['lastName_payment']; ?>" data-email="<?php echo $ver['email']; ?>" data-phone="<?php echo $ver['phone_payment']; ?>" data-total-bs="<?php echo $ver['total_bs']; ?>" data-total-ef="<?php echo $ver['total_ef']; ?>" data-payment="<?php echo $metodoPago; ?>" data-reference="<?php echo $ver['reference_data']; ?>" data-ref-phone="<?php echo $ver['reference_phone']; ?>" data-time="<?php echo $ver['hour_payment']; ?>" data-status="<?php echo $statusText; ?>" data-order-details="<?php echo htmlspecialchars($ver['order_details']); ?>"><i class='bx bx-show-alt'></i></a>
+                    <a class="button_action_1" data-id="<?php echo $ver['id_order']; ?>" data-name="<?php echo $ver['name_payment']; ?>" data-surname="<?php echo $ver['lastName_payment']; ?>" data-email="<?php echo $ver['email']; ?>" data-phone="<?php echo $ver['phone_payment']; ?>" data-total-bs="<?php echo $ver['total_bs']; ?>" data-total-ef="<?php echo $ver['total_ef']; ?>" data-payment="<?php echo $metodoPago; ?>" data-reference="<?php echo $ver['reference_data']; ?>" data-ref-phone="<?php echo $ver['reference_phone']; ?>" data-time="<?php echo $ver['hour_payment']; ?>" data-status="<?php echo $statusText; ?>" data-order-details="<?php echo htmlspecialchars($ver['order_details']); ?>" data-img-payment="<?php echo $ver['img_payment']; ?>"><i class='bx bx-show-alt'></i></a>
                 </td>
             </tr>
         </tbody>
+        <?php } ?>
     </table>
 
-    <?php } ?>
-</div>
+   
+                </div>
+
 
 
             </div>
@@ -217,7 +221,15 @@ if (isset($_SESSION['who'])) { ?>
             <input type="tel" id="cellphone" readonly>
         </div>
     </div>
+
     <div class="table_details">
+
+                <div class="table_header_list">
+                    <div class="table_name">
+                        <p>Productos</p>
+                    </div>
+                </div>
+
         <div class="table_section_list">
             <table>
                 <thead>
@@ -233,13 +245,16 @@ if (isset($_SESSION['who'])) { ?>
                 </tbody>
             </table>
         </div>
+
     </div>
+
     <div class="total_amount">
         <label for="total_bs">Total Bs:</label>
         <span id="total_bs"></span>
         <label for="total_ef">Total Efectivo:</label>
         <span id="total_ef"></span>
     </div>
+
     <div class="user_payment">
         <div class="payment_method">
             <label for="payment">Forma de Pago:</label>
@@ -266,6 +281,7 @@ if (isset($_SESSION['who'])) { ?>
             <input type="text" id="selectedTime" readonly>
         </div>
     </div>
+
     <div class="status_list">
         <label for="status_pedido">Estatus del Pedido</label>
         <select id="status_pedido" class="status_select">
@@ -275,26 +291,27 @@ if (isset($_SESSION['who'])) { ?>
             <option value="entregado">Entregado</option>
         </select>
     </div>
+
     <div class="box_submit">
         <input type="submit" class="submit" value="Actualizar estatus">
     </div>
-</section>
+    
+        </section>
 
 
           
         <section class="show_data">
-
-            <button class="close_show_data"><i class="fas fa-times"></i></button>
-
-            <div class="data_header">
-                <h2>Captura del pago</h2>
-            </div>
-
-            <div class="data_capture">
-                <img src="./ejemplo.jpg" alt="pago_movil">
-            </div>
-
+    <button class="close_show_data"><i class="fas fa-times"></i></button>
+    <div class="data_header">
+        <h2>Captura del pago</h2>
+    </div>
+    <div class="data_capture">
+        <img src="" alt="captura" style="display:none;">
+        <p style="display:none;"></p>
+    </div>
         </section>
+
+
       
         <footer class="footer">
         
@@ -347,7 +364,12 @@ document.querySelectorAll('.button_action_1').forEach(button => {
         const refPhone = this.getAttribute('data-ref-phone');
         const time = this.getAttribute('data-time');
         const statusText = this.getAttribute('data-status');
-        
+        let imgPayment = this.getAttribute('data-img-payment'); // Obtener la ruta de la imagen de pago
+
+        if (imgPayment) {
+            imgPayment = `../../img_payment/${imgPayment}`; // Ajustar la ruta de la imagen
+        }
+
         let orderDetails = this.getAttribute('data-order-details');
         orderDetails = orderDetails ? JSON.parse(orderDetails) : [];
 
@@ -392,7 +414,25 @@ document.querySelectorAll('.button_action_1').forEach(button => {
             orderDetailsTableBody.appendChild(row);
         });
 
-        // Mostrar el modal
+        // Configurar el ícono de la imagen para mostrar la captura del pago
+        const imgElement = document.querySelector('.data_capture img');
+        const msgElement = document.querySelector('.data_capture p');
+        document.querySelector('.icon_clickable').addEventListener('click', function() {
+            if (imgPayment) {
+                imgElement.src = imgPayment;
+                imgElement.style.display = 'block';
+                msgElement.style.display = 'none';
+            } else {
+                imgElement.style.display = 'none';
+                msgElement.style.display = 'block';
+                msgElement.innerText = 'No requirió captura';
+            }
+            document.querySelector('.modal_overlay').style.display = 'block';
+            document.querySelector('.show_data').style.display = 'block';
+            document.querySelector('.show_order').style.display = 'none';
+        });
+
+        // Mostrar el modal "show_order"
         document.querySelector('.modal_overlay').style.display = 'block';
         document.querySelector('.show_order').style.display = 'block';
         document.querySelector('.show_data').style.display = 'none';
@@ -404,20 +444,13 @@ document.querySelector('.close_show_order').addEventListener('click', function()
     document.querySelector('.show_order').style.display = 'none';
 });
 
-document.querySelector('.icon_clickable').addEventListener('click', function() {
-    document.querySelector('.show_data').style.display = 'block';
-    document.querySelector('.modal_overlay').style.display = 'block';
-    document.querySelector('.show_order').style.display = 'none';
-});
-
 document.querySelector('.close_show_data').addEventListener('click', function() {
+    document.querySelector('.modal_overlay').style.display = 'none';
     document.querySelector('.show_data').style.display = 'none';
     document.querySelector('.show_order').style.display = 'block';
 });
 
 </script>
-
-    
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

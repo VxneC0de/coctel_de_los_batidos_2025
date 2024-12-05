@@ -98,31 +98,94 @@ if (isset($_SESSION['who'])) { ?>
 
                 <div class="table_section">
 
-                    <table>
+    <table>
+        <thead>
+            <tr>
+                <th>N° de Orden</th>
+                <th>Cliente</th>
+                <th>Status</th>
+                <th>Ver Orden</th>
+            </tr>
+        </thead>
 
-                        <thead>
-                            <th>N° de Orden</th>
-                            <th>Cliente</th>
-                            <th>Pedido</th>
-                            <th>Ver Orden</th>
-                        </thead>
+        <?php
+        include "../../controller/connection.php";
 
-                        <tbody>
-                            <td>1</td>
-                            <td><p>Vanessa</p><p>Rubio</p></td>
-                            <td>
-                                <div class="status_list_order">
-                                  <p>En Proceso.</p>
-                                </div>
-                            </td>
-                            <td>
-                                <a class="button_action_1"><i class='bx bx-show-alt'></i></a>
-                            </td>
-                        </tbody>
+        // Obtener el ID del usuario actual
+        $currentUserId = $_SESSION['who'];
 
-                    </table>
+        // Variables para filtrar
+        $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-                </div>
+        // Construir la consulta SQL
+        $sql = "
+            SELECT o.id_order, p.name_payment, p.lastName_payment, u.email, p.phone_payment, p.id_metodo_payment, p.reference_data, p.reference_phone, p.date_payment, p.hour_payment, o.total_bs, o.total_ef, o.status, o.order_details, p.img_payment
+            FROM orders o
+            JOIN user u ON o.id_user_order = u.id
+            JOIN payment p ON o.id_payment_order = p.id_payment
+            WHERE o.id_user_order = $currentUserId AND o.status != 3
+        ";
+
+        if ($search != '') { 
+            $sql .= " AND u.nick LIKE '%$search%'"; 
+        }
+
+        $consult = mysqli_query($connection, $sql);
+
+        while ($ver = mysqli_fetch_array($consult)) {
+            // Determinar el texto del status
+            $statusText = '';
+            switch ($ver['status']) {
+                case 1:
+                    $statusText = 'En confirmacion';
+                    break;
+                case 2:
+                    $statusText = 'En proceso';
+                    break;
+                case 3:
+                    $statusText = 'listo';
+                    break;
+                case 4:
+                    $statusText = 'entregado';
+                    break;
+            }
+            
+            // Obtener el método de pago
+            $metodoPago = '';
+            switch ($ver['id_metodo_payment']) {
+                case 1:
+                    $metodoPago = 'Pago Móvil';
+                    break;
+                case 2:
+                    $metodoPago = 'Efectivo';
+                    break;
+                case 3:
+                    $metodoPago = 'Tarjeta';
+                    break;
+            }
+    ?>
+
+        <tbody>
+            <tr>
+                <td><?php echo $ver['id_order']; ?></td>
+                <td>
+                    <p><?php echo $ver['name_payment']; ?></p>
+                    <p><?php echo $ver['lastName_payment']; ?></p>
+                </td>
+                <td>
+                    <div class="status_list_order">
+                        <p><?php echo ucfirst($statusText); ?></p>
+                    </div>
+                </td>
+                <td>
+                <a class="button_action_1" data-id="<?php echo $ver['id_order']; ?>" data-name="<?php echo $ver['name_payment']; ?>" data-surname="<?php echo $ver['lastName_payment']; ?>" data-email="<?php echo $ver['email']; ?>" data-phone="<?php echo $ver['phone_payment']; ?>" data-total-bs="<?php echo $ver['total_bs']; ?>" data-total-ef="<?php echo $ver['total_ef']; ?>" data-payment="<?php echo $metodoPago; ?>" data-reference="<?php echo $ver['reference_data']; ?>" data-ref-phone="<?php echo $ver['reference_phone']; ?>" data-time="<?php echo $ver['hour_payment']; ?>" data-status="<?php echo $statusText; ?>" data-order-details="<?php echo htmlspecialchars($ver['order_details']); ?>" data-img-payment="<?php echo $ver['img_payment']; ?>"><i class='bx bx-show-alt'></i></a>
+                </td>
+            </tr>
+        </tbody>
+
+        <?php } ?>
+    </table>
+</div>
 
             </div>
 
@@ -130,7 +193,7 @@ if (isset($_SESSION['who'])) { ?>
 
         <div class="modal_overlay"></div>
 
-        <section class="show_order">
+        <section class="show_order" id="orderModal">
 
             <button class="close_show_order"><i class="fas fa-times"></i></button>
           
@@ -141,28 +204,30 @@ if (isset($_SESSION['who'])) { ?>
             <div class="user_info">
                 <div class="name_field">
                     <label for="name">Nombre:</label>
-                    <input type="text" id="name" value="John" readonly>
+                    <input type="text" id="name" readonly>
                 </div>
                 <div class="surname_field">
                     <label for="surname">Apellido:</label>
-                    <input type="text" id="surname" value="Doe" readonly>
+                    <input type="text" id="surname" readonly>
                 </div>
                 <div class="email_field">
                     <label for="email">Correo Electronico:</label>
-                    <input type="email" id="email" value="john.doe@example.com" readonly>
+                    <input type="email" id="email" readonly>
                 </div>
                 <div class="cellphone_field">
                     <label for="cellphone">Celular:</label>
-                    <input type="tel" id="cellphone" value="123-456-7890" readonly>
+                    <input type="tel" id="cellphone" readonly>
                 </div>
             </div>
 
             <div class="table_details">
+
                 <div class="table_header_list">
                     <div class="table_name">
                         <p>Productos</p>
                     </div>
                 </div>
+
                 <div class="table_section_list">
                     <table>
                         <thead>
@@ -171,26 +236,26 @@ if (isset($_SESSION['who'])) { ?>
                             <th>Cantidad</th>
                             <th>Monto total</th>
                         </thead>
-                        <tbody>
-                            <td>Churros</td>
-                            <td>BS. 45</td>
-                            <td>2</td>
-                            <td>$4,00</td>
+                        <tbody id="orderDetailsTableBody">
+                            <!-- Detalles del pedido serán insertados aquí -->
                         </tbody>
                     </table>
                 </div>
+
             </div>
 
             <div class="total_amount">
-                <label for="name">Total:</label>
-                <span id="total">Bs. 45,00</span>
-              </div>
+                <label for="total_bs">Total Bs:</label>
+                <span id="total_bs"></span>
+                <label for="total_ef">Total Efectivo:</label>
+                <span id="total_ef"></span>
+            </div>
 
             <div class="user_payment">
               
                 <div class="payment_method">
                   <label for="payment">Forma de Pago:</label>
-                  <input type="text" id="payment" value="Tarjeta de Crédito" readonly>
+                  <input type="text" id="payment" readonly>
                 </div>
               
                 <div class="payment_method">
@@ -200,12 +265,12 @@ if (isset($_SESSION['who'])) { ?>
               
                 <div class="payment_method">
                   <label for="reference">Referencia:</label>
-                  <input type="text" id="reference" value="1234" readonly>
+                  <input type="text" id="reference" readonly>
                 </div>
               
                 <div class="payment_method">
                   <label for="phone">Celular de pago:</label>
-                  <input type="text" id="phone" value="01234567890" readonly>
+                  <input type="text" id="phone" readonly>
                 </div>
               
                 <div class="order_time">
@@ -215,7 +280,7 @@ if (isset($_SESSION['who'])) { ?>
               
                 <div class="order_time">
                   <label for="selectedTime">Hora del Pedido:</label>
-                  <input type="text" id="selectedTime" value="Tan pronto como sea posible" readonly>
+                  <input type="text" id="selectedTime" readonly>
                 </div>
               
               </div>              
@@ -230,17 +295,14 @@ if (isset($_SESSION['who'])) { ?>
         </section>
           
         <section class="show_data">
-
-            <button class="close_show_data"><i class="fas fa-times"></i></button>
-
-            <div class="data_header">
-                <h2>Captura del pago</h2>
-            </div>
-
-            <div class="data_capture">
-                <img src="./ejemplo.jpg" alt="pago_movil">
-            </div>
-
+    <button class="close_show_data"><i class="fas fa-times"></i></button>
+    <div class="data_header">
+        <h2>Captura del pago</h2>
+    </div>
+    <div class="data_capture">
+        <img src="" alt="captura" style="display:none;">
+        <p style="display:none;"></p>
+    </div>
         </section>
       
         <footer class="footer">
@@ -279,29 +341,116 @@ if (isset($_SESSION['who'])) { ?>
         });
     </script>
 
-    <script>
-        document.querySelector('.button_action_1').addEventListener('click', function() {
-            document.querySelector('.modal_overlay').style.display = 'block';
-            document.querySelector('.show_order').style.display = 'block';
-            document.querySelector('.show_data').style.display = 'none';
+<script>
+document.querySelectorAll('.button_action_1').forEach(button => {
+    button.addEventListener('click', function() {
+        const idOrder = this.getAttribute('data-id');
+        const name = this.getAttribute('data-name');
+        const surname = this.getAttribute('data-surname');
+        const email = this.getAttribute('data-email');
+        const phone = this.getAttribute('data-phone');
+        const totalBs = this.getAttribute('data-total-bs');
+        const totalEf = this.getAttribute('data-total-ef');
+        const payment = this.getAttribute('data-payment');
+        const reference = this.getAttribute('data-reference');
+        const refPhone = this.getAttribute('data-ref-phone');
+        const time = this.getAttribute('data-time');
+        const statusText = this.getAttribute('data-status');
+        let imgPayment = this.getAttribute('data-img-payment'); // Obtener la ruta de la imagen de pago
+
+        if (imgPayment) {
+            imgPayment = `../../img_payment/${imgPayment}`; // Ajustar la ruta de la imagen
+        }
+
+        let orderDetails = this.getAttribute('data-order-details');
+        orderDetails = orderDetails ? JSON.parse(orderDetails) : [];
+
+        // Llenar los campos del modal con los datos de la orden
+        document.getElementById('name').value = name;
+        document.getElementById('surname').value = surname;
+        document.getElementById('email').value = email;
+        document.getElementById('cellphone').value = phone;
+        document.getElementById('total_bs').innerText = `Bs. ${totalBs}`;
+        document.getElementById('total_ef').innerText = `Bs. ${totalEf}`;
+        document.getElementById('payment').value = payment;
+        document.getElementById('reference').value = reference;
+        document.getElementById('phone').value = refPhone;
+        document.getElementById('selectedTime').value = time;
+
+        // Mapeo del status
+        const statusMapping = {
+            'confirmacion': 'En Confirmación',
+            'proceso': 'En Proceso',
+            'listo': 'Listo',
+            'entregado': 'Entregado'
+        };
+
+        // Asignar el texto de estado adecuado
+        document.getElementById('status_pedido').innerText = statusMapping[statusText] || statusText;
+
+        // Llenar los detalles del pedido en la tabla del modal
+        const orderDetailsTableBody = document.getElementById('orderDetailsTableBody');
+        orderDetailsTableBody.innerHTML = ''; // Limpiar contenido previo
+
+        orderDetails.forEach(item => {
+            const product_id = item.id_product;
+            const price = parseFloat(item.price); // Convertir price a un número
+            const quantity = item.quantity;
+            const subtotal = parseFloat(item.subtotal); // Convertir subtotal a un número
+
+            // Obtener el nombre del producto desde la base de datos usando product_id
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `get_product_name.php?product_id=${product_id}`, false); // Asegúrate de que esta ruta es correcta
+            xhr.send(null);
+            const product_name = xhr.responseText.trim(); // Eliminar espacios en blanco
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${product_name}</td>
+                <td>Bs. ${price.toFixed(2)}</td>
+                <td>${quantity}</td>
+                <td>Bs. ${subtotal.toFixed(2)}</td>
+            `;
+            orderDetailsTableBody.appendChild(row);
         });
 
-        document.querySelector('.close_show_order').addEventListener('click', function() {
-            document.querySelector('.modal_overlay').style.display = 'none';
-            document.querySelector('.show_order').style.display = 'none';
-        });
-
+         // Configurar el ícono de la imagen para mostrar la captura del pago
+         const imgElement = document.querySelector('.data_capture img');
+        const msgElement = document.querySelector('.data_capture p');
         document.querySelector('.icon_clickable').addEventListener('click', function() {
-            document.querySelector('.show_data').style.display = 'block';
+            if (imgPayment) {
+                imgElement.src = imgPayment;
+                imgElement.style.display = 'block';
+                msgElement.style.display = 'none';
+            } else {
+                imgElement.style.display = 'none';
+                msgElement.style.display = 'block';
+                msgElement.innerText = 'No requirió captura';
+            }
             document.querySelector('.modal_overlay').style.display = 'block';
+            document.querySelector('.show_data').style.display = 'block';
             document.querySelector('.show_order').style.display = 'none';
         });
 
-        document.querySelector('.close_show_data').addEventListener('click', function() {
-            document.querySelector('.show_data').style.display = 'none';
-            document.querySelector('.show_order').style.display = 'block';
-        });
-    </script>
+
+        // Mostrar el modal "show_order"
+        document.querySelector('.modal_overlay').style.display = 'block';
+        document.querySelector('.show_order').style.display = 'block';
+        document.querySelector('.show_data').style.display = 'none';
+    });
+});
+
+document.querySelector('.close_show_order').addEventListener('click', function() {
+    document.querySelector('.modal_overlay').style.display = 'none';
+    document.querySelector('.show_order').style.display = 'none';
+});
+
+document.querySelector('.close_show_data').addEventListener('click', function() {
+    document.querySelector('.modal_overlay').style.display = 'none';
+    document.querySelector('.show_data').style.display = 'none';
+    document.querySelector('.show_order').style.display = 'block';
+});
+</script>
 
     
 
